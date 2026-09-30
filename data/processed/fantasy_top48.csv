@@ -1,0 +1,337 @@
+season,adp_rank,adp,adp_formatted,source,player,pos_group,side,team,pfr_player_id,first_week,max_week
+2020,1,1.2,1.01,Fantasy Football Calculator,Christian McCaffrey,RB,Offense,CAR,McCaCh01,0,16
+2020,2,2.5,1.03,Fantasy Football Calculator,Saquon Barkley,RB,Offense,NYG,BarkSa00,0,16
+2020,3,3.4,1.03,Fantasy Football Calculator,Ezekiel Elliott,RB,Offense,DAL,ElliEz00,0,16
+2020,4,4.9,1.05,Fantasy Football Calculator,Alvin Kamara,RB,Offense,NO,KamaAl00,0,16
+2020,5,5.6,1.06,Fantasy Football Calculator,Michael Thomas,WR,Offense,NO,ThomMi05,0,16
+2020,6,6.2,1.06,Fantasy Football Calculator,Clyde Edwards-Helaire,RB,Offense,KC,EdwaCl00,0,16
+2020,7,6.2,1.06,Fantasy Football Calculator,Dalvin Cook,RB,Offense,MIN,CookDa01,0,16
+2020,8,7.4,1.07,Fantasy Football Calculator,Derrick Henry,RB,Offense,TEN,HenrDe00,0,16
+2020,9,9.1,1.09,Fantasy Football Calculator,Josh Jacobs,RB,Offense,LV,JacoJo01,0,16
+2020,10,10.4,1.1,Fantasy Football Calculator,Davante Adams,WR,Offense,GB,AdamDa01,0,16
+2020,11,11.5,1.11,Fantasy Football Calculator,Austin Ekeler,RB,Offense,LAC,EkelAu00,0,16
+2020,12,12.0,1.12,Fantasy Football Calculator,Miles Sanders,RB,Offense,PHI,SandMi01,0,16
+2020,13,13.1,2.01,Fantasy Football Calculator,Joe Mixon,RB,Offense,CIN,MixoJo00,0,16
+2020,14,14.4,2.02,Fantasy Football Calculator,Julio Jones,WR,Offense,ATL,JoneJu02,0,16
+2020,15,14.8,2.03,Fantasy Football Calculator,Kenyan Drake,RB,Offense,ARI,DrakKe00,0,16
+2020,16,15.8,2.04,Fantasy Football Calculator,Tyreek Hill,WR,Offense,KC,HillTy00,0,16
+2020,17,16.3,2.04,Fantasy Football Calculator,Nick Chubb,RB,Offense,CLE,ChubNi00,0,16
+2020,18,17.5,2.06,Fantasy Football Calculator,Aaron Jones Sr.,RB,Offense,GB,JoneAa00,0,16
+2020,19,18.5,2.07,Fantasy Football Calculator,DeAndre Hopkins,WR,Offense,ARI,HopkDe00,0,16
+2020,20,18.7,2.07,Fantasy Football Calculator,Patrick Mahomes,QB,Offense,KC,MahoPa00,0,16
+2020,21,19.9,2.08,Fantasy Football Calculator,Travis Kelce,TE,Offense,KC,KelcTr00,0,16
+2020,22,21.5,2.1,Fantasy Football Calculator,Chris Godwin Jr.,WR,Offense,TB,GodwCh00,0,16
+2020,23,22.4,2.1,Fantasy Football Calculator,James Conner,RB,Offense,PIT,ConnJa00,0,16
+2020,24,22.7,2.11,Fantasy Football Calculator,Lamar Jackson,QB,Offense,BAL,JackLa00,0,16
+2020,25,24.4,2.12,Fantasy Football Calculator,George Kittle,TE,Offense,SF,KittGe00,0,16
+2020,26,25.8,3.02,Fantasy Football Calculator,Kenny Golladay,WR,Offense,DET,GollKe00,0,16
+2020,27,26.4,3.02,Fantasy Football Calculator,Chris Carson,RB,Offense,SEA,CarsCh00,0,16
+2020,28,27.9,3.04,Fantasy Football Calculator,Mike Evans,WR,Offense,TB,EvanMi00,0,16
+2020,29,28.5,3.04,Fantasy Football Calculator,David Johnson,RB,Offense,HOU,JohnDa08,0,16
+2020,30,29.1,3.05,Fantasy Football Calculator,Todd Gurley,RB,Offense,ATL,GurlTo01,0,16
+2020,31,30.3,3.06,Fantasy Football Calculator,Adam Thielen,WR,Offense,MIN,ThieAd00,0,16
+2020,32,31.8,3.08,Fantasy Football Calculator,Allen Robinson II,WR,Offense,CHI,RobiAl02,0,16
+2020,33,32.6,3.09,Fantasy Football Calculator,Jonathan Taylor,RB,Offense,IND,TaylJo02,0,16
+2020,34,32.6,3.09,Fantasy Football Calculator,DJ Moore,WR,Offense,CAR,MoorD.00,0,16
+2020,35,34.5,3.1,Fantasy Football Calculator,LeVeon Bell,RB,Offense,NYJ,BellLe00,0,16
+2020,36,35.4,3.11,Fantasy Football Calculator,Leonard Fournette,RB,Offense,TB,FourLe00,0,16
+2020,37,35.7,3.12,Fantasy Football Calculator,Odell Beckham Jr.,WR,Offense,CLE,BeckOd00,0,16
+2020,38,36.9,4.01,Fantasy Football Calculator,JuJu Smith-Schuster,WR,Offense,PIT,SmitJu00,0,16
+2020,39,38.1,4.02,Fantasy Football Calculator,Amari Cooper,WR,Offense,DAL,CoopAm00,0,16
+2020,40,39.4,4.03,Fantasy Football Calculator,Melvin Gordon III,RB,Offense,DEN,GordMe00,0,16
+2020,41,40.3,4.04,Fantasy Football Calculator,Cooper Kupp,WR,Offense,LA,KuppCo00,0,16
+2020,42,40.9,4.05,Fantasy Football Calculator,Calvin Ridley,WR,Offense,ATL,RidlCa00,0,16
+2020,43,42.4,4.06,Fantasy Football Calculator,Mark Andrews,TE,Offense,BAL,AndrMa00,0,16
+2020,44,42.4,4.06,Fantasy Football Calculator,Robert Woods,WR,Offense,LA,WoodRo02,0,16
+2020,45,42.5,4.06,Fantasy Football Calculator,Mark Ingram II,RB,Offense,BAL,IngrMa01,0,16
+2020,46,44.4,4.08,Fantasy Football Calculator,A.J. Brown,WR,Offense,TEN,BrowAJ00,0,16
+2020,47,45.3,4.09,Fantasy Football Calculator,DK Metcalf,WR,Offense,SEA,MetcDK00,0,16
+2020,48,46.4,4.1,Fantasy Football Calculator,Devin Singletary,RB,Offense,BUF,SingDe00,0,16
+2021,1,1.2,1.01,Fantasy Football Calculator,Christian McCaffrey,RB,Offense,CAR,McCaCh01,0,17
+2021,2,2.5,1.03,Fantasy Football Calculator,Dalvin Cook,RB,Offense,MIN,CookDa01,0,17
+2021,3,3.8,1.04,Fantasy Football Calculator,Alvin Kamara,RB,Offense,NO,KamaAl00,0,17
+2021,4,4.0,1.04,Fantasy Football Calculator,Derrick Henry,RB,Offense,TEN,HenrDe00,0,17
+2021,5,5.3,1.05,Fantasy Football Calculator,Ezekiel Elliott,RB,Offense,DAL,ElliEz00,0,17
+2021,6,6.4,1.06,Fantasy Football Calculator,Davante Adams,WR,Offense,GB,AdamDa01,0,17
+2021,7,7.5,1.07,Fantasy Football Calculator,Aaron Jones Sr.,RB,Offense,GB,JoneAa00,0,17
+2021,8,8.2,1.08,Fantasy Football Calculator,Travis Kelce,TE,Offense,KC,KelcTr00,0,17
+2021,9,8.5,1.09,Fantasy Football Calculator,Austin Ekeler,RB,Offense,LAC,EkelAu00,0,17
+2021,10,9.9,1.1,Fantasy Football Calculator,Nick Chubb,RB,Offense,CLE,ChubNi00,0,17
+2021,11,10.6,1.11,Fantasy Football Calculator,Tyreek Hill,WR,Offense,KC,HillTy00,0,17
+2021,12,12.0,1.12,Fantasy Football Calculator,Saquon Barkley,RB,Offense,NYG,BarkSa00,0,17
+2021,13,12.9,2.01,Fantasy Football Calculator,Najee Harris,RB,Offense,PIT,HarrNa00,0,17
+2021,14,13.5,2.01,Fantasy Football Calculator,Stefon Diggs,WR,Offense,BUF,DiggSt00,0,17
+2021,15,13.8,2.02,Fantasy Football Calculator,Jonathan Taylor,RB,Offense,IND,TaylJo02,0,17
+2021,16,15.6,2.04,Fantasy Football Calculator,Antonio Gibson,RB,Offense,WAS,GibsAn00,0,17
+2021,17,17.0,2.05,Fantasy Football Calculator,DeAndre Hopkins,WR,Offense,ARI,HopkDe00,0,17
+2021,18,18.0,2.06,Fantasy Football Calculator,Calvin Ridley,WR,Offense,ATL,RidlCa00,0,17
+2021,19,19.2,2.07,Fantasy Football Calculator,Joe Mixon,RB,Offense,CIN,MixoJo00,0,17
+2021,20,19.7,2.08,Fantasy Football Calculator,DK Metcalf,WR,Offense,SEA,MetcDK00,0,17
+2021,21,20.4,2.08,Fantasy Football Calculator,Clyde Edwards-Helaire,RB,Offense,KC,EdwaCl00,0,17
+2021,22,21.5,2.09,Fantasy Football Calculator,Darren Waller,TE,Offense,LV,WallDa01,0,17
+2021,23,22.4,2.1,Fantasy Football Calculator,Justin Jefferson,WR,Offense,MIN,JeffJu00,0,17
+2021,24,22.9,2.11,Fantasy Football Calculator,Patrick Mahomes,QB,Offense,KC,MahoPa00,0,17
+2021,25,24.8,3.01,Fantasy Football Calculator,A.J. Brown,WR,Offense,TEN,BrowAJ00,0,17
+2021,26,25.9,3.02,Fantasy Football Calculator,David Montgomery,RB,Offense,CHI,MontDa01,0,17
+2021,27,25.9,3.02,Fantasy Football Calculator,Keenan Allen,WR,Offense,LAC,AlleKe00,0,17
+2021,28,28.0,3.04,Fantasy Football Calculator,Chris Carson,RB,Offense,SEA,CarsCh00,0,17
+2021,29,28.5,3.04,Fantasy Football Calculator,George Kittle,TE,Offense,SF,KittGe00,0,17
+2021,30,29.1,3.05,Fantasy Football Calculator,James Robinson,RB,Offense,JAX,RobiJa00,0,17
+2021,31,29.6,3.06,Fantasy Football Calculator,CeeDee Lamb,WR,Offense,DAL,LambCe00,0,17
+2021,32,30.3,3.06,Fantasy Football Calculator,Terry McLaurin,WR,Offense,WAS,McLaTe00,0,17
+2021,33,32.7,3.09,Fantasy Football Calculator,Allen Robinson II,WR,Offense,CHI,RobiAl02,0,17
+2021,34,34.0,3.1,Fantasy Football Calculator,D'Andre Swift,RB,Offense,DET,SwifDA00,0,17
+2021,35,34.4,3.1,Fantasy Football Calculator,Josh Allen,QB,Offense,BUF,AlleJo02,0,17
+2021,36,35.1,3.11,Fantasy Football Calculator,Robert Woods,WR,Offense,LA,WoodRo02,0,17
+2021,37,35.4,3.11,Fantasy Football Calculator,Josh Jacobs,RB,Offense,LV,JacoJo01,0,17
+2021,38,37.8,4.02,Fantasy Football Calculator,Mike Evans,WR,Offense,TB,EvanMi00,0,17
+2021,39,38.7,4.03,Fantasy Football Calculator,Miles Sanders,RB,Offense,PHI,SandMi01,0,17
+2021,40,40.0,4.04,Fantasy Football Calculator,Amari Cooper,WR,Offense,DAL,CoopAm00,0,17
+2021,41,40.3,4.04,Fantasy Football Calculator,Kyle Pitts Sr.,TE,Offense,ATL,PittKy00,0,17
+2021,42,41.3,4.05,Fantasy Football Calculator,Kyler Murray,QB,Offense,ARI,MurrKy00,0,17
+2021,43,41.3,4.05,Fantasy Football Calculator,Cooper Kupp,WR,Offense,LA,KuppCo00,0,17
+2021,44,43.1,4.07,Fantasy Football Calculator,Mike Davis,RB,Offense,ATL,DaviMi01,0,17
+2021,45,43.8,4.08,Fantasy Football Calculator,Darrell Henderson Jr.,RB,Offense,LA,HendDa00,0,17
+2021,46,44.9,4.09,Fantasy Football Calculator,Diontae Johnson,WR,Offense,PIT,JohnDi01,0,17
+2021,47,45.7,4.1,Fantasy Football Calculator,Myles Gaskin,RB,Offense,MIA,GaskMy00,0,17
+2021,48,46.0,4.1,Fantasy Football Calculator,Julio Jones,WR,Offense,TEN,JoneJu02,0,17
+2022,1,1.3,1.01,Fantasy Football Calculator,Jonathan Taylor,RB,Offense,IND,TaylJo02,0,17
+2022,2,2.4,1.02,Fantasy Football Calculator,Christian McCaffrey,RB,Offense,CAR,McCaCh01,0,17
+2022,3,2.7,1.03,Fantasy Football Calculator,Austin Ekeler,RB,Offense,LAC,EkelAu00,0,17
+2022,4,4.3,1.04,Fantasy Football Calculator,Derrick Henry,RB,Offense,TEN,HenrDe00,0,17
+2022,5,4.6,1.05,Fantasy Football Calculator,Justin Jefferson,WR,Offense,MIN,JeffJu00,0,17
+2022,6,5.7,1.06,Fantasy Football Calculator,Cooper Kupp,WR,Offense,LA,KuppCo00,0,17
+2022,7,7.1,1.07,Fantasy Football Calculator,Najee Harris,RB,Offense,PIT,HarrNa00,0,17
+2022,8,7.5,1.08,Fantasy Football Calculator,Dalvin Cook,RB,Offense,MIN,CookDa01,0,17
+2022,9,8.7,1.09,Fantasy Football Calculator,Ja'Marr Chase,WR,Offense,CIN,ChasJa00,0,17
+2022,10,10.1,1.1,Fantasy Football Calculator,Joe Mixon,RB,Offense,CIN,MixoJo00,0,17
+2022,11,10.9,1.11,Fantasy Football Calculator,Alvin Kamara,RB,Offense,NO,KamaAl00,0,17
+2022,12,12.0,1.12,Fantasy Football Calculator,Davante Adams,WR,Offense,LV,AdamDa01,0,17
+2022,13,12.8,2.01,Fantasy Football Calculator,D'Andre Swift,RB,Offense,DET,SwifDA00,0,17
+2022,14,13.6,2.02,Fantasy Football Calculator,Stefon Diggs,WR,Offense,BUF,DiggSt00,0,17
+2022,15,14.9,2.03,Fantasy Football Calculator,Aaron Jones Sr.,RB,Offense,GB,JoneAa00,0,17
+2022,16,15.5,2.04,Fantasy Football Calculator,Saquon Barkley,RB,Offense,NYG,BarkSa00,0,17
+2022,17,16.5,2.05,Fantasy Football Calculator,Travis Kelce,TE,Offense,KC,KelcTr00,0,17
+2022,18,17.5,2.05,Fantasy Football Calculator,CeeDee Lamb,WR,Offense,DAL,LambCe00,0,17
+2022,19,18.8,2.07,Fantasy Football Calculator,Nick Chubb,RB,Offense,CLE,ChubNi00,0,17
+2022,20,19.6,2.08,Fantasy Football Calculator,Deebo Samuel Sr.,WR,Offense,SF,SamuDe00,0,17
+2022,21,20.2,2.08,Fantasy Football Calculator,Javonte Williams,RB,Offense,DEN,WillJa10,0,17
+2022,22,20.4,2.08,Fantasy Football Calculator,Josh Allen,QB,Offense,BUF,AlleJo02,0,17
+2022,23,21.9,2.1,Fantasy Football Calculator,Leonard Fournette,RB,Offense,TB,FourLe00,0,17
+2022,24,22.7,2.11,Fantasy Football Calculator,Tyreek Hill,WR,Offense,MIA,HillTy00,0,17
+2022,25,24.9,3.01,Fantasy Football Calculator,Michael Pittman Jr.,WR,Offense,IND,PittMi01,0,17
+2022,26,25.5,3.01,Fantasy Football Calculator,Mark Andrews,TE,Offense,BAL,AndrMa00,0,17
+2022,27,26.5,3.02,Fantasy Football Calculator,Mike Evans,WR,Offense,TB,EvanMi00,0,17
+2022,28,27.7,3.04,Fantasy Football Calculator,Ezekiel Elliott,RB,Offense,DAL,ElliEz00,0,17
+2022,29,28.4,3.04,Fantasy Football Calculator,James Conner,RB,Offense,ARI,ConnJa00,0,17
+2022,30,29.5,3.05,Fantasy Football Calculator,Keenan Allen,WR,Offense,LAC,AlleKe00,0,17
+2022,31,30.4,3.06,Fantasy Football Calculator,A.J. Brown,WR,Offense,PHI,BrowAJ00,0,17
+2022,32,31.2,3.07,Fantasy Football Calculator,Kyle Pitts Sr.,TE,Offense,ATL,PittKy00,0,17
+2022,33,32.5,3.08,Fantasy Football Calculator,Tee Higgins,WR,Offense,CIN,HiggTe00,0,17
+2022,34,33.1,3.09,Fantasy Football Calculator,Cam Akers,RB,Offense,LA,AkerCa00,0,17
+2022,35,33.2,3.09,Fantasy Football Calculator,Justin Herbert,QB,Offense,LAC,HerbJu00,0,17
+2022,36,33.6,3.1,Fantasy Football Calculator,Travis Etienne Jr.,RB,Offense,JAX,EtieTr00,0,17
+2022,37,35.9,3.12,Fantasy Football Calculator,DJ Moore,WR,Offense,CAR,MoorD.00,0,17
+2022,38,38.0,4.02,Fantasy Football Calculator,Terry McLaurin,WR,Offense,WAS,McLaTe00,0,17
+2022,39,38.3,4.02,Fantasy Football Calculator,Patrick Mahomes,QB,Offense,KC,MahoPa00,0,17
+2022,40,38.8,4.03,Fantasy Football Calculator,J.K. Dobbins,RB,Offense,BAL,DobbJK00,0,17
+2022,41,39.3,4.03,Fantasy Football Calculator,David Montgomery,RB,Offense,CHI,MontDa01,0,17
+2022,42,39.6,4.04,Fantasy Football Calculator,Mike Williams,WR,Offense,LAC,WillMi07,0,17
+2022,43,42.4,4.06,Fantasy Football Calculator,Elijah Mitchell,RB,Offense,SF,MitcEl00,0,17
+2022,44,43.4,4.07,Fantasy Football Calculator,Diontae Johnson,WR,Offense,PIT,JohnDi01,0,17
+2022,45,44.2,4.08,Fantasy Football Calculator,George Kittle,TE,Offense,SF,KittGe00,0,17
+2022,46,44.4,4.08,Fantasy Football Calculator,Breece Hall,RB,Offense,NYJ,HallBr03,0,17
+2022,47,45.3,4.09,Fantasy Football Calculator,Courtland Sutton,WR,Offense,DEN,SuttCo00,0,17
+2022,48,46.1,4.1,Fantasy Football Calculator,Joe Burrow,QB,Offense,CIN,BurrJo01,0,17
+2023,1,1.4,1.01,Fantasy Football Calculator,Justin Jefferson,WR,Offense,MIN,JeffJu00,0,17
+2023,2,2.4,1.02,Fantasy Football Calculator,Christian McCaffrey,RB,Offense,SF,McCaCh01,0,17
+2023,3,2.4,1.02,Fantasy Football Calculator,Ja'Marr Chase,WR,Offense,CIN,ChasJa00,0,17
+2023,4,4.4,1.04,Fantasy Football Calculator,Tyreek Hill,WR,Offense,MIA,HillTy00,0,17
+2023,5,5.0,1.05,Fantasy Football Calculator,Austin Ekeler,RB,Offense,LAC,EkelAu00,0,17
+2023,6,5.9,1.06,Fantasy Football Calculator,Travis Kelce,TE,Offense,KC,KelcTr00,0,17
+2023,7,7.0,1.07,Fantasy Football Calculator,Cooper Kupp,WR,Offense,LA,KuppCo00,0,17
+2023,8,8.5,1.08,Fantasy Football Calculator,Stefon Diggs,WR,Offense,BUF,DiggSt00,0,17
+2023,9,8.8,1.09,Fantasy Football Calculator,Bijan Robinson,RB,Offense,ATL,RobiBi01,0,17
+2023,10,9.0,1.09,Fantasy Football Calculator,Saquon Barkley,RB,Offense,NYG,BarkSa00,0,17
+2023,11,11.0,1.11,Fantasy Football Calculator,CeeDee Lamb,WR,Offense,DAL,LambCe00,0,17
+2023,12,12.5,1.12,Fantasy Football Calculator,A.J. Brown,WR,Offense,PHI,BrowAJ00,0,17
+2023,13,12.5,2.01,Fantasy Football Calculator,Nick Chubb,RB,Offense,CLE,ChubNi00,0,17
+2023,14,13.2,2.01,Fantasy Football Calculator,Amon-Ra St. Brown,WR,Offense,DET,StxxAm00,0,17
+2023,15,15.2,2.03,Fantasy Football Calculator,Tony Pollard,RB,Offense,DAL,PollTo00,0,17
+2023,16,15.6,2.04,Fantasy Football Calculator,Garrett Wilson,WR,Offense,NYJ,WilsGa00,0,17
+2023,17,15.6,2.04,Fantasy Football Calculator,Davante Adams,WR,Offense,LV,AdamDa01,0,17
+2023,18,17.9,2.06,Fantasy Football Calculator,Derrick Henry,RB,Offense,TEN,HenrDe00,0,17
+2023,19,19.6,2.08,Fantasy Football Calculator,Patrick Mahomes,QB,Offense,KC,MahoPa00,0,17
+2023,20,19.9,2.08,Fantasy Football Calculator,Jaylen Waddle,WR,Offense,MIA,WaddJa00,0,17
+2023,21,20.4,2.08,Fantasy Football Calculator,Chris Olave,WR,Offense,NO,OlavCh00,0,17
+2023,22,21.9,2.1,Fantasy Football Calculator,Josh Jacobs,RB,Offense,LV,JacoJo01,0,17
+2023,23,23.3,2.11,Fantasy Football Calculator,DeVonta Smith,WR,Offense,PHI,SmitDe07,0,17
+2023,24,23.4,2.11,Fantasy Football Calculator,Rhamondre Stevenson,RB,Offense,NE,StevRh00,0,17
+2023,25,25.9,3.02,Fantasy Football Calculator,Jonathan Taylor,RB,Offense,IND,TaylJo02,0,17
+2023,26,26.6,3.03,Fantasy Football Calculator,Josh Allen,QB,Offense,BUF,AlleJo02,0,17
+2023,27,26.6,3.03,Fantasy Football Calculator,Tee Higgins,WR,Offense,CIN,HiggTe00,0,17
+2023,28,26.9,3.03,Fantasy Football Calculator,Jalen Hurts,QB,Offense,PHI,HurtJa00,0,17
+2023,29,28.9,3.05,Fantasy Football Calculator,Mark Andrews,TE,Offense,BAL,AndrMa00,0,17
+2023,30,29.2,3.05,Fantasy Football Calculator,Calvin Ridley,WR,Offense,JAX,RidlCa00,0,17
+2023,31,29.2,3.05,Fantasy Football Calculator,Keenan Allen,WR,Offense,LAC,AlleKe00,0,17
+2023,32,30.4,3.06,Fantasy Football Calculator,Najee Harris,RB,Offense,PIT,HarrNa00,0,17
+2023,33,30.8,3.07,Fantasy Football Calculator,DK Metcalf,WR,Offense,SEA,MetcDK00,0,17
+2023,34,31.4,3.07,Fantasy Football Calculator,Joe Mixon,RB,Offense,CIN,MixoJo00,0,17
+2023,35,34.7,3.11,Fantasy Football Calculator,Travis Etienne Jr.,RB,Offense,JAX,EtieTr00,0,17
+2023,36,35.4,3.11,Fantasy Football Calculator,Amari Cooper,WR,Offense,CLE,CoopAm00,0,17
+2023,37,36.6,4.01,Fantasy Football Calculator,Breece Hall,RB,Offense,NYJ,HallBr03,0,17
+2023,38,36.7,4.01,Fantasy Football Calculator,Jahmyr Gibbs,RB,Offense,DET,GibbJa01,0,17
+2023,39,36.9,4.01,Fantasy Football Calculator,Lamar Jackson,QB,Offense,BAL,JackLa00,0,17
+2023,40,37.2,4.01,Fantasy Football Calculator,Deebo Samuel Sr.,WR,Offense,SF,SamuDe00,0,17
+2023,41,38.9,4.03,Fantasy Football Calculator,Aaron Jones Sr.,RB,Offense,GB,JoneAa00,0,17
+2023,42,41.4,4.05,Fantasy Football Calculator,DeAndre Hopkins,WR,Offense,TEN,HopkDe00,0,17
+2023,43,43.2,4.07,Fantasy Football Calculator,Joe Burrow,QB,Offense,CIN,BurrJo01,0,17
+2023,44,44.1,4.08,Fantasy Football Calculator,Drake London,WR,Offense,ATL,LondDr00,0,17
+2023,45,44.2,4.08,Fantasy Football Calculator,T.J. Hockenson,TE,Offense,MIN,HockTJ00,0,17
+2023,46,44.7,4.09,Fantasy Football Calculator,DJ Moore,WR,Offense,CHI,MoorD.00,0,17
+2023,47,44.8,4.09,Fantasy Football Calculator,Jerry Jeudy,WR,Offense,DEN,JeudJe00,0,17
+2023,48,47.9,4.12,Fantasy Football Calculator,Kenneth Walker,RB,Offense,SEA,WalkKe00,0,17
+2024,1,1.4,1.01,Fantasy Football Calculator,Christian McCaffrey,RB,Offense,SF,McCaCh01,0,17
+2024,2,2.2,1.02,Fantasy Football Calculator,Breece Hall,RB,Offense,NYJ,HallBr03,0,17
+2024,3,2.6,1.03,Fantasy Football Calculator,Tyreek Hill,WR,Offense,MIA,HillTy00,0,17
+2024,4,3.7,1.04,Fantasy Football Calculator,CeeDee Lamb,WR,Offense,DAL,LambCe00,0,17
+2024,5,4.9,1.05,Fantasy Football Calculator,Bijan Robinson,RB,Offense,ATL,RobiBi01,0,17
+2024,6,6.2,1.06,Fantasy Football Calculator,Amon-Ra St. Brown,WR,Offense,DET,StxxAm00,0,17
+2024,7,7.2,1.07,Fantasy Football Calculator,Ja'Marr Chase,WR,Offense,CIN,ChasJa00,0,17
+2024,8,8.0,1.08,Fantasy Football Calculator,Justin Jefferson,WR,Offense,MIN,JeffJu00,0,17
+2024,9,9.4,1.09,Fantasy Football Calculator,Jahmyr Gibbs,RB,Offense,DET,GibbJa01,0,17
+2024,10,9.8,1.1,Fantasy Football Calculator,Jonathan Taylor,RB,Offense,IND,TaylJo02,0,17
+2024,11,10.9,1.11,Fantasy Football Calculator,A.J. Brown,WR,Offense,PHI,BrowAJ00,0,17
+2024,12,11.3,1.11,Fantasy Football Calculator,Saquon Barkley,RB,Offense,PHI,BarkSa00,0,17
+2024,13,12.1,1.12,Fantasy Football Calculator,Garrett Wilson,WR,Offense,NYJ,WilsGa00,0,17
+2024,14,14.5,2.02,Fantasy Football Calculator,Marvin Harrison Jr.,WR,Offense,ARI,HarrMa09,0,17
+2024,15,15.2,2.03,Fantasy Football Calculator,Puka Nacua,WR,Offense,LA,NacuPu00,0,17
+2024,16,15.9,2.04,Fantasy Football Calculator,Kyren Williams,RB,Offense,LA,WillKy02,0,17
+2024,17,15.9,2.04,Fantasy Football Calculator,Derrick Henry,RB,Offense,BAL,HenrDe00,0,17
+2024,18,17.6,2.06,Fantasy Football Calculator,Travis Etienne Jr.,RB,Offense,JAX,EtieTr00,0,17
+2024,19,18.9,2.07,Fantasy Football Calculator,Cooper Kupp,WR,Offense,LA,KuppCo00,0,17
+2024,20,19.8,2.08,Fantasy Football Calculator,Isiah Pacheco,RB,Offense,KC,PachIs00,0,17
+2024,21,20.0,2.08,Fantasy Football Calculator,Davante Adams,WR,Offense,LV,AdamDa01,0,17
+2024,22,21.4,2.09,Fantasy Football Calculator,De'Von Achane,RB,Offense,MIA,AchaDe00,0,17
+2024,23,21.5,2.09,Fantasy Football Calculator,Drake London,WR,Offense,ATL,LondDr00,0,17
+2024,24,23.0,2.11,Fantasy Football Calculator,Deebo Samuel Sr.,WR,Offense,SF,SamuDe00,0,17
+2024,25,23.6,2.12,Fantasy Football Calculator,Josh Jacobs,RB,Offense,GB,JacoJo01,0,17
+2024,26,24.4,2.12,Fantasy Football Calculator,Travis Kelce,TE,Offense,KC,KelcTr00,0,17
+2024,27,25.1,3.01,Fantasy Football Calculator,Josh Allen,QB,Offense,BUF,AlleJo02,0,17
+2024,28,26.2,3.02,Fantasy Football Calculator,Chris Olave,WR,Offense,NO,OlavCh00,0,17
+2024,29,29.0,3.05,Fantasy Football Calculator,Rachaad White,RB,Offense,TB,WhitRa01,0,17
+2024,30,29.1,3.05,Fantasy Football Calculator,Jaylen Waddle,WR,Offense,MIA,WaddJa00,0,17
+2024,31,29.4,3.05,Fantasy Football Calculator,Sam LaPorta,TE,Offense,DET,LaPoSa01,0,17
+2024,32,30.3,3.06,Fantasy Football Calculator,James Cook III,RB,Offense,BUF,CookJa01,0,17
+2024,33,30.8,3.07,Fantasy Football Calculator,Patrick Mahomes,QB,Offense,KC,MahoPa00,0,17
+2024,34,32.1,3.08,Fantasy Football Calculator,Nico Collins,WR,Offense,HOU,CollNi00,0,17
+2024,35,32.3,3.08,Fantasy Football Calculator,Alvin Kamara,RB,Offense,NO,KamaAl00,0,17
+2024,36,33.5,3.09,Fantasy Football Calculator,Mike Evans,WR,Offense,TB,EvanMi00,0,17
+2024,37,35.0,3.11,Fantasy Football Calculator,Joe Mixon,RB,Offense,HOU,MixoJo00,0,17
+2024,38,35.6,3.12,Fantasy Football Calculator,Kenneth Walker,RB,Offense,SEA,WalkKe00,0,17
+2024,39,37.3,4.01,Fantasy Football Calculator,Jalen Hurts,QB,Offense,PHI,HurtJa00,0,17
+2024,40,38.3,4.02,Fantasy Football Calculator,DeVonta Smith,WR,Offense,PHI,SmitDe07,0,17
+2024,41,38.3,4.02,Fantasy Football Calculator,Malik Nabers,WR,Offense,NYG,NabeMa00,0,17
+2024,42,40.7,4.05,Fantasy Football Calculator,DK Metcalf,WR,Offense,SEA,MetcDK00,0,17
+2024,43,41.2,4.05,Fantasy Football Calculator,Mark Andrews,TE,Offense,BAL,AndrMa00,0,17
+2024,44,41.8,4.06,Fantasy Football Calculator,Stefon Diggs,WR,Offense,HOU,DiggSt00,0,17
+2024,45,43.7,4.08,Fantasy Football Calculator,DJ Moore,WR,Offense,CHI,MoorD.00,0,17
+2024,46,44.2,4.08,Fantasy Football Calculator,Lamar Jackson,QB,Offense,BAL,JackLa00,0,17
+2024,47,45.2,4.09,Fantasy Football Calculator,Michael Pittman Jr.,WR,Offense,IND,PittMi01,0,17
+2024,48,46.0,4.1,Fantasy Football Calculator,Aaron Jones Sr.,RB,Offense,MIN,JoneAa00,0,17
+2025,1,1.5,1.02,Fantasy Football Calculator,Ja'Marr Chase,WR,Offense,CIN,ChasJa00,0,17
+2025,2,2.1,1.02,Fantasy Football Calculator,Bijan Robinson,RB,Offense,ATL,RobiBi01,0,17
+2025,3,2.5,1.02,Fantasy Football Calculator,Saquon Barkley,RB,Offense,PHI,BarkSa00,0,17
+2025,4,4.4,1.04,Fantasy Football Calculator,Justin Jefferson,WR,Offense,MIN,JeffJu00,0,17
+2025,5,4.9,1.05,Fantasy Football Calculator,CeeDee Lamb,WR,Offense,DAL,LambCe00,0,17
+2025,6,5.1,1.05,Fantasy Football Calculator,Jahmyr Gibbs,RB,Offense,DET,GibbJa01,0,17
+2025,7,7.5,1.08,Fantasy Football Calculator,Malik Nabers,WR,Offense,NYG,NabeMa00,0,17
+2025,8,8.0,1.08,Fantasy Football Calculator,Christian McCaffrey,RB,Offense,SF,McCaCh01,0,17
+2025,9,9.7,1.1,Fantasy Football Calculator,Puka Nacua,WR,Offense,LA,NacuPu00,0,17
+2025,10,10.0,1.1,Fantasy Football Calculator,Nico Collins,WR,Offense,HOU,CollNi00,0,17
+2025,11,10.7,1.11,Fantasy Football Calculator,Amon-Ra St. Brown,WR,Offense,DET,StxxAm00,0,17
+2025,12,11.1,1.11,Fantasy Football Calculator,Derrick Henry,RB,Offense,BAL,HenrDe00,0,17
+2025,13,11.7,1.12,Fantasy Football Calculator,Ashton Jeanty,RB,Offense,LV,JeanAs00,0,17
+2025,14,14.1,2.02,Fantasy Football Calculator,De'Von Achane,RB,Offense,MIA,AchaDe00,0,17
+2025,15,14.7,2.03,Fantasy Football Calculator,Brian Thomas Jr.,WR,Offense,JAX,ThomBr06,0,17
+2025,16,15.4,2.03,Fantasy Football Calculator,Drake London,WR,Offense,ATL,LondDr00,0,17
+2025,17,16.6,2.05,Fantasy Football Calculator,Josh Jacobs,RB,Offense,GB,JacoJo01,0,17
+2025,18,17.9,2.06,Fantasy Football Calculator,A.J. Brown,WR,Offense,PHI,BrowAJ00,0,17
+2025,19,18.5,2.07,Fantasy Football Calculator,Jonathan Taylor,RB,Offense,IND,TaylJo02,0,17
+2025,20,19.5,2.08,Fantasy Football Calculator,Bucky Irving,RB,Offense,TB,IrviBu00,0,17
+2025,21,20.1,2.08,Fantasy Football Calculator,Chase Brown,RB,Offense,CIN,BrowCh10,0,17
+2025,22,21.7,2.1,Fantasy Football Calculator,Tee Higgins,WR,Offense,CIN,HiggTe00,0,17
+2025,23,22.9,2.11,Fantasy Football Calculator,Lamar Jackson,QB,Offense,BAL,JackLa00,0,17
+2025,24,23.1,2.11,Fantasy Football Calculator,Kyren Williams,RB,Offense,LA,WillKy02,0,17
+2025,25,23.4,2.11,Fantasy Football Calculator,Ladd McConkey,WR,Offense,LAC,McCoLa00,0,17
+2025,26,24.7,3.01,Fantasy Football Calculator,Josh Allen,QB,Offense,BUF,AlleJo02,0,17
+2025,27,26.4,3.02,Fantasy Football Calculator,Tyreek Hill,WR,Offense,MIA,HillTy00,0,17
+2025,28,27.1,3.03,Fantasy Football Calculator,Brock Bowers,TE,Offense,LV,BoweBr01,0,17
+2025,29,29.0,3.05,Fantasy Football Calculator,Davante Adams,WR,Offense,LA,AdamDa01,0,17
+2025,30,29.7,3.06,Fantasy Football Calculator,Alvin Kamara,RB,Offense,NO,KamaAl00,0,17
+2025,31,30.0,3.06,Fantasy Football Calculator,Mike Evans,WR,Offense,TB,EvanMi00,0,17
+2025,32,30.3,3.06,Fantasy Football Calculator,Joe Burrow,QB,Offense,CIN,BurrJo01,0,17
+2025,33,31.4,3.07,Fantasy Football Calculator,Jayden Daniels,QB,Offense,WAS,DaniJa02,0,17
+2025,34,32.6,3.09,Fantasy Football Calculator,Trey McBride,TE,Offense,ARI,McBrTr01,0,17
+2025,35,33.0,3.09,Fantasy Football Calculator,Jaxon Smith-Njigba,WR,Offense,SEA,SmitJa06,0,17
+2025,36,33.7,3.1,Fantasy Football Calculator,James Cook III,RB,Offense,BUF,CookJa01,0,17
+2025,37,37.6,4.02,Fantasy Football Calculator,DK Metcalf,WR,Offense,PIT,MetcDK00,0,17
+2025,38,38.3,4.02,Fantasy Football Calculator,Terry McLaurin,WR,Offense,WAS,McLaTe00,0,17
+2025,39,38.5,4.02,Fantasy Football Calculator,Jalen Hurts,QB,Offense,PHI,HurtJa00,0,17
+2025,40,38.6,4.03,Fantasy Football Calculator,Omarion Hampton,RB,Offense,LAC,HampOm00,0,17
+2025,41,39.0,4.03,Fantasy Football Calculator,Marvin Harrison Jr.,WR,Offense,ARI,HarrMa09,0,17
+2025,42,39.5,4.03,Fantasy Football Calculator,Garrett Wilson,WR,Offense,NYJ,WilsGa00,0,17
+2025,43,40.2,4.04,Fantasy Football Calculator,Chuba Hubbard,RB,Offense,CAR,HubbCh01,0,17
+2025,44,42.3,4.06,Fantasy Football Calculator,James Conner,RB,Offense,ARI,ConnJa00,0,17
+2025,45,43.5,4.07,Fantasy Football Calculator,DJ Moore,WR,Offense,CHI,MoorD.00,0,17
+2025,46,43.9,4.08,Fantasy Football Calculator,George Kittle,TE,Offense,SF,KittGe00,0,17
+2025,47,44.0,4.08,Fantasy Football Calculator,Kenneth Walker,RB,Offense,SEA,WalkKe00,0,17
+2025,48,47.3,4.11,Fantasy Football Calculator,Courtland Sutton,WR,Offense,DEN,SuttCo00,0,17
+2026,1,1.9,1.02,Sleeper,Jahmyr Gibbs,RB,Offense,DET,GibbJa01,0,17
+2026,2,2.4,1.02,Sleeper,Bijan Robinson,RB,Offense,ATL,RobiBi01,0,17
+2026,3,3.9,1.04,Sleeper,Ja'Marr Chase,WR,Offense,CIN,ChasJa00,0,17
+2026,4,4.0,1.04,Sleeper,Puka Nacua,WR,Offense,LA,NacuPu00,0,17
+2026,5,5.3,1.05,Sleeper,Christian McCaffrey,RB,Offense,SF,McCaCh01,0,17
+2026,6,6.4,1.06,Sleeper,Jonathan Taylor,RB,Offense,IND,TaylJo02,0,17
+2026,7,6.7,1.07,Sleeper,Jaxon Smith-Njigba,WR,Offense,SEA,SmitJa06,0,17
+2026,8,8.7,1.09,Sleeper,Amon-Ra St. Brown,WR,Offense,DET,StxxAm00,0,17
+2026,9,9.5,1.1,Sleeper,James Cook,RB,Offense,BUF,CookJa01,0,17
+2026,10,10.7,1.11,Sleeper,CeeDee Lamb,WR,Offense,DAL,LambCe00,0,17
+2026,11,11.6,1.12,Sleeper,Saquon Barkley,RB,Offense,PHI,BarkSa00,0,17
+2026,12,12.2,1.12,Sleeper,Justin Jefferson,WR,Offense,MIN,JeffJu00,0,17
+2026,13,13.8,2.02,Sleeper,Chase Brown,RB,Offense,CIN,BrowCh10,0,17
+2026,14,13.9,2.02,Sleeper,De'Von Achane,RB,Offense,MIA,AchaDe00,0,17
+2026,15,15.4,2.03,Sleeper,Omarion Hampton,RB,Offense,LAC,HampOm00,0,17
+2026,16,16.2,2.04,Sleeper,Ashton Jeanty,RB,Offense,LV,JeanAs00,0,17
+2026,17,17.9,2.06,Sleeper,A.J. Brown,WR,Offense,NE,BrowAJ00,0,17
+2026,18,18.6,2.07,Sleeper,Derrick Henry,RB,Offense,BAL,HenrDe00,0,17
+2026,19,19.9,2.08,Sleeper,Kenneth Walker,RB,Offense,KC,WalkKe00,0,17
+2026,20,20.1,2.08,Sleeper,Josh Allen,QB,Offense,BUF,AlleJo02,0,17
+2026,21,20.5,2.08,Sleeper,Drake London,WR,Offense,ATL,LondDr00,0,17
+2026,22,22.0,2.1,Sleeper,George Pickens,WR,Offense,DAL,PickGe00,0,17
+2026,23,23.1,2.11,Sleeper,Brock Bowers,TE,Offense,LV,BoweBr01,0,17
+2026,24,24.3,2.12,Sleeper,Nico Collins,WR,Offense,HOU,CollNi00,0,17
+2026,25,25.1,3.01,Sleeper,Trey McBride,TE,Offense,ARI,McBrTr01,0,17
+2026,26,26.2,3.02,Sleeper,Kyren Williams,RB,Offense,LA,WillKy02,0,17
+2026,27,27.2,3.03,Sleeper,Malik Nabers,WR,Offense,NYG,NabeMa00,0,17
+2026,28,27.9,3.04,Sleeper,Jeremiyah Love,RB,Offense,ARI,LoveJe00,0,17
+2026,29,29.4,3.05,Sleeper,Rashee Rice,WR,Offense,KC,RiceRa01,0,17
+2026,30,30.0,3.06,Sleeper,Chris Olave,WR,Offense,NO,OlavCh00,0,17
+2026,31,31.2,3.07,Sleeper,Lamar Jackson,QB,Offense,BAL,JackLa00,0,17
+2026,32,32.5,3.08,Sleeper,Javonte Williams,RB,Offense,DAL,WillJa10,0,17
+2026,33,33.9,3.1,Sleeper,DeVonta Smith,WR,Offense,PHI,SmitDe07,0,17
+2026,34,34.2,3.1,Sleeper,Breece Hall,RB,Offense,NYJ,HallBr03,0,17
+2026,35,34.5,3.1,Sleeper,Ladd McConkey,WR,Offense,LAC,McCoLa00,0,17
+2026,36,36.2,3.12,Sleeper,Tee Higgins,WR,Offense,CIN,HiggTe00,0,17
+2026,37,37.9,4.02,Sleeper,Tetairoa McMillan,WR,Offense,CAR,McMiTe00,0,17
+2026,38,38.7,4.03,Sleeper,Emeka Egbuka,WR,Offense,TB,EgbuEm01,0,17
+2026,39,39.8,4.04,Sleeper,Colston Loveland,TE,Offense,CHI,LoveCo00,0,17
+2026,40,40.6,4.05,Sleeper,Cam Skattebo,RB,Offense,NYG,SkatCa00,0,17
+2026,41,41.0,4.05,Sleeper,Zay Flowers,WR,Offense,BAL,FlowZa00,0,17
+2026,42,41.8,4.06,Sleeper,Travis Etienne,RB,Offense,NO,EtieTr00,0,17
+2026,43,43.7,4.08,Sleeper,Bucky Irving,RB,Offense,TB,IrviBu00,0,17
+2026,44,44.4,4.08,Sleeper,Jaylen Waddle,WR,Offense,DEN,WaddJa00,0,17
+2026,45,45.9,4.1,Sleeper,Garrett Wilson,WR,Offense,NYJ,WilsGa00,0,17
+2026,46,46.4,4.1,Sleeper,David Montgomery,RB,Offense,HOU,MontDa01,0,17
+2026,47,47.3,4.11,Sleeper,Drake Maye,QB,Offense,NE,MayeDr00,0,17
+2026,48,48.3,4.12,Sleeper,D'Andre Swift,RB,Offense,CHI,SwifDA00,0,17

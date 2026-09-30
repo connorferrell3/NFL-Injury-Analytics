@@ -1,0 +1,11 @@
+# Python virtual environment (recreate with: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt)
+.venv/
+__pycache__/
+*.pyc
+
+# Raw downloads (recreate with src/fetch_data.py and src/fetch_awards.py)
+data/raw/
+
+# Local editor / tool settings
+.claude/
+.DS_Store

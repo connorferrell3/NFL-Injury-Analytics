@@ -1,0 +1,5 @@
+pos_group,picks,pct_injured,pct_missed_4plus,games_lost_per_pick
+QB,23,0.261,0.174,1.391
+RB,122,0.59,0.262,2.566
+TE,20,0.65,0.3,2.35
+WR,123,0.537,0.228,2.033

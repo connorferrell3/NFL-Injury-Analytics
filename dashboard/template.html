@@ -1,0 +1,1031 @@
+<meta charset="utf-8">
+<title>Starters Down</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: a training-room chart. Two tabs (starters, fantasy); each has its own pinned filters, body map as the hero, then trend, breakdowns, team, and player detail. */
+:root {
+  --bg: #f4f5f2; --surface: #fcfcfb; --ink: #111412; --ink-2: #4a504c; --ink-3: #767c78;
+  --rule: #dde0db; --figure: #e3e7e1; --accent: #1d5a3b; --accent-ink: #ffffff;
+  --off: #2a78d6; --def: #eb6834;
+  --seq-0: #cde2fb; --seq-1: #9ec5f4; --seq-2: #6da7ec; --seq-3: #3987e5; --seq-4: #256abf; --seq-5: #184f95; --seq-6: #0d366b;
+  --good: #0ca30c; --critical: #d03b3b; --serious: #ec835a;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mode: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111312; --surface: #1a1c1b; --ink: #f2f4f1; --ink-2: #c0c5c0; --ink-3: #8f9590;
+    --rule: #2d312e; --figure: #262a27; --accent: #7cc79a; --accent-ink: #0d1a12;
+    --off: #3987e5; --def: #d95926;
+    --seq-0: #0d366b; --seq-1: #104281; --seq-2: #184f95; --seq-3: #256abf; --seq-4: #3987e5; --seq-5: #6da7ec; --seq-6: #9ec5f4;
+    --mode: dark; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111312; --surface: #1a1c1b; --ink: #f2f4f1; --ink-2: #c0c5c0; --ink-3: #8f9590;
+  --rule: #2d312e; --figure: #262a27; --accent: #7cc79a; --accent-ink: #0d1a12;
+  --off: #3987e5; --def: #d95926;
+  --seq-0: #0d366b; --seq-1: #104281; --seq-2: #184f95; --seq-3: #256abf; --seq-4: #3987e5; --seq-5: #6da7ec; --seq-6: #9ec5f4;
+  --mode: dark; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+.tabpanel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: .01em; text-wrap: balance; margin: 0; line-height: 1.05; }
+h1 { font-size: clamp(40px, 7vw, 68px); text-transform: uppercase; }
+h2 { font-size: 28px; text-transform: uppercase; }
+h3 { font-size: 18px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-2); }
+p { margin: 0; }
+.lede { max-width: 68ch; color: var(--ink-2); font-size: 17px; }
+.eyebrow { font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+header { display: grid; gap: 12px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* tabs */
+.tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--rule); flex-wrap: wrap; }
+.tab { font: 700 20px/1 var(--display); text-transform: uppercase; letter-spacing: .04em; padding: 12px 16px 10px; border: 0; background: none; color: var(--ink-3); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* filters */
+.filters { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--rule); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+.fgroup { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
+.flabel { font-family: var(--display); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-right: 4px; }
+.chip { font: 600 14px/1 var(--body); padding: 7px 11px; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2); cursor: pointer; font-variant-numeric: tabular-nums; }
+.chip:hover { border-color: var(--ink-3); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip:focus-visible, .mult:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* KPI strip */
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-block: 1px solid var(--rule); }
+.kpi { padding: 16px 16px 14px; display: grid; gap: 2px; align-content: start; }
+.kpi + .kpi { border-left: 1px solid var(--rule); }
+.kpi .v { font-family: var(--display); font-weight: 700; font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi .l { font-size: 13px; color: var(--ink-2); }
+
+section { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+.sec-head { display: grid; gap: 6px; }
+.sec-head p { color: var(--ink-2); max-width: 72ch; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; min-width: 0; display: grid; gap: 10px; align-content: start; }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 16px; }
+.grid-2b { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; }
+.grid-2e { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+svg text { font-family: var(--body); fill: var(--ink-2); }
+.axis text { font-size: 12px; fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+.grid line { stroke: var(--rule); }
+.halo { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+
+.callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; color: var(--ink-2); max-width: 80ch; }
+.callout b { color: var(--ink); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.swatch-ramp { display: inline-flex; gap: 2px; vertical-align: middle; margin-inline: 6px; }
+.swatch-ramp i { width: 16px; height: 10px; border-radius: 2px; display: block; }
+.key-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.key-line { display: inline-block; width: 18px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: 3px; }
+.rtable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.rtable th { font: 600 12px/1.2 var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); text-align: right; padding: 0 6px 8px; vertical-align: bottom; }
+.rtable th:first-child { text-align: left; padding-left: 0; }
+.rtable td { padding: 5px 6px; text-align: right; font-variant-numeric: tabular-nums; border-top: 1px solid var(--rule); white-space: nowrap; }
+.rtable td:first-child { text-align: left; padding-left: 0; }
+.rtable tr.hl td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.rtable tr.muted td { color: var(--ink-3); }
+.rtable tr.group td { border-top: 0; padding-top: 14px; font: 600 12px/1.2 var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.rtable td.name { white-space: normal; }
+.barcell { width: 36%; text-align: left !important; }
+.barwrap { display: flex; align-items: center; gap: 8px; }
+.minibar { height: 8px; border-radius: 0 4px 4px 0; background: var(--seq-3); flex: none; }
+.small-note { font-size: 13px; color: var(--ink-3); }
+
+/* position multiples */
+.multiples { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.mult { border: 1px solid var(--rule); border-radius: 8px; padding: 10px 10px 6px; display: grid; gap: 2px; cursor: pointer; background: var(--surface); text-align: left; font: inherit; color: inherit; }
+.mult:hover { border-color: var(--ink-3); }
+.mult.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.mult.dim { opacity: .45; }
+.mult .t { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.mult .pos { font: 700 18px/1 var(--display); }
+.mult .avg { font: 600 20px/1 var(--display); font-variant-numeric: tabular-nums; }
+.mult .sub { font-size: 12px; color: var(--ink-3); }
+
+.scroll-x { overflow-x: auto; }
+.heat text.v { font-size: 11px; font-variant-numeric: tabular-nums; }
+.heat .team { font: 600 13px var(--body); fill: var(--ink); }
+.ptable { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 720px; }
+.ptable th { font: 600 12px/1.2 var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); text-align: left; padding: 0 8px 8px; }
+.ptable td { padding: 7px 8px; border-top: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
+.ptable td.r, .ptable th.r { text-align: right; }
+.ptable .player { font-weight: 600; }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.status i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+.tip { position: fixed; pointer-events: none; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 8px; padding: 9px 11px; font-size: 13px; line-height: 1.4; box-shadow: 0 6px 24px rgb(0 0 0 / .14); max-width: 290px; }
+.tip b { font-family: var(--display); font-size: 16px; letter-spacing: .02em; display: block; margin-bottom: 2px; }
+.tip .muted { color: var(--ink-3); }
+.hov:hover .hovshow { opacity: 1; }
+.hovshow { opacity: 0; }
+
+.methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 28px; font-size: 14px; color: var(--ink-2); }
+.methods h3 { margin-bottom: 6px; }
+footer { font-size: 13px; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 16px; }
+a { color: var(--accent); }
+
+/* key findings */
+.findings { display: grid; gap: 22px; }
+.fgroup-h { display: flex; align-items: baseline; gap: 10px; }
+.fgroup-h h3 { color: var(--ink); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 16px 14px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.card .v { font: 700 38px/1 var(--display); font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+.card .t { font-weight: 600; font-size: 15px; line-height: 1.3; color: var(--ink); text-wrap: pretty; }
+.card .d { font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+.cbars { display: grid; gap: 4px; margin-top: 4px; }
+.cbar { display: grid; grid-template-columns: 96px minmax(0, 1fr) 36px; gap: 8px; align-items: center; font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.cbar .track { height: 8px; }
+.cbar .fill { height: 8px; border-radius: 0 4px 4px 0; }
+.cbar .n { text-align: right; }
+.live { display: inline-flex; align-items: center; gap: 6px; font: 600 12px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 999px; padding: 5px 9px; background: var(--surface); white-space: nowrap; }
+.live i { width: 7px; height: 7px; border-radius: 50%; background: var(--serious); }
+.minikpis { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+.minikpis div { display: grid; }
+.minikpis b { font: 700 28px/1 var(--display); font-variant-numeric: tabular-nums; }
+.minikpis span { font-size: 13px; color: var(--ink-2); }
+
+@media (max-width: 900px) {
+  .grid-2, .grid-2b, .grid-2e { grid-template-columns: minmax(0, 1fr); }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi + .kpi { border-left: 0; }
+  .kpi { border-top: 1px solid var(--rule); }
+  .kpi:nth-child(-n+2) { border-top: 0; }
+  .kpi:nth-child(even) { border-left: 1px solid var(--rule); }
+  .kpi:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .multiples { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .wrap { padding-inline: 16px; }
+  .kpi .v { font-size: 32px; }
+  .tab { font-size: 17px; padding-inline: 10px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bub { transition: r .35s ease, fill .35s ease; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow" id="eyebrow">NFL injury report · 2020–2025 + current season</div>
+    <h1>Starters Down</h1>
+    <p class="lede">Where key NFL players get hurt, how often, and how long they're out. Built from official injury reports, snap counts, Injured Reserve designations, contracts, honors, and fantasy draft data for six full seasons plus the season in progress.</p>
+  </header>
+
+  <section aria-labelledby="kf-h">
+    <div class="sec-head">
+      <h2 id="kf-h">Key findings</h2>
+      <p>Headline results from the six completed seasons (2020–2025), each checked with a two-proportion significance test. The p-value is the chance of seeing a gap this large if there were no real difference.</p>
+    </div>
+    <div class="findings" id="findings"></div>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" id="tab-starters" aria-controls="panel-starters">Starters</button>
+    <button class="tab" role="tab" id="tab-fantasy" aria-controls="panel-fantasy">Fantasy top 48 · PPR</button>
+  </div>
+
+  <!-- ======================= STARTERS ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-starters" aria-labelledby="tab-starters">
+    <nav class="filters" aria-label="Starter filters">
+      <div class="fgroup" id="f-season"><span class="flabel">Season</span></div>
+      <div class="fgroup" id="f-def"><span class="flabel">Key player =</span></div>
+      <div class="fgroup" id="f-unit"><span class="flabel">Unit</span></div>
+    </nav>
+
+    <div class="kpis" id="kpis"></div>
+
+    <section>
+      <div class="sec-head">
+        <div class="fgroup-h"><h2 class="cur-title"></h2><span class="live"><i></i><span class="cur-week"></span></span></div>
+        <p>Key players who have missed a game to injury this season. "Out now" means still out after the latest game week.</p>
+      </div>
+      <div class="panel">
+        <div class="minikpis" id="cur-kpis"></div>
+        <div class="scroll-x"><table class="ptable" id="cur-table"></table></div>
+        <p class="small-note" id="cur-note"></p>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Does the definition matter?</h2>
+        <p>The same absence logic applied to different ways of picking key players. The injury rate barely moves; what changes is who's in the pool. Click a full definition to switch the whole tab to it.</p>
+      </div>
+      <p class="callout" id="def-callout"></p>
+      <div class="panel scroll-x"><table class="rtable" id="def-table" style="min-width:640px"></table></div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Where they get hurt</h2>
+        <p>Each bubble is a body region. Size is how many key-player absences it caused; color is the average number of games missed per absence.</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <svg id="bodymap" viewBox="0 0 520 610" role="img" aria-label="Body map of injury locations"></svg>
+          <div class="legend" id="body-legend"></div>
+        </div>
+        <div class="panel">
+          <h3>Absences by body region</h3>
+          <table class="rtable" id="region-table"></table>
+          <p class="small-note" id="region-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>How many starters go down</h2>
+        <p>Share of key players who missed at least one regular-season game to injury. Click a position to filter the tab.</p>
+      </div>
+      <div class="grid-2b">
+        <div class="panel">
+          <h3>Offense vs. defense, by season</h3>
+          <div class="legend"><span><span class="key-line" style="background:var(--off)"></span>Offense</span><span><span class="key-line" style="background:var(--def)"></span>Defense</span></div>
+          <svg id="trend" viewBox="0 0 560 290" role="img" aria-label="Share of key players injured by season"></svg>
+        </div>
+        <div class="panel">
+          <h3>By position, 2020–2025</h3>
+          <div class="multiples" id="multiples"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Season-ending injuries</h2>
+        <p>Key players who were on Injured Reserve and still out when their team's regular season ended. The current season isn't shown because no injury is season-ending until the season is over.</p>
+      </div>
+      <div class="grid-2b">
+        <div class="panel">
+          <h3>Season-ending injuries by season</h3>
+          <div class="legend"><span><span class="key-dot" style="background:var(--off);border-radius:2px"></span>Offense</span><span><span class="key-dot" style="background:var(--def);border-radius:2px"></span>Defense</span></div>
+          <svg id="se-chart" viewBox="0 0 560 300" role="img" aria-label="Season-ending injuries per season"></svg>
+        </div>
+        <div class="panel">
+          <h3>Season by season</h3>
+          <table class="rtable" id="se-table"></table>
+          <p class="small-note" id="se-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>How long they're out</h2>
+        <p>Games missed per absence. Bars span the middle half of absences (25th–75th percentile); the dot marks the median.</p>
+      </div>
+      <div class="grid-2b">
+        <div class="panel">
+          <h3>Games missed by body region</h3>
+          <div class="legend"><span><span class="key-line" style="background:var(--seq-2);height:6px"></span>Middle 50% of absences</span><span><span class="key-dot" style="background:var(--seq-5)"></span>Median</span></div>
+          <svg id="duration" viewBox="0 0 560 480" role="img" aria-label="Games missed by body region"></svg>
+        </div>
+        <div class="panel">
+          <h3>Length of absences</h3>
+          <svg id="hist" viewBox="0 0 420 280" role="img" aria-label="Distribution of games missed per absence"></svg>
+          <p class="small-note">Absences still open at the end of the regular season are counted only up to the last game, so long injuries are undercounted.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Which teams lose the most</h2>
+        <p>Starter-games lost: the total regular-season games key players missed to injury. Teams are ranked by their six-season total.</p>
+      </div>
+      <div class="panel">
+        <div class="legend" id="heat-legend"></div>
+        <div class="scroll-x"><svg id="heat" class="heat" role="img" aria-label="Starter-games lost by team and season"></svg></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Longest absences</h2>
+        <p id="table-sub"></p>
+      </div>
+      <div class="panel scroll-x"><table class="ptable" id="ptable"></table></div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Repeat injuries</h2>
+        <p id="recur-sub"></p>
+      </div>
+      <div class="grid-2b">
+        <div class="panel">
+          <h3>Most frequently injured key players, 2020–<span class="cur-season"></span></h3>
+          <div class="scroll-x"><table class="rtable" id="repeat-table" style="min-width:560px"></table></div>
+          <p class="small-note">Ranked by absences while a key player under the selected definition and unit. Seasons counts seasons with at least one absence.</p>
+        </div>
+        <div class="panel">
+          <h3>Same body part, again</h3>
+          <p class="small-note" style="margin-top:-4px">When a starter's next absence is the same region as his last one, compared with the rate you'd expect by chance.</p>
+          <table class="rtable" id="samereg-table"></table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ======================= FANTASY ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-fantasy" aria-labelledby="tab-fantasy" hidden>
+    <nav class="filters" aria-label="Fantasy filters">
+      <div class="fgroup" id="ff-season"><span class="flabel">Season</span></div>
+      <div class="fgroup" id="ff-pos"><span class="flabel">Position</span></div>
+    </nav>
+
+    <div class="kpis" id="fkpis"></div>
+
+    <section>
+      <div class="sec-head">
+        <div class="fgroup-h"><h2 class="cur-title"></h2><span class="live"><i></i><span class="cur-week"></span></span></div>
+        <p id="fcur-sub"></p>
+      </div>
+      <div class="panel">
+        <div class="minikpis" id="fcur-kpis"></div>
+        <div class="scroll-x"><table class="ptable" id="fcur-table"></table></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>How often a top-48 PPR pick lets you down</h2>
+        <p>The top 48 players by PPR average draft position (the first four rounds of a 12-team PPR draft). A pick "missed time" if he sat out at least one fantasy week (Weeks 1–17; 1–16 in 2020) with an injury.</p>
+      </div>
+      <p class="callout" id="fan-callout"></p>
+      <div class="grid-2b">
+        <div class="panel">
+          <h3>By season</h3>
+          <div class="legend"><span><span class="key-line" style="background:var(--off)"></span>Missed at least 1 week</span><span><span class="key-line" style="background:var(--def)"></span>Missed 4+ weeks</span></div>
+          <svg id="ftrend" viewBox="0 0 560 290" role="img" aria-label="Share of top-48 picks who missed time by season"></svg>
+        </div>
+        <div class="panel">
+          <h3>By position</h3>
+          <table class="rtable" id="fpos-table"></table>
+          <h3 style="margin-top:12px">By draft round</h3>
+          <table class="rtable" id="fround-table"></table>
+          <p class="small-note">Round 1 = picks 1–12 in a 12-team league. Early picks are not safer than later ones.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Season-ending injuries</h2>
+        <p>Top-48 PPR picks who were on Injured Reserve and still out at the end of the fantasy season.</p>
+      </div>
+      <div class="panel scroll-x"><table class="rtable" id="fse-table" style="min-width:560px"></table></div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Where fantasy players get hurt</h2>
+        <p>Skill-position players have a different injury mix from starters overall: hamstrings lead, not knees.</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <svg id="fbodymap" viewBox="0 0 520 610" role="img" aria-label="Body map of fantasy injury locations"></svg>
+          <div class="legend" id="fbody-legend"></div>
+        </div>
+        <div class="panel">
+          <h3>Absences by body region</h3>
+          <table class="rtable" id="fregion-table"></table>
+          <p class="small-note" id="fregion-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>By team</h2>
+        <p>Average fantasy weeks lost per top-48 pick, by the player's Week 1 team. Most teams have only 10–15 picks across six seasons, and a permutation test finds these team gaps are consistent with random chance (p = 0.17). Read this as a record of what happened, not a prediction.</p>
+      </div>
+      <div class="panel">
+        <svg id="fteam" role="img" aria-label="Fantasy weeks lost per pick by team"></svg>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Costliest picks</h2>
+        <p id="ftable-sub"></p>
+      </div>
+      <div class="panel scroll-x"><table class="ptable" id="fptable"></table></div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Repeat offenders</h2>
+        <p>Players drafted in the top 48 in more than one season, ranked by how many of those seasons they missed time. Across the NFL, getting hurt one season raises the next season's risk; among fantasy picks the effect is too small to confirm (p = 0.43).</p>
+      </div>
+      <div class="panel scroll-x"><table class="ptable" id="frepeat-table"></table></div>
+    </section>
+  </div>
+
+  <section>
+    <div class="sec-head"><h2>How this was built</h2></div>
+    <div class="methods">
+      <div><h3>Snap-share starters</h3><p>An offensive or defensive player who averaged at least 65% of his unit's snaps in the games he played (50% for running backs), minimum two games. Last season's starters also count if hurt early. About 22 per team.</p></div>
+      <div><h3>Pedigree players</h3><p>Any of: a first-round pick still on his rookie contract (up to year 5, ending early with an extension or new deal); a cap hit in the top 30% of his position group that season, from OverTheCap; or a Pro Bowl or All-Pro selection the season before. Prior-season honors are used because players who get hurt are less likely to be selected that same year.</p></div>
+      <div><h3>Repeat injuries</h3><p>Next-season risk compares starters who were key players in back-to-back seasons. Same-region recurrence looks at each player's consecutive absences with a known body part; the chance rate is what you'd get if the next injury were drawn at random from the overall injury mix.</p></div>
+      <div><h3>Absences</h3><p>A run of consecutive team games a player missed, counted only when there is injury evidence: an injury-related listing on the official report, or an Injured Reserve designation. Benchings, suspensions and personal absences are excluded. Releases and trades end the run.</p></div>
+      <div><h3>Body region</h3><p>Free-text report labels are mapped to 16 regions. Players sent straight to IR often never appear on the report while out, so the label comes from the week before or the practice report after they return. About 5% of absences still have no body part.</p></div>
+      <div><h3>Fantasy</h3><p>ADP from Fantasy Football Calculator's PPR 12-team drafts in the week before each season (2020–2025) and Sleeper's PPR ADP for the current season, since Fantasy Football Calculator only serves in-season drafts once the season starts. Weeks are counted from Week 1 even if the player never suited up. A season-ending absence means IR and still out at the final fantasy week.</p></div>
+      <div><h3>Caveats</h3><p>Current-season numbers cover only the weeks played so far and are kept out of the six-season averages. 2020 had a 16-game season and a separate COVID list, which is not counted as injury. Week 18 has extra one-game absences from playoff teams resting starters. Durations stop at the end of the regular season. Pro Bowl and All-Pro rosters come from Wikipedia.</p></div>
+    </div>
+  </section>
+
+  <footer>Data: <a href="https://github.com/nflverse/nflverse-data" target="_blank" rel="noopener">nflverse</a> injury reports, snap counts, weekly rosters, draft picks and OverTheCap contracts; <a href="https://fantasyfootballcalculator.com/adp/ppr" target="_blank" rel="noopener">Fantasy Football Calculator</a> and <a href="https://sleeper.com" target="_blank" rel="noopener">Sleeper</a> ADP; Wikipedia Pro Bowl and All-Pro rosters. 2020 through the current regular season.</footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const SEASONS = [2020, 2021, 2022, 2023, 2024, 2025];  // completed seasons: "All" and trends
+const CUR = DATA.current.season, CUR_WEEK = DATA.current.week;
+const ALL_SEASONS = [...SEASONS, CUR];
+const OFF = new Set(["QB", "RB", "WR", "TE", "OL"]);
+const POS = ["QB", "RB", "WR", "TE", "OL", "DL", "LB", "DB"];
+const FPOS = ["QB", "RB", "WR", "TE"];
+const POS_NAME = {QB: "Quarterbacks", RB: "Running backs", WR: "Wide receivers", TE: "Tight ends", OL: "Offensive line", DL: "Defensive line", LB: "Linebackers", DB: "Defensive backs"};
+const UNITS = ["All", "Offense", "Defense", ...POS];
+// bit flags mirror FLAGS in src/build_dashboard.py
+const DEFS = [
+  {id: "Snap share", bit: 1, full: true, desc: "65%+ of snaps (50% for RBs)"},
+  {id: "Pedigree", bit: 2, full: true, desc: "1st-rd rookie deal, salary top 30%, or prior-season Pro Bowl / All-Pro"},
+  {id: "1st-round rookie contract", bit: 4},
+  {id: "Salary top 30% at position", bit: 8},
+  {id: "Pro Bowl, prior season", bit: 16},
+  {id: "All-Pro, prior season", bit: 32},
+  {id: "Everyone who took a snap", bit: 0},
+];
+const DEF_LABEL = {"Snap share": "Snap-share starters", "Pedigree": "Pedigree players"};
+
+const PS = DATA.ps.map(([season, team, pos, p, f, u]) => ({season, team, pos, p, f, u}));
+const toEp = r => ({season: r[0], team: r[1], p: r[2], player: r[3], pos: r[4], start: r[5], games: r[6], region: r[7], ending: !!r[8], ir: !!r[9], label: r[10], ongoing: !!r[11]});
+const EP = DATA.ep.map(toEp);
+const FEP = DATA.fep.map(toEp);
+const FAN = DATA.fan.map(([season, rank, adp, player, pos, team, p]) => ({season, rank, adp, player, pos, team, p}));
+const kstr = (s, t, p) => s + "|" + t + "|" + p;
+const EP_BY_KEY = new Map(); for (const e of EP) { const k = kstr(e.season, e.team, e.p); (EP_BY_KEY.get(k) || EP_BY_KEY.set(k, []).get(k)).push(e); }
+const FEP_BY_KEY = new Map(); for (const e of FEP) { const k = e.season + "|" + e.p; (FEP_BY_KEY.get(k) || FEP_BY_KEY.set(k, []).get(k)).push(e); }
+for (const f of FAN) { const eps = FEP_BY_KEY.get(f.season + "|" + f.p) || []; f.eps = eps; f.games = eps.reduce((a, e) => a + e.games, 0); f.hurt = eps.length > 0; f.ending = eps.some(e => e.ending); f.ongoing = eps.some(e => e.ongoing); f.round = Math.floor((f.rank - 1) / 12) + 1; }
+
+const REGIONS = {
+  "Head / Concussion": [140, 46, "r"], "Neck": [140, 94, "l"], "Shoulder": [80, 114, "l"],
+  "Chest / Ribs": [140, 158, "r"], "Arm / Elbow": [216, 208, "r"], "Hand / Wrist": [50, 322, "l"],
+  "Core / Abdomen": [140, 228, "l"], "Hip / Groin": [140, 292, "r"], "Quad / Thigh": [112, 366, "l"],
+  "Knee": [170, 424, "r"], "Ankle": [110, 528, "l"], "Foot / Toe": [176, 558, "r"],
+  "Back": [380, 180, "r"], "Hamstring": [352, 362, "l"], "Lower Leg": [410, 470, "r"], "Achilles": [350, 530, "l"],
+};
+const UNSPEC = "Unspecified (IR)";
+
+const state = {tab: "starters", season: "All", def: "Snap share", unit: "All", fseason: "All", fpos: "All"};
+try {
+  const s = JSON.parse(localStorage.getItem("starters-down-v2"));
+  if (s) for (const k of Object.keys(state)) if (k in s) state[k] = s[k];
+} catch (e) {}
+if (!["starters", "fantasy"].includes(state.tab)) state.tab = "starters";
+if (location.hash === "#fantasy" || location.hash === "#starters") state.tab = location.hash.slice(1);
+if (!DEFS.some(d => d.full && d.id === state.def)) state.def = "Snap share";
+if (!UNITS.includes(state.unit)) state.unit = "All";
+if (state.season !== "All" && !ALL_SEASONS.includes(state.season)) state.season = "All";
+if (state.fseason !== "All" && !ALL_SEASONS.includes(state.fseason)) state.fseason = "All";
+if (state.fpos !== "All" && !FPOS.includes(state.fpos)) state.fpos = "All";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const pct = (v, d = 0) => (v * 100).toFixed(d) + "%";
+const fmt = n => n.toLocaleString("en-US");
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const seq = () => [0, 1, 2, 3, 4, 5, 6].map(i => css("--seq-" + i));
+function quantile(a, q) { if (!a.length) return 0; const s = [...a].sort((x, y) => x - y); const i = (s.length - 1) * q; const lo = Math.floor(i); return s[lo] + (s[Math.ceil(i)] - s[lo]) * (i - lo); }
+const median = a => quantile(a, .5);
+const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+const side = pos => OFF.has(pos) ? "Offense" : "Defense";
+const unitMatch = (pos, unit) => unit === "All" || unit === side(pos) || unit === pos;
+function lum(hex) { const n = parseInt(hex.slice(1), 16); const c = [n >> 16, (n >> 8) & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; }
+const inkOn = hex => lum(hex) > .3 ? "#111412" : "#ffffff";
+const inDef = (row, bit) => bit === 0 || (row.f & bit) > 0;
+const defBit = () => DEFS.find(d => d.id === state.def).bit;
+const inSeason = (s, sel) => sel === "All" ? SEASONS.includes(s) : s === sel;
+const seasonLabel = v => v === CUR ? `${CUR} · live` : v;
+const scopeLabel = sel => sel === "All" ? "2020–2025" : sel === CUR ? `${CUR} through Week ${CUR_WEEK}` : String(sel);
+
+// episodes for a set of player-seasons + share who missed time
+function epsFor(K) { const out = []; for (const k of K) { const e = EP_BY_KEY.get(kstr(k.season, k.team, k.p)); if (e) out.push(...e); } return out; }
+function injuredShare(K) { return K.length ? K.filter(k => EP_BY_KEY.has(kstr(k.season, k.team, k.p))).length / K.length : 0; }
+
+/* ---------- shared pieces ---------- */
+function chips(host, values, key, labelFn = v => v) {
+  values.forEach(v => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = labelFn(v); b.dataset.v = v; b.id = `chip-${key}-${String(v).replace(/\W+/g, "")}`;
+    b.addEventListener("click", () => setState({[key]: v}));
+    $(host).appendChild(b);
+  });
+}
+function syncChips(host, value) { document.querySelectorAll(`#${host} .chip`).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === String(value)))); }
+function setState(patch) {
+  Object.assign(state, patch);
+  try { localStorage.setItem("starters-down-v2", JSON.stringify(state)); } catch (e) {}
+  render();
+}
+function kpis(host, items) { $(host).innerHTML = items.map(([v, l]) => `<div class="kpi"><span class="v">${v}</span><span class="l">${l}</span></div>`).join(""); }
+const barCell = (share, max, label) => `<td class="barcell"><div class="barwrap"><div class="minibar" style="width:${(share / Math.max(max, 1e-9) * 70).toFixed(1)}%"></div><span>${label}</span></div></td>`;
+
+function figure(cx) {
+  const L = (x1, y1, x2, y2, w) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke-width="${w}" stroke-linecap="round"/>`;
+  let s = `<g fill="var(--figure)" stroke="var(--figure)">`;
+  for (const d of [-1, 1]) {
+    s += L(cx + d * 58, 116, cx + d * 76, 208, 24) + L(cx + d * 76, 208, cx + d * 90, 300, 20);
+    s += `<ellipse cx="${cx + d * 92}" cy="322" rx="11" ry="18"/>`;
+    s += L(cx + d * 26, 300, cx + d * 30, 420, 40) + L(cx + d * 30, 420, cx + d * 31, 528, 28);
+    s += `<ellipse cx="${cx + d * 36}" cy="552" rx="20" ry="9"/>`;
+  }
+  s += `<rect x="${cx - 12}" y="74" width="24" height="34" rx="6"/>`;
+  s += `<path d="M${cx - 56},104 C${cx - 64},104 ${cx - 64},116 ${cx - 60},128 L${cx - 46},250 L${cx - 52},304 L${cx + 52},304 L${cx + 46},250 L${cx + 60},128 C${cx + 64},116 ${cx + 64},104 ${cx + 56},104 Z" stroke-width="2" stroke-linejoin="round"/>`;
+  s += `<ellipse cx="${cx}" cy="44" rx="26" ry="32"/>`;
+  return s + `</g>`;
+}
+function renderBody(E, svgId, legendId, tableId) {
+  const by = {};
+  for (const e of E) (by[e.region] ||= []).push(e.games);
+  const mapped = Object.entries(by).filter(([r]) => REGIONS[r]);
+  const total = E.length;
+  const maxN = Math.max(1, ...mapped.map(([, g]) => g.length));
+  const means = mapped.map(([, g]) => mean(g));
+  const lo = means.length ? Math.min(...means) : 0, hi = means.length ? Math.max(...means) : 1;
+  const ramp = seq();
+  const colorFor = m => ramp[Math.min(6, Math.max(0, Math.round(((m - lo) / Math.max(hi - lo, .01)) * 6)))];
+  let s = figure(140) + figure(380);
+  s += `<text x="140" y="600" text-anchor="middle" style="font:600 13px var(--display);letter-spacing:.2em;fill:var(--ink-3)">FRONT</text>`;
+  s += `<text x="380" y="600" text-anchor="middle" style="font:600 13px var(--display);letter-spacing:.2em;fill:var(--ink-3)">BACK</text>`;
+  for (const [r, g] of mapped.sort((a, b) => b[1].length - a[1].length)) {
+    const [x, y, sideL] = REGIONS[r];
+    const rad = Math.max(5, Math.sqrt(g.length / maxN) * 34);
+    const m = mean(g);
+    const tip = `<b>${esc(r)}</b>${fmt(g.length)} absences · ${pct(g.length / total, 1)} of all<br>${m.toFixed(1)} games missed on average (median ${median(g).toFixed(0)})<br><span class="muted">${fmt(g.reduce((a, b) => a + b, 0))} games lost</span>`;
+    s += `<g data-tip="${esc(tip)}" data-region="${esc(r)}" data-table="${tableId}">`;
+    s += `<circle cx="${x}" cy="${y}" r="${Math.max(rad, 14)}" fill="transparent"/>`;
+    s += `<circle class="bub" cx="${x}" cy="${y}" r="${rad.toFixed(1)}" fill="${colorFor(m)}" stroke="var(--surface)" stroke-width="2"/>`;
+    const tx = sideL === "r" ? x + rad + 6 : x - rad - 6;
+    s += `<text class="halo" x="${tx}" y="${y + 4}" text-anchor="${sideL === "r" ? "start" : "end"}" style="font-size:13px"><tspan style="font-weight:600;fill:var(--ink)">${esc(r.split(" / ")[0])}</tspan> ${pct(g.length / total)}</text></g>`;
+  }
+  $(svgId).innerHTML = s;
+  $(legendId).innerHTML = `<span>Avg. games missed <span class="swatch-ramp">${ramp.map(c => `<i style="background:${c}"></i>`).join("")}</span>${lo.toFixed(1)} → ${hi.toFixed(1)}</span><span>Bubble area = number of absences</span>`;
+}
+function renderRegionTable(E, tableId, noteId) {
+  const by = {};
+  for (const e of E) (by[e.region] ||= []).push(e);
+  const rows = Object.entries(by).sort((a, b) => (a[0] === UNSPEC) - (b[0] === UNSPEC) || b[1].length - a[1].length);
+  const maxShare = rows.length ? Math.max(...rows.map(([, v]) => v.length)) / E.length : 1;
+  $(tableId).innerHTML = `<thead><tr><th>Region</th><th class="barcell">Share of absences</th><th>Count</th><th>Avg games</th><th>Season-ending</th></tr></thead><tbody>` +
+    rows.map(([r, v]) => `<tr data-row="${esc(r)}" class="${r === UNSPEC ? "muted" : ""}"><td>${esc(r)}</td>${barCell(v.length / E.length, maxShare, pct(v.length / E.length, 1))}<td>${fmt(v.length)}</td><td>${mean(v.map(e => e.games)).toFixed(1)}</td><td>${fmt(v.filter(e => e.ending).length)}</td></tr>`).join("") + `</tbody>`;
+  const u = by[UNSPEC]?.length || 0;
+  $(noteId).textContent = u ? `${fmt(u)} absences (${pct(u / E.length, 1)}) went straight to IR with no body part on any report. They aren't shown on the map.` : "";
+}
+function renderLines(svgId, series, y0, y1, ticks, hiSeason) {
+  const W = 560, H = 290, m = {l: 44, r: 118, t: 14, b: 32};
+  const n = SEASONS.length;
+  const x = i => m.l + i * (W - m.l - m.r) / (n - 1);
+  const y = v => m.t + (1 - (v - y0) / (y1 - y0)) * (H - m.t - m.b);
+  let s = `<g class="grid">` + ticks.map(v => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>`).join("") + `</g>`;
+  s += `<g class="axis">` + ticks.map(v => `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${pct(v)}</text>`).join("");
+  s += SEASONS.map((yr, i) => `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" style="${hiSeason === yr ? "font-weight:700;fill:var(--ink)" : ""}">${yr}</text>`).join("") + `</g>`;
+  if (hiSeason !== "All") { const i = SEASONS.indexOf(hiSeason); s += `<rect x="${x(i) - 22}" y="${m.t}" width="44" height="${H - m.t - m.b}" fill="var(--rule)" opacity=".45" rx="4"/>`; }
+  for (const se of series) {
+    s += `<polyline fill="none" stroke="${se.color}" stroke-width="2.5" stroke-linejoin="round" points="${se.vals.map((v, i) => `${x(i)},${y(v)}`).join(" ")}"/>`;
+    s += se.vals.map((v, i) => `<circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="${se.color}" stroke="var(--surface)" stroke-width="2"/>`).join("");
+  }
+  const ends = series.map(se => ({se, yy: y(se.vals[n - 1])}));
+  if (ends.length === 2 && Math.abs(ends[0].yy - ends[1].yy) < 16) { const mid = (ends[0].yy + ends[1].yy) / 2, up = ends[0].yy < ends[1].yy ? 0 : 1; ends[up].yy = mid - 8; ends[1 - up].yy = mid + 8; }
+  s += ends.map(({se, yy}) => `<text x="${x(n - 1) + 10}" y="${yy + 4}" style="font-size:13px"><tspan style="font-weight:600;fill:var(--ink)">${se.short}</tspan> ${pct(se.vals[n - 1])}</text>`).join("");
+  s += SEASONS.map((yr, i) => {
+    const tip = `<b>${yr}</b>` + series.map(se => `${se.name}: ${pct(se.vals[i], 1)}`).join("<br>");
+    return `<g class="hov" data-tip="${esc(tip)}"><rect x="${x(i) - 30}" y="${m.t}" width="60" height="${H - m.t - m.b}" fill="transparent"/><line class="hovshow" x1="${x(i)}" x2="${x(i)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--ink-3)" stroke-dasharray="3 3"/></g>`;
+  }).join("");
+  $(svgId).innerHTML = s;
+}
+function renderPlayerTable(rows, tableId, withAdp) {
+  $(tableId).innerHTML = `<thead><tr><th>Player</th><th>Pos</th>${withAdp ? "<th>ADP</th>" : ""}<th>Team</th><th>Season</th><th>Injury</th><th class="r">Out from</th><th class="r">Games missed</th><th>Outcome</th></tr></thead><tbody>` +
+    rows.map(e => {
+      const label = e.label ? e.label.replace(/\b\w/g, c => c.toUpperCase()) : "Not reported";
+      const st = statusChip(e);
+      return `<tr><td class="player">${esc(e.player)}</td><td>${e.pos}</td>${withAdp ? `<td>${esc(e.adp)}</td>` : ""}<td>${e.team}</td><td>${e.season}</td><td>${esc(label)}</td><td class="r">Wk ${e.start}</td><td class="r">${e.games}</td><td>${st}</td></tr>`;
+    }).join("") + `</tbody>`;
+}
+
+function statusChip(e) {
+  if (e.ongoing) return `<span class="status"><i style="background:var(--serious)"></i>Out now${e.ir ? " (IR)" : ""}</span>`;
+  if (e.ending) return `<span class="status"><i style="background:var(--critical)"></i>Season-ending</span>`;
+  return `<span class="status"><i style="background:var(--good)"></i>${e.ir ? "Returned from IR" : "Returned"}</span>`;
+}
+
+/* ---------- key findings ---------- */
+function renderFindings() {
+  const groups = [...new Set(DATA.findings.map(c => c.group))];
+  $("findings").innerHTML = groups.map(g => {
+    const cards = DATA.findings.filter(c => c.group === g).map(c => {
+      const max = c.bars ? Math.max(...c.bars.map(b => b[1])) : 1;
+      const bars = c.bars ? `<div class="cbars">${c.bars.map(([l, v], i) => `<div class="cbar"><span>${esc(l)}</span><div class="track"><div class="fill" style="width:${(v / max * 100).toFixed(1)}%;background:${i === 0 || c.bars.length > 3 ? "var(--seq-4)" : "var(--seq-1)"}"></div></div><span class="n">${pct(v)}</span></div>`).join("")}</div>` : "";
+      return `<article class="card"><span class="v">${esc(c.value)}</span><span class="t">${esc(c.title)}</span><span class="d">${esc(c.detail)}</span>${bars}</article>`;
+    }).join("");
+    const live = g.includes("so far") ? `<span class="live"><i></i>Through Week ${CUR_WEEK}</span>` : "";
+    return `<div style="display:grid;gap:10px"><div class="fgroup-h"><h3>${esc(g)}</h3>${live}</div><div class="cards">${cards}</div></div>`;
+  }).join("");
+}
+
+/* ---------- starters tab ---------- */
+function renderDefTable() {
+  const base = PS.filter(k => inSeason(k.season, state.season) && unitMatch(k.pos, state.unit));
+  const nS = state.season === "All" ? SEASONS.length : 1;
+  const rows = DEFS.map(d => {
+    const K = base.filter(k => inDef(k, d.bit));
+    const E = epsFor(K);
+    return {...d, n: K.length / nS, inj: injuredShare(K), gpp: K.length ? E.reduce((a, e) => a + e.games, 0) / K.length : 0,
+      snaps: mean(K.map(k => k.u)) / 100, overlap: K.length ? K.filter(k => k.f & 1).length / K.length : 0};
+  });
+  const maxInj = Math.max(...rows.map(r => r.inj));
+  const row = r => `<tr class="${r.full && r.id === state.def ? "hl" : ""}" ${r.full ? `data-def="${esc(r.id)}" style="cursor:pointer" tabindex="0" role="button" aria-label="Use ${esc(r.id)} definition"` : ""}>
+      <td class="name"><span style="font-weight:${r.full ? 600 : 400};color:var(--ink)">${esc(r.id)}</span>${r.desc ? `<br><span class="small-note">${esc(r.desc)}</span>` : ""}</td>
+      <td>${fmt(Math.round(r.n))}</td>${barCell(r.inj, maxInj, pct(r.inj, 1))}<td>${r.gpp.toFixed(2)}</td><td>${pct(r.snaps)}</td><td>${r.bit === 1 ? "—" : pct(r.overlap)}</td></tr>`;
+  $("def-table").innerHTML = `<thead><tr><th>Definition</th><th>Players / season</th><th class="barcell">Missed time to injury</th><th>Games lost / player</th><th>Avg snap share</th><th>Also a snap-share starter</th></tr></thead><tbody>` +
+    `<tr class="group"><td colspan="6">Full definitions</td></tr>` + rows.filter(r => r.full).map(row).join("") +
+    `<tr class="group"><td colspan="6">Individual pedigree criteria</td></tr>` + rows.filter(r => !r.full && r.bit).map(row).join("") +
+    `<tr class="group"><td colspan="6">Baseline</td></tr>` + rows.filter(r => r.bit === 0).map(row).join("") + `</tbody>`;
+  document.querySelectorAll("#def-table tr[data-def]").forEach(tr => {
+    const go = () => setState({def: tr.dataset.def});
+    tr.addEventListener("click", go);
+    tr.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); go(); } });
+  });
+  const [snap, ped] = rows;
+  const pb = rows.find(r => r.bit === 16), rk = rows.find(r => r.bit === 4);
+  $("def-callout").innerHTML = `Switching definitions moves the injury rate by only a few points: <b>${pct(snap.inj)}</b> of snap-share starters missed time, vs. <b>${pct(ped.inj)}</b> of pedigree players, and ${pct(ped.overlap)} of pedigree players are also snap-share starters. Prior-season Pro Bowlers get hurt most often (<b>${pct(pb.inj)}</b>), while first-round picks on rookie deals match everyone else (<b>${pct(rk.inj)}</b>).${state.season === CUR ? ` <span class="small-note">(${CUR} covers Weeks 1–${CUR_WEEK} only.)</span>` : ""}`;
+}
+function renderTrend() {
+  const bit = defBit();
+  const series = ["Offense", "Defense"].map(sd => ({name: sd, short: sd, color: sd === "Offense" ? "var(--off)" : "var(--def)",
+    vals: SEASONS.map(s => injuredShare(PS.filter(k => k.season === s && side(k.pos) === sd && inDef(k, bit))))}));
+  renderLines("trend", series, .30, .65, [.3, .4, .5, .6], state.season);
+}
+function renderMultiples() {
+  const bit = defBit();
+  $("multiples").innerHTML = POS.map(pos => {
+    const vals = SEASONS.map(s => injuredShare(PS.filter(k => k.season === s && k.pos === pos && inDef(k, bit))));
+    const all = injuredShare(PS.filter(k => k.pos === pos && inDef(k, bit)));
+    const color = OFF.has(pos) ? "var(--off)" : "var(--def)";
+    const bw = 12, gap = 5, H = 44, max = .75;
+    const bars = vals.map((v, i) => { const h = Math.max(2, v / max * H); const on = state.season === "All" || state.season === SEASONS[i];
+      return `<rect x="${i * (bw + gap)}" y="${H - h}" width="${bw}" height="${h}" rx="3" fill="${color}" opacity="${on ? 1 : .3}"><title>${SEASONS[i]}: ${pct(v, 1)}</title></rect>`; }).join("");
+    const cls = state.unit === pos ? "on" : (POS.includes(state.unit) || (state.unit !== "All" && state.unit !== side(pos))) ? "dim" : "";
+    return `<button class="mult ${cls}" id="mult-${pos}" aria-pressed="${state.unit === pos}" title="${POS_NAME[pos]}: ${pct(all, 1)} missed time (2020–2025)">
+      <span class="t"><span class="pos">${pos}</span><span class="avg">${pct(all)}</span></span>
+      <svg viewBox="0 0 ${6 * bw + 5 * gap} ${H}" style="height:${H}px;width:auto;max-width:100%">${bars}</svg>
+      <span class="sub">'20 → '25</span></button>`;
+  }).join("");
+  POS.forEach(pos => $("mult-" + pos).addEventListener("click", () => setState({unit: state.unit === pos ? "All" : pos})));
+}
+function renderSeasonEnding() {
+  const bit = defBit();
+  const K = PS.filter(k => SEASONS.includes(k.season) && unitMatch(k.pos, state.unit) && inDef(k, bit));
+  const E = epsFor(K).filter(e => e.ending);
+  const rows = SEASONS.map(yr => {
+    const es = E.filter(e => e.season === yr), keyN = K.filter(k => k.season === yr).length;
+    const regions = {}; for (const e of es) if (e.region !== UNSPEC) regions[e.region] = (regions[e.region] || 0) + 1;
+    return {yr, n: es.length, off: es.filter(e => side(e.pos) === "Offense").length, def: es.filter(e => side(e.pos) === "Defense").length,
+      rate: keyN ? es.length / keyN : 0, games: es.reduce((a, e) => a + e.games, 0), unspec: es.filter(e => e.region === UNSPEC).length,
+      top: Object.entries(regions).sort((a, b) => b[1] - a[1]).slice(0, 3),
+      names: [...es].sort((a, b) => b.games - a.games).slice(0, 4).map(e => `${esc(e.player)} (${e.pos}, ${e.team})`)};
+  });
+  const W = 560, H = 300, m = {l: 40, r: 12, t: 26, b: 52};
+  const maxN = Math.max(1, ...rows.map(r => r.n));
+  const top = Math.ceil(maxN / 20) * 20;
+  const y = v => m.t + (1 - v / top) * (H - m.t - m.b);
+  const slot = (W - m.l - m.r) / rows.length, bw = Math.min(56, slot * .56);
+  let s = `<g class="grid">` + [0, top / 2, top].map(v => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>`).join("") + `</g>`;
+  s += `<g class="axis">` + [0, top / 2, top].map(v => `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`).join("") + `</g>`;
+  rows.forEach((r, i) => {
+    const cx = m.l + slot * i + slot / 2, x = cx - bw / 2;
+    const dim = state.season !== "All" && state.season !== r.yr && state.season !== CUR;
+    const yOff = y(r.off), yTot = y(r.n);
+    const tip = `<b>${r.yr}</b>${r.n} season-ending injuries · ${pct(r.rate, 1)} of key players<br>Offense ${r.off} · Defense ${r.def} · ${fmt(r.games)} games lost<br>${r.top.length ? "Most common: " + r.top.map(([g, n]) => `${esc(g)} ${n}`).join(", ") : ""}${r.names.length ? `<br><span class="muted">${r.names.join("<br>")}</span>` : ""}`;
+    s += `<g data-tip="${esc(tip)}" opacity="${dim ? .35 : 1}"><rect x="${cx - slot / 2}" y="${m.t}" width="${slot}" height="${H - m.t - m.b}" fill="transparent"/>`;
+    if (r.off) s += `<rect x="${x}" y="${yOff}" width="${bw}" height="${y(0) - yOff}" rx="3" fill="var(--off)"/>`;
+    if (r.def) s += `<rect x="${x}" y="${yTot}" width="${bw}" height="${Math.max(yOff - yTot - 2, 1)}" rx="3" fill="var(--def)"/>`;
+    s += `<text x="${cx}" y="${yTot - 8}" text-anchor="middle" class="num" style="font-size:14px;font-weight:700;fill:var(--ink)">${r.n}</text>`;
+    s += `<text x="${cx}" y="${H - m.b + 18}" text-anchor="middle" class="num" style="font-size:12px;${state.season === r.yr ? "font-weight:700;fill:var(--ink)" : "fill:var(--ink-3)"}">${r.yr}</text>`;
+    s += `<text x="${cx}" y="${H - m.b + 34}" text-anchor="middle" class="num" style="font-size:11px;fill:var(--ink-3)">${pct(r.rate, 1)}</text></g>`;
+  });
+  s += `<text x="${m.l}" y="${H - 4}" style="font-size:11px;fill:var(--ink-3)">% = share of key players that season</text>`;
+  $("se-chart").innerHTML = s;
+  const maxRate = Math.max(...rows.map(r => r.rate));
+  $("se-table").innerHTML = `<thead><tr><th>Season</th><th>Count</th><th class="barcell">Share of key players</th><th>Games lost</th><th style="text-align:left">Top known injury</th></tr></thead><tbody>` +
+    rows.map(r => `<tr class="${state.season === r.yr ? "hl" : ""}"><td>${r.yr}</td><td>${r.n}</td>${barCell(r.rate, maxRate, pct(r.rate, 1))}<td>${fmt(r.games)}</td><td style="text-align:left">${r.top[0] ? `${esc(r.top[0][0])} (${r.top[0][1]})` : "—"}</td></tr>`).join("") + `</tbody>`;
+  const tot = rows.reduce((a, r) => a + r.n, 0), un = rows.reduce((a, r) => a + r.unspec, 0);
+  const curIR = epsFor(PS.filter(k => k.season === CUR && unitMatch(k.pos, state.unit) && inDef(k, bit))).filter(e => e.ongoing && e.ir).length;
+  $("se-note").textContent = `${pct(un / Math.max(tot, 1))} of season-ending injuries have no body part on any report, so "top known injury" undercounts them. In ${CUR}, ${curIR} key players are on IR and out as of Week ${CUR_WEEK}; they'll count here only if they're still out at season's end. 2020 was a 16-game season.`;
+}
+function renderDuration(E) {
+  const by = {};
+  for (const e of E) (by[e.region] ||= []).push(e);
+  const rows = Object.entries(by).map(([r, v]) => {
+    const g = v.map(e => e.games);
+    return {r, n: v.length, q1: quantile(g, .25), med: median(g), q3: quantile(g, .75), mean: mean(g), end: v.filter(e => e.ending).length / v.length};
+  }).sort((a, b) => b.med - a.med || b.mean - a.mean);
+  const rowH = 27, m = {l: 124, r: 94, t: 26, b: 30}, W = 560;
+  const H = m.t + m.b + rows.length * rowH;
+  const xmax = Math.max(6, Math.ceil(Math.max(0, ...rows.map(d => d.q3)) / 2) * 2);
+  const x = v => m.l + v / xmax * (W - m.l - m.r);
+  const ticks = []; for (let t = 0; t <= xmax; t += xmax > 10 ? 4 : 2) ticks.push(t);
+  const ramp = seq();
+  let s = `<g class="grid">` + ticks.map(t => `<line x1="${x(t)}" x2="${x(t)}" y1="${m.t - 6}" y2="${H - m.b}"/>`).join("") + `</g>`;
+  s += `<g class="axis">` + ticks.map(t => `<text x="${x(t)}" y="${H - m.b + 18}" text-anchor="middle">${t}</text>`).join("") +
+       `<text x="${W - m.r}" y="${H - 2}" text-anchor="end">games missed</text><text x="${W}" y="${m.t - 10}" text-anchor="end">season-ending</text></g>`;
+  rows.forEach((d, i) => {
+    const cy = m.t + i * rowH + rowH / 2, small = d.n < 15;
+    const tip = `<b>${esc(d.r)}</b>${fmt(d.n)} absences<br>Median ${d.med.toFixed(0)} · middle 50%: ${d.q1.toFixed(0)}–${d.q3.toFixed(0)} games<br>Average ${d.mean.toFixed(1)} games<br>${pct(d.end)} season-ending${small ? '<br><span class="muted">Small sample</span>' : ""}`;
+    s += `<g data-tip="${esc(tip)}" opacity="${small ? .55 : 1}"><rect x="0" y="${cy - rowH / 2}" width="${W}" height="${rowH}" fill="transparent"/>`;
+    s += `<text x="${m.l - 10}" y="${cy + 4}" text-anchor="end" style="font-size:13px;fill:var(--ink)">${esc(d.r)}</text>`;
+    const w = Math.max(x(d.q3) - x(d.q1), 6);
+    s += `<rect x="${x(d.q1) - (w === 6 ? 3 : 0)}" y="${cy - 4}" width="${w}" height="8" rx="4" fill="${ramp[2]}"/>`;
+    s += `<circle cx="${x(d.med)}" cy="${cy}" r="6" fill="${ramp[5]}" stroke="var(--surface)" stroke-width="2"/>`;
+    s += `<text x="${W}" y="${cy + 4}" text-anchor="end" class="num" style="font-size:13px">${pct(d.end)}</text></g>`;
+  });
+  $("duration").setAttribute("viewBox", `0 0 ${W} ${H}`);
+  $("duration").innerHTML = s;
+}
+function renderHist(E) {
+  const bins = [["1", 1, 1], ["2", 2, 2], ["3", 3, 3], ["4", 4, 4], ["5–6", 5, 6], ["7–9", 7, 9], ["10+", 10, 99]];
+  const counts = bins.map(([, a, b]) => E.filter(e => e.games >= a && e.games <= b).length);
+  const W = 420, H = 280, m = {l: 8, r: 8, t: 24, b: 44};
+  const bw = (W - m.l - m.r) / bins.length, max = Math.max(1, ...counts);
+  const y = v => m.t + (1 - v / max) * (H - m.t - m.b);
+  let s = `<line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}" stroke="var(--ink-3)"/>`;
+  bins.forEach(([lab], i) => {
+    const bx = m.l + i * bw + 5, w = bw - 10, top = y(counts[i]), share = counts[i] / Math.max(E.length, 1);
+    s += `<g data-tip="${esc(`<b>${lab} game${lab === "1" ? "" : "s"}</b>${fmt(counts[i])} absences · ${pct(share, 1)}`)}"><rect x="${bx - 3}" y="${m.t}" width="${w + 6}" height="${H - m.t - m.b}" fill="transparent"/>`;
+    if (counts[i]) s += `<path d="M${bx},${H - m.b} V${top + 4} Q${bx},${top} ${bx + 4},${top} H${bx + w - 4} Q${bx + w},${top} ${bx + w},${top + 4} V${H - m.b} Z" fill="var(--seq-4)"/>`;
+    s += `<text x="${bx + w / 2}" y="${top - 7}" text-anchor="middle" class="num" style="font-size:13px;font-weight:600;fill:var(--ink)">${pct(share)}</text>`;
+    s += `<text x="${bx + w / 2}" y="${H - m.b + 18}" text-anchor="middle" class="num" style="font-size:12px;fill:var(--ink-3)">${lab}</text></g>`;
+  });
+  s += `<text x="${W / 2}" y="${H - 6}" text-anchor="middle" style="font-size:12px;fill:var(--ink-3)">games missed per absence</text>`;
+  $("hist").innerHTML = s;
+}
+function renderHeat() {
+  const bit = defBit();
+  const E = epsFor(PS.filter(k => SEASONS.includes(k.season) && unitMatch(k.pos, state.unit) && inDef(k, bit)));
+  const teams = [...new Set(PS.map(k => k.team))];
+  const cell = {}, tot = {};
+  for (const t of teams) { tot[t] = 0; for (const s of SEASONS) cell[t + s] = {g: 0, eps: []}; }
+  for (const e of E) { cell[e.team + e.season].g += e.games; cell[e.team + e.season].eps.push(e); tot[e.team] += e.games; }
+  teams.sort((a, b) => tot[b] - tot[a]);
+  const cw = 50, ch = 24, gap = 2, lx = 56, top = 28, barW = 140;
+  const W = lx + SEASONS.length * (cw + gap) + 16 + barW + 40, H = top + teams.length * (ch + gap) + 4;
+  const maxCell = Math.max(1, ...teams.flatMap(t => SEASONS.map(s => cell[t + s].g)));
+  const maxTot = Math.max(1, ...Object.values(tot));
+  const ramp = seq(), step = v => Math.min(6, Math.floor(v / maxCell * 7));
+  let s = SEASONS.map((yr, i) => `<text x="${lx + i * (cw + gap) + cw / 2}" y="${top - 10}" text-anchor="middle" class="num" style="font-size:12px;${state.season === yr ? "font-weight:700;fill:var(--ink)" : "fill:var(--ink-3)"}">${yr}</text>`).join("");
+  s += `<text x="${lx + SEASONS.length * (cw + gap) + 16}" y="${top - 10}" style="font-size:12px;fill:var(--ink-3)">6-season total</text>`;
+  teams.forEach((t, r) => {
+    const yy = top + r * (ch + gap);
+    s += `<text class="team" x="${lx - 10}" y="${yy + ch / 2 + 4}" text-anchor="end">${t}</text>`;
+    SEASONS.forEach((yr, i) => {
+      const c = cell[t + yr], fill = ramp[step(c.g)];
+      const worst = [...c.eps].sort((a, b) => b.games - a.games).slice(0, 3).map(e => `${esc(e.player)} (${e.pos}), ${e.games} g · ${esc(e.region)}`).join("<br>");
+      const tip = `<b>${t} · ${yr}</b>${fmt(c.g)} games lost · ${c.eps.length} absences${worst ? `<br><span class="muted">${worst}</span>` : ""}`;
+      s += `<g data-tip="${esc(tip)}" opacity="${state.season !== "All" && state.season !== yr ? .35 : 1}"><rect x="${lx + i * (cw + gap)}" y="${yy}" width="${cw}" height="${ch}" rx="3" fill="${fill}"/>`;
+      s += `<text class="v" x="${lx + i * (cw + gap) + cw / 2}" y="${yy + ch / 2 + 4}" text-anchor="middle" style="fill:${inkOn(fill)}">${c.g}</text></g>`;
+    });
+    const bx = lx + SEASONS.length * (cw + gap) + 16, bw = tot[t] / maxTot * barW;
+    s += `<g data-tip="${esc(`<b>${t}</b>${fmt(tot[t])} games lost, 2020–2025`)}"><rect x="${bx}" y="${yy + 5}" width="${Math.max(bw, 2)}" height="${ch - 10}" rx="3" fill="var(--seq-3)"/>`;
+    s += `<text x="${bx + bw + 6}" y="${yy + ch / 2 + 4}" class="num" style="font-size:12px;fill:var(--ink-2)">${tot[t]}</text></g>`;
+  });
+  const svg = $("heat");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.minWidth = "540px"; svg.style.maxWidth = W + "px";
+  svg.innerHTML = s;
+  $("heat-legend").innerHTML = `<span>Games lost in a season <span class="swatch-ramp">${ramp.map(c => `<i style="background:${c}"></i>`).join("")}</span>0 → ${maxCell}</span><span>${DEF_LABEL[state.def]}${state.unit === "All" ? "" : " · " + (POS_NAME[state.unit] || state.unit)}</span>`;
+}
+function renderStarters() {
+  syncChips("f-season", state.season); syncChips("f-def", state.def); syncChips("f-unit", state.unit);
+  const bit = defBit(), nS = state.season === "All" ? SEASONS.length : 1;
+  const K = PS.filter(k => inSeason(k.season, state.season) && unitMatch(k.pos, state.unit) && inDef(k, bit));
+  const E = epsFor(K);
+  const isCur = state.season === CUR;
+  kpis("kpis", [
+    [fmt(Math.round(K.length / nS)), nS > 1 ? "key players per season" : "key players tracked"],
+    [pct(injuredShare(K)), isCur ? `missed a game so far (Weeks 1–${CUR_WEEK})` : "missed at least one game to injury"],
+    [fmt(E.reduce((a, e) => a + e.games, 0)), "games lost to injury"],
+    [median(E.map(e => e.games)).toFixed(0), "median games missed per absence"],
+    isCur ? [fmt(E.filter(e => e.ongoing).length), "out right now"] : [fmt(E.filter(e => e.ending).length), "season-ending injuries"],
+  ]);
+  renderCurrentStarters(); renderRepeatStarters();
+  renderDefTable();
+  renderBody(E, "bodymap", "body-legend", "region-table"); renderRegionTable(E, "region-table", "region-note");
+  renderTrend(); renderMultiples(); renderSeasonEnding(); renderDuration(E); renderHist(E); renderHeat();
+  const scope = [scopeLabel(state.season), DEF_LABEL[state.def].toLowerCase(), state.unit === "All" ? "" : (POS_NAME[state.unit] || state.unit).toLowerCase()].filter(Boolean).join(", ");
+  $("table-sub").textContent = `The 15 longest single absences: ${scope}.`;
+  renderPlayerTable([...E].sort((a, b) => b.games - a.games || a.season - b.season).slice(0, 15), "ptable", false);
+}
+
+function renderCurrentStarters() {
+  const bit = defBit();
+  const K = PS.filter(k => k.season === CUR && unitMatch(k.pos, state.unit) && inDef(k, bit));
+  const E = epsFor(K);
+  const out = E.filter(e => e.ongoing);
+  const scope = DEF_LABEL[state.def].toLowerCase() + (state.unit === "All" ? "" : ", " + (POS_NAME[state.unit] || state.unit).toLowerCase());
+  $("cur-kpis").innerHTML = [[fmt(out.length), "out right now"], [pct(injuredShare(K)), "have missed a game"], [fmt(out.filter(e => e.ir).length), "of those out are on IR"], [fmt(E.reduce((a, e) => a + e.games, 0)), "games lost so far"]]
+    .map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join("");
+  const rows = [...E].sort((a, b) => b.ongoing - a.ongoing || b.games - a.games || a.start - b.start || a.player.localeCompare(b.player));
+  const shown = rows.slice(0, 25);
+  $("cur-table").innerHTML = `<thead><tr><th>Player</th><th>Pos</th><th>Team</th><th>Injury</th><th class="r">Out from</th><th class="r">Games missed</th><th>Status</th></tr></thead><tbody>` +
+    shown.map(e => `<tr><td class="player">${esc(e.player)}</td><td>${e.pos}</td><td>${e.team}</td><td>${esc(e.label ? e.label.replace(/\b\w/g, c => c.toUpperCase()) : "Not reported")}</td><td class="r">Wk ${e.start}</td><td class="r">${e.games}</td><td>${statusChip(e)}</td></tr>`).join("") + `</tbody>`;
+  $("cur-note").textContent = `Showing ${shown.length} of ${rows.length} absences for ${scope}, sorted with players still out first.`;
+}
+function renderRepeatStarters() {
+  const bit = defBit();
+  const K = PS.filter(k => ALL_SEASONS.includes(k.season) && unitMatch(k.pos, state.unit) && inDef(k, bit));
+  const by = new Map();
+  for (const k of K) {
+    const r = by.get(k.p) || {p: k.p, pos: k.pos, keySeasons: new Set(), hurtSeasons: new Set(), eps: []};
+    r.keySeasons.add(k.season);
+    const e = EP_BY_KEY.get(kstr(k.season, k.team, k.p));
+    if (e) { r.eps.push(...e); r.hurtSeasons.add(k.season); }
+    by.set(k.p, r);
+  }
+  const rows = [...by.values()].filter(r => r.eps.length >= 2).map(r => {
+    const regions = {}; for (const e of r.eps) if (e.region !== UNSPEC) regions[e.region] = (regions[e.region] || 0) + 1;
+    const top = Object.entries(regions).sort((a, b) => b[1] - a[1])[0];
+    const last = r.eps.reduce((a, e) => (e.season * 100 + e.start > a.season * 100 + a.start ? e : a));
+    return {...r, name: last.player, team: last.team, n: r.eps.length, games: r.eps.reduce((a, e) => a + e.games, 0), top, out: r.eps.some(e => e.ongoing)};
+  }).sort((a, b) => b.n - a.n || b.hurtSeasons.size - a.hurtSeasons.size || b.games - a.games).slice(0, 15);
+  $("repeat-table").innerHTML = `<thead><tr><th>Player</th><th>Pos</th><th>Absences</th><th>Seasons hurt</th><th>Games missed</th><th style="text-align:left">Most common</th></tr></thead><tbody>` +
+    rows.map(r => `<tr><td><span style="font-weight:600;color:var(--ink)">${esc(r.name)}</span> <span class="small-note">${r.team}</span>${r.out ? ` <span class="status"><i style="background:var(--serious)"></i>Out now</span>` : ""}</td><td>${r.pos}</td><td>${r.n}</td><td>${r.hurtSeasons.size} of ${r.keySeasons.size}</td><td>${r.games}</td><td style="text-align:left">${r.top ? `${esc(r.top[0])} ×${r.top[1]}` : "—"}</td></tr>`).join("") + `</tbody>`;
+  $("recur-sub").innerHTML = `Starters hurt one season were hurt again the next <b>${pct(DATA.recur.hurt)}</b> of the time, vs. <b>${pct(DATA.recur.fine)}</b> for those who stayed healthy (p &lt; 0.001). And when they do get hurt again, it's often the same body part.`;
+  const sr = DATA.same_region;
+  const max = Math.max(...sr.map(r => r[2]));
+  $("samereg-table").innerHTML = `<thead><tr><th>Region</th><th class="barcell">Same region next time</th><th>By chance</th><th>Pairs</th></tr></thead><tbody>` +
+    sr.map(([region, n, same, chance]) => `<tr><td>${esc(region)}</td>${barCell(same, max, pct(same))}<td>${pct(chance)}</td><td>${n}</td></tr>`).join("") + `</tbody>`;
+}
+
+/* ---------- fantasy tab ---------- */
+function fanSummary(F) {
+  return {n: F.length, hurt: F.length ? F.filter(f => f.hurt).length / F.length : 0,
+    four: F.length ? F.filter(f => f.games >= 4).length / F.length : 0,
+    gpp: F.length ? mean(F.map(f => f.games)) : 0, ending: F.filter(f => f.ending).length};
+}
+function groupTable(tableId, groups, label) {
+  const max = Math.max(...groups.map(g => g.s.hurt));
+  $(tableId).innerHTML = `<thead><tr><th>${label}</th><th>Picks</th><th class="barcell">Missed time</th><th>Missed 4+</th><th>Weeks lost / pick</th></tr></thead><tbody>` +
+    groups.map(g => `<tr class="${g.hl ? "hl" : ""}${g.s.n < 30 ? " muted" : ""}"><td>${g.name}</td><td>${g.s.n}</td>${barCell(g.s.hurt, max, pct(g.s.hurt))}<td>${pct(g.s.four)}</td><td>${g.s.gpp.toFixed(1)}</td></tr>`).join("") + `</tbody>`;
+}
+function renderFantasy() {
+  syncChips("ff-season", state.fseason); syncChips("ff-pos", state.fpos);
+  const F = FAN.filter(f => inSeason(f.season, state.fseason) && (state.fpos === "All" || f.pos === state.fpos));
+  const S = fanSummary(F);
+  const E = F.flatMap(f => f.eps.map(e => ({...e, adp: f.adp})));
+  const isCur = state.fseason === CUR;
+  kpis("fkpis", [
+    [fmt(S.n), `top-48 picks${state.fpos === "All" ? "" : " (" + state.fpos + ")"}`],
+    [pct(S.hurt), isCur ? `missed a week so far (Weeks 1–${CUR_WEEK})` : "missed at least one fantasy week"],
+    [pct(S.four), "missed 4 or more weeks"],
+    [S.gpp.toFixed(1), "weeks lost per pick"],
+    isCur ? [fmt(F.filter(f => f.ongoing).length), "out right now"] : [fmt(S.ending), "season-ending injuries"],
+  ]);
+  renderCurrentFantasy(); renderRepeatFantasy(); renderFantasySeasonEnding();
+  const Fpos = FAN.filter(f => state.fpos === "All" || f.pos === state.fpos);
+  renderLines("ftrend", [
+    {name: "Missed at least 1 week", short: "1+ weeks", color: "var(--off)", vals: SEASONS.map(s => fanSummary(Fpos.filter(f => f.season === s)).hurt)},
+    {name: "Missed 4+ weeks", short: "4+ weeks", color: "var(--def)", vals: SEASONS.map(s => fanSummary(Fpos.filter(f => f.season === s)).four)},
+  ], 0, .8, [0, .2, .4, .6, .8], state.fseason);
+  const Fs = FAN.filter(f => inSeason(f.season, state.fseason));
+  groupTable("fpos-table", FPOS.map(p => ({name: POS_NAME[p], hl: state.fpos === p, s: fanSummary(Fs.filter(f => f.pos === p))})), "Position");
+  groupTable("fround-table", [1, 2, 3, 4].map(r => ({name: `Round ${r}`, s: fanSummary(F.filter(f => f.round === r))})), "ADP round");
+  const DONE = FAN.filter(f => SEASONS.includes(f.season));
+  const all = fanSummary(DONE), rb = fanSummary(DONE.filter(f => f.pos === "RB")), wr = fanSummary(DONE.filter(f => f.pos === "WR")), qb = fanSummary(DONE.filter(f => f.pos === "QB"));
+  $("fan-callout").innerHTML = `Over six seasons, <b>${pct(all.hurt)}</b> of top-48 picks missed at least one fantasy week to injury, and <b>${pct(all.four)}</b> missed a month or more. Running backs (${pct(rb.hurt)}) and receivers (${pct(wr.hurt)}) are statistically similar; quarterbacks are much safer (${pct(qb.hurt)}, p = 0.005 vs. RBs).`;
+  renderBody(E, "fbodymap", "fbody-legend", "fregion-table"); renderRegionTable(E, "fregion-table", "fregion-note");
+  renderFantasyTeams(F);
+  $("ftable-sub").textContent = `The 15 top-48 picks who lost the most fantasy weeks to a single injury: ${scopeLabel(state.fseason)}${state.fpos === "All" ? "" : ", " + POS_NAME[state.fpos].toLowerCase()}.`;
+  renderPlayerTable([...E].sort((a, b) => b.games - a.games || a.season - b.season).slice(0, 15), "fptable", true);
+}
+function renderFantasySeasonEnding() {
+  const F = FAN.filter(f => SEASONS.includes(f.season) && (state.fpos === "All" || f.pos === state.fpos));
+  $("fse-table").innerHTML = `<thead><tr><th>Season</th><th>Count</th><th>Share of picks</th><th style="text-align:left">Players (PPR ADP)</th></tr></thead><tbody>` +
+    SEASONS.map(yr => {
+      const picks = F.filter(f => f.season === yr), out = picks.filter(f => f.ending).sort((a, b) => a.rank - b.rank);
+      return `<tr class="${state.fseason === yr ? "hl" : ""}"><td>${yr}</td><td>${out.length}</td><td>${pct(picks.length ? out.length / picks.length : 0)}</td><td class="name" style="text-align:left;white-space:normal">${out.map(f => `<span style="white-space:nowrap"><b style="font-weight:600">${esc(f.player)}</b> <span class="small-note">${f.pos} ${esc(f.adp)}</span></span>`).join(", ") || "—"}</td></tr>`;
+    }).join("") + `</tbody>`;
+}
+function renderCurrentFantasy() {
+  const F = FAN.filter(f => f.season === CUR && (state.fpos === "All" || f.pos === state.fpos));
+  const hurt = F.filter(f => f.hurt).sort((a, b) => b.ongoing - a.ongoing || b.games - a.games || a.rank - b.rank);
+  $("fcur-sub").textContent = `The ${CUR} top 48 by ${DATA.current.adp_source} PPR ADP${state.fpos === "All" ? "" : " (" + POS_NAME[state.fpos].toLowerCase() + ")"}, and every pick who has missed a week so far.`;
+  $("fcur-kpis").innerHTML = [[fmt(F.filter(f => f.ongoing).length), "out right now"], [`${hurt.length} of ${F.length}`, "have missed a week"], [fmt(F.reduce((a, f) => a + f.games, 0)), "fantasy weeks lost so far"]]
+    .map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join("");
+  const rows = hurt.flatMap(f => f.eps.map(e => ({...e, adp: f.adp, rank: f.rank})));
+  $("fcur-table").innerHTML = rows.length ? `<thead><tr><th>Player</th><th>Pos</th><th>ADP</th><th>Team</th><th>Injury</th><th class="r">Out from</th><th class="r">Weeks missed</th><th>Status</th></tr></thead><tbody>` +
+    rows.map(e => `<tr><td class="player">${esc(e.player)}</td><td>${e.pos}</td><td>${esc(e.adp)}</td><td>${e.team}</td><td>${esc(e.label ? e.label.replace(/\b\w/g, c => c.toUpperCase()) : "Not reported")}</td><td class="r">Wk ${e.start}</td><td class="r">${e.games}</td><td>${statusChip(e)}</td></tr>`).join("") + `</tbody>`
+    : `<tbody><tr><td>No top-48 picks have missed a week yet.</td></tr></tbody>`;
+}
+function renderRepeatFantasy() {
+  const by = new Map();
+  for (const f of FAN) { if (state.fpos !== "All" && f.pos !== state.fpos) continue; const r = by.get(f.p) || {name: f.player, pos: f.pos, picks: []}; r.picks.push(f); r.name = f.player; by.set(f.p, r); }
+  const rows = [...by.values()].filter(r => r.picks.length >= 2).map(r => {
+    const hurt = r.picks.filter(f => f.hurt);
+    const regions = {}; for (const f of hurt) for (const e of f.eps) if (e.region !== UNSPEC) regions[e.region] = (regions[e.region] || 0) + 1;
+    return {...r, hurt: hurt.length, weeks: r.picks.reduce((a, f) => a + f.games, 0), regions: Object.entries(regions).sort((a, b) => b[1] - a[1]).slice(0, 3), out: r.picks.some(f => f.ongoing)};
+  }).sort((a, b) => b.hurt - a.hurt || b.weeks - a.weeks).slice(0, 15);
+  const yrs = r => ALL_SEASONS.map(y => { const f = r.picks.find(x => x.season === y); if (!f) return `<span style="color:var(--rule)">'${String(y).slice(2)}</span>`;
+    return `<span title="${y}: ADP ${esc(f.adp)}${f.hurt ? `, missed ${f.games} wk` : ", healthy"}" style="font-weight:${f.hurt ? 700 : 400};color:${f.hurt ? "var(--ink)" : "var(--ink-3)"}">'${String(y).slice(2)}${f.hurt ? "●" : ""}</span>`; }).join(" ");
+  $("frepeat-table").innerHTML = `<thead><tr><th>Player</th><th>Pos</th><th>Top-48 seasons (● = missed time)</th><th class="r">Seasons hurt</th><th class="r">Weeks lost</th><th>Injuries</th></tr></thead><tbody>` +
+    rows.map(r => `<tr><td class="player">${esc(r.name)}${r.out ? ` <span class="status"><i style="background:var(--serious)"></i>Out now</span>` : ""}</td><td>${r.pos}</td><td style="white-space:nowrap">${yrs(r)}</td><td class="r">${r.hurt} of ${r.picks.length}</td><td class="r">${r.weeks}</td><td>${r.regions.map(([g, n]) => `${esc(g)}${n > 1 ? " ×" + n : ""}`).join(", ") || "—"}</td></tr>`).join("") + `</tbody>`;
+}
+function renderFantasyTeams(F) {
+  const by = {};
+  for (const f of F) (by[f.team] ||= []).push(f);
+  const rows = Object.entries(by).map(([t, v]) => ({t, n: v.length, gpp: mean(v.map(f => f.games)), hurt: v.filter(f => f.hurt).length / v.length,
+    worst: [...v].sort((a, b) => b.games - a.games).slice(0, 3).filter(f => f.games).map(f => `${esc(f.player)} ${f.season}: ${f.games} wk`)}))
+    .sort((a, b) => b.gpp - a.gpp || b.n - a.n);
+  const rowH = 22, lx = 50, W = 560, barMax = 380, top = 8;
+  const H = top + rows.length * rowH + 26;
+  const max = Math.max(1, ...rows.map(r => r.gpp));
+  const avg = mean(F.map(f => f.games));
+  const x = v => lx + v / max * barMax;
+  let s = "";
+  rows.forEach((r, i) => {
+    const y = top + i * rowH;
+    const tip = `<b>${r.t}</b>${r.n} top-48 pick${r.n === 1 ? "" : "s"} · ${pct(r.hurt)} missed time<br>${r.gpp.toFixed(1)} weeks lost per pick${r.worst.length ? `<br><span class="muted">${r.worst.join("<br>")}</span>` : ""}`;
+    s += `<g data-tip="${esc(tip)}" opacity="${r.n < 5 ? .5 : 1}"><rect x="0" y="${y}" width="${W}" height="${rowH}" fill="transparent"/>`;
+    s += `<text x="${lx - 10}" y="${y + rowH / 2 + 4}" text-anchor="end" style="font:600 13px var(--body);fill:var(--ink)">${r.t}</text>`;
+    s += `<rect x="${lx}" y="${y + 5}" width="${Math.max(x(r.gpp) - lx, 2)}" height="${rowH - 10}" rx="3" fill="var(--seq-3)"/>`;
+    s += `<text x="${x(r.gpp) + 6}" y="${y + rowH / 2 + 4}" class="num" style="font-size:12px">${r.gpp.toFixed(1)} <tspan style="fill:var(--ink-3)">· ${r.n} pick${r.n === 1 ? "" : "s"}</tspan></text></g>`;
+  });
+  const ay = top + rows.length * rowH;
+  s += `<line x1="${x(avg)}" x2="${x(avg)}" y1="${top}" y2="${ay}" stroke="var(--ink-3)" stroke-dasharray="4 3"/>`;
+  s += `<text x="${x(avg)}" y="${ay + 16}" text-anchor="middle" style="font-size:12px;fill:var(--ink-3)">average ${avg.toFixed(1)} weeks lost per pick</text>`;
+  $("fteam").setAttribute("viewBox", `0 0 ${W} ${H}`);
+  $("fteam").innerHTML = s;
+}
+
+/* ---------- orchestration ---------- */
+function render() {
+  for (const t of ["starters", "fantasy"]) {
+    $("tab-" + t).setAttribute("aria-selected", String(state.tab === t));
+    $("tab-" + t).tabIndex = state.tab === t ? 0 : -1;
+    $("panel-" + t).hidden = state.tab !== t;
+  }
+  if (state.tab === "starters") renderStarters(); else renderFantasy();
+}
+for (const t of ["starters", "fantasy"]) $("tab-" + t).addEventListener("click", () => { setState({tab: t}); try { history.replaceState(null, "", "#" + t); } catch (e) {} });
+$("tab-starters").parentElement.addEventListener("keydown", ev => {
+  if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+  const next = state.tab === "starters" ? "fantasy" : "starters";
+  setState({tab: next}); $("tab-" + next).focus();
+});
+
+const tip = $("tip");
+document.addEventListener("pointermove", ev => {
+  const t = ev.target.closest?.("[data-tip]");
+  document.querySelectorAll(".rtable tr.hl[data-row]").forEach(r => r.classList.remove("hl"));
+  if (!t) { tip.hidden = true; return; }
+  tip.innerHTML = t.getAttribute("data-tip"); tip.hidden = false;
+  const r = t.getAttribute("data-region"), tb = t.getAttribute("data-table");
+  if (r && tb) document.querySelector(`#${tb} tr[data-row="${CSS.escape(r)}"]`)?.classList.add("hl");
+  const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - pad;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - pad;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+});
+document.addEventListener("pointerleave", () => { tip.hidden = true; });
+
+document.querySelectorAll(".cur-title").forEach(el => el.textContent = `${CUR} so far`);
+document.querySelectorAll(".cur-week").forEach(el => el.textContent = `Through Week ${CUR_WEEK}`);
+document.querySelectorAll(".cur-season").forEach(el => el.textContent = CUR);
+$("eyebrow").textContent = `NFL injury report · 2020–2025 + ${CUR} through Week ${CUR_WEEK}`;
+renderFindings();
+chips("f-season", ["All", ...ALL_SEASONS], "season", seasonLabel);
+chips("f-def", DEFS.filter(d => d.full).map(d => d.id), "def");
+chips("f-unit", UNITS, "unit");
+chips("ff-season", ["All", ...ALL_SEASONS], "fseason", seasonLabel);
+chips("ff-pos", ["All", ...FPOS], "fpos");
+render();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+new MutationObserver(render).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
+</script>

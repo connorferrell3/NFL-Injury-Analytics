@@ -1,0 +1,15 @@
+region,repeat_pairs,same_region,chance
+Neck,45,0.378,0.033
+Knee,276,0.33,0.169
+Hamstring,190,0.305,0.106
+Ankle,255,0.278,0.15
+Shoulder,116,0.241,0.078
+Hip / Groin,135,0.237,0.079
+Foot / Toe,89,0.236,0.061
+Lower Leg,80,0.2,0.046
+Head / Concussion,167,0.198,0.1
+Back,42,0.167,0.029
+Chest / Ribs,59,0.136,0.038
+Hand / Wrist,65,0.108,0.04
+Arm / Elbow,48,0.104,0.027
+Quad / Thigh,44,0.068,0.021
