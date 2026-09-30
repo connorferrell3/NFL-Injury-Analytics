@@ -17,6 +17,8 @@ Key player: pedigree definition (`is_pedigree_key`) -- any of:
     - first-round pick still on his rookie contract (draft year through year 5, ending
       early if he signed an extension or a new deal before the season)
     - cap hit in the top 30% of his position group that season (`salary_top30`)
+    Also tagged: `team_cap_top30`, the top 30% of each team-season's players by cap hit
+    (an equal-share group per team, used for team comparisons).
     - Pro Bowl or All-Pro selection the PREVIOUS season (same-season honors would be
       biased toward players who stayed healthy)
 
@@ -195,6 +197,8 @@ def tag_pedigree(ps: pd.DataFrame, xw: pd.DataFrame) -> pd.DataFrame:
     best["cap_pct_rank"] = best.groupby(["season", "pos_group"])["cap_hit"].rank(pct=True)
     ps = ps.merge(best[["season", "pfr_player_id", "cap_pct_rank"]], on=["season", "pfr_player_id"])
     ps["salary_top30"] = ps["cap_pct_rank"] > 1 - SALARY_TOP
+    team_rank = ps.groupby(["season", "team"])["cap_hit"].rank(pct=True, method="first")
+    ps["team_cap_top30"] = team_rank > 1 - SALARY_TOP
 
     # previous-season Pro Bowl / All-Pro, matched by name on that season's rosters
     awards = pd.read_csv(RAW / "awards.csv")
@@ -336,6 +340,7 @@ def find_episodes(key: pd.DataFrame, snaps: pd.DataFrame, ev: pd.DataFrame,
                 "player": r.player, "pos_group": r.pos_group, "side": r.side,
                 "start_week": spell[0], "end_week": spell[-1],
                 "games_missed": len(spell),
+                "games_remaining": sum(1 for w in weeks if spell[0] <= w <= season_end),
                 "body_region": region, "injury_label": raw,
                 "went_on_ir": on_ir,
                 "out_at_season_end": spell[-1] == season_end,
@@ -364,6 +369,8 @@ def main() -> None:
     fantasy_eps = find_episodes(fantasy, snaps_cur, ev, last_roster)
 
     ps.to_csv(OUT / "player_seasons.csv", index=False)
+    (snaps_cur[["season", "team", "week"]].drop_duplicates().sort_values(["season", "team", "week"])
+        .to_csv(OUT / "team_weeks.csv", index=False))
     episodes.to_csv(OUT / "injury_episodes.csv", index=False)
     fantasy.to_csv(OUT / "fantasy_top48.csv", index=False)
     fantasy_eps.to_csv(OUT / "fantasy_episodes.csv", index=False)

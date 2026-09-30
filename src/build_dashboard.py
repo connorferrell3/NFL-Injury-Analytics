@@ -20,12 +20,13 @@ UNSPEC = "Unspecified (IR)"
 
 # bit flags for key-player criteria, mirrored in template.html
 FLAGS = {"is_snap_key": 1, "is_pedigree_key": 2, "first_round_rookie": 4,
-         "salary_top30": 8, "pro_bowl_prev": 16, "all_pro_prev": 32}
+         "salary_top30": 8, "pro_bowl_prev": 16, "all_pro_prev": 32, "team_cap_top30": 64}
 DEFINITIONS = {
     "Snap share": "is_snap_key",
     "Pedigree": "is_pedigree_key",
     "1st-round rookie contract": "first_round_rookie",
     "Salary top 30%": "salary_top30",
+    "Team top 30% by cap": "team_cap_top30",
     "Pro Bowl (prior season)": "pro_bowl_prev",
     "All-Pro (prior season)": "all_pro_prev",
     "Everyone who took a snap": None,
@@ -79,7 +80,36 @@ def same_region(eps: pd.DataFrame) -> tuple[pd.DataFrame, float, float]:
     return by, pairs["same"].mean(), float((share ** 2).sum())
 
 
-def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame) -> dict:
+def team_cap_lost(d: pd.DataFrame, team_games: pd.Series) -> pd.Series:
+    """Share of each team's cap dollars (in group d) spent on games missed to injury."""
+    g = team_games.reindex(pd.MultiIndex.from_arrays([d["season"], d["team"]])).to_numpy()
+    lost = d["cap_hit"] * d["games_missed"] / g
+    t = d.assign(lost=lost).groupby("team")[["cap_hit", "lost"]].sum()
+    return t["lost"] / t["cap_hit"]
+
+
+def team_pvalues(ps: pd.DataFrame, team_games: pd.Series, draws: int = 1000) -> dict:
+    """Permutation p-values: are team differences bigger than chance? Per definition x measure,
+    completed seasons, all positions. Keys match the dashboard's definition bitmasks."""
+    done = ps[ps["season"] < CURRENT_SEASON]
+    groups = {1: done["is_snap_key"], 2: done["is_pedigree_key"], 64: done["team_cap_top30"],
+              48: done["pro_bowl_prev"] | done["all_pro_prev"]}
+    rng = np.random.default_rng(0)
+    out = {}
+    for bit, mask in groups.items():
+        d = done[mask]
+        rate = lambda x: x.groupby("team")["injured"].mean().var()
+        cap = lambda x: team_cap_lost(x, team_games).var()
+        res = {}
+        for name, stat in (("rate", rate), ("cap", cap)):
+            obs = stat(d)
+            null = np.array([stat(d.assign(team=rng.permutation(d["team"].to_numpy()))) for _ in range(draws)])
+            res[name] = round(float((np.sum(null >= obs) + 1) / (draws + 1)), 3)
+        out[bit] = res
+    return out
+
+
+def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame, team_games: pd.Series) -> dict:
     done = ps[ps["season"] < CURRENT_SEASON]
     sk = done[done["is_snap_key"]]
     keyset = set(zip(sk["season"], sk["team"], sk["pfr_player_id"]))
@@ -99,6 +129,18 @@ def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame) -> dict:
     se_by = se_eps.groupby("season").size()
     se_rate = (se_by / sk.groupby("season").size()).round(3)
     se_unspec = (se_eps["body_region"] == UNSPEC).mean()
+
+    top = done[done["team_cap_top30"]]
+    share = team_cap_lost(top, team_games).sort_values()
+    rng = np.random.default_rng(0)
+    null = [team_cap_lost(top.assign(team=rng.permutation(top["team"].to_numpy())), team_games).var() for _ in range(1000)]
+    p_team = float(np.mean(np.array(null) >= share.var()))
+    league_share = float((top["cap_hit"] * top["games_missed"] / team_games.reindex(
+        pd.MultiIndex.from_arrays([top["season"], top["team"]])).to_numpy()).sum() / top["cap_hit"].sum())
+
+    early = sk_eps["start_week"] <= 6
+    ham = sk_eps["body_region"] == "Hamstring"
+    weeks_early = 5 / 17  # Weeks 2-6 of the Week 2-18 window where starter absences can begin
 
     f = fan[fan["season"] < CURRENT_SEASON].assign(missed4=lambda d: d["games_missed"] >= 4,
                                                    rnd=lambda d: (d["adp_rank"] - 1) // 12 + 1)
@@ -133,6 +175,16 @@ def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame) -> dict:
          "bars": [["1st-rd rookies", round(rk.mean(), 3)], ["Other starters", round(not_rk.mean(), 3)]]},
         {"group": "NFL", "id": "knee", "value": pct(knee["share"]), "title": "of starter absences are knee injuries, the most common and costliest",
          "detail": f"Knees cost {int(knee['sum']):,} games over six seasons. Achilles injuries are rarer but {pct(ach)} of them end the season."},
+        {"group": "NFL", "id": "team_cap", "value": f"{pct(share.iloc[0])} vs {pct(share.iloc[-1])}",
+         "title": f"of top-paid players' cap lost to injury: {share.index[0]} (best) vs. {share.index[-1]} (worst)",
+         "detail": f"Share of each team's top-30% cap dollars spent on games those players missed, 2020–2025. League average {pct(league_share)}. "
+                   f"Team gaps are real, not noise (permutation test, {'p < 0.001' if p_team == 0 else fmt_p(p_team)}).",
+         "bars": [[t, round(v, 3)] for t, v in list(share.head(2).items()) + list(share.tail(2).items())]},
+        {"group": "NFL", "id": "hamstring_early", "value": pct(sk_eps[ham & early].shape[0] / ham.sum()),
+         "title": "of hamstring injuries start in the first five weeks of the season",
+         "detail": f"Weeks 2–6 are only {pct(weeks_early)} of the season. Other injuries: {pct(early[~ham].mean())} "
+                   f"({fmt_p(p_two_prop(early[ham], early[~ham]))}). Soft-tissue pulls cluster early; knees and necks lean late.",
+         "bars": [["Hamstrings", round(float(early[ham].mean()), 3)], ["Other injuries", round(float(early[~ham].mean()), 3)], ["Share of weeks", round(weeks_early, 3)]]},
         {"group": "Fantasy", "id": "fan_rate", "value": pct(f["injured"].mean()), "title": "of top-48 fantasy picks miss at least one week to injury",
          "detail": f"{pct(f['missed4'].mean())} miss four weeks or more. In a 12-team league, that's about {f['missed4'].mean() * 4:.0f} of each manager's first four picks.",
          "bars": [["Missed 1+ week", round(f["injured"].mean(), 3)], ["Missed 4+ weeks", round(f["missed4"].mean(), 3)]]},
@@ -184,9 +236,11 @@ def main() -> None:
     fan = pd.read_csv(PROC / "fantasy_top48.csv")
     fep = pd.read_csv(PROC / "fantasy_episodes.csv")
 
+    tw = pd.read_csv(PROC / "team_weeks.csv")
+    team_games = tw.groupby(["season", "team"])["week"].size()
     ps_o = with_outcomes(ps, ep, KEY)
     fan_o = with_outcomes(fan, fep, ["season", "pfr_player_id"])
-    found, reg = findings(ps_o, ep, fan_o)
+    found, reg = findings(ps_o, ep, fan_o, team_games)
     summaries(ps_o, fan_o, reg)
     for c in found["cards"]:
         print(f"[{c['group']}] {c['value']} {c['title']} -- {c['detail']}")
@@ -197,23 +251,28 @@ def main() -> None:
 
     def ep_rows(e: pd.DataFrame) -> list:
         # [season, team, playerIdx, player, pos_group, start_week, games, region,
-        #  season_ending, went_on_ir, label, ongoing]
+        #  season_ending, went_on_ir, label, ongoing, games_remaining]
         return e.assign(p=e["pfr_player_id"].map(pid), injury_label=e["injury_label"].fillna(""),
                         season_ending=e["season_ending"].astype(int), went_on_ir=e["went_on_ir"].astype(int),
                         ongoing=e["ongoing"].astype(int))[
             ["season", "team", "p", "player", "pos_group", "start_week", "games_missed",
-             "body_region", "season_ending", "went_on_ir", "injury_label", "ongoing"]].values.tolist()
+             "body_region", "season_ending", "went_on_ir", "injury_label", "ongoing", "games_remaining"]].values.tolist()
 
     payload = {
         "current": {"season": CURRENT_SEASON, "week": found["current_week"],
                     "adp_source": fan.loc[fan["season"] == CURRENT_SEASON, "source"].iat[0]},
         "findings": found["cards"],
+        "team_p": team_pvalues(ps_o, team_games),
         "same_region": found["same_region"],
         "recur": found["recur"],
-        # [season, team, pos_group, playerIdx, flags, avg_unit_pct x100]
+        # [season, team, pos_group, playerIdx, flags, avg_unit_pct x100, cap hit $M]
         "ps": ps[["season", "team", "pos_group"]].assign(
-            p=ps["pfr_player_id"].map(pid), f=flags, u=(ps["avg_unit_pct"] * 100).round().astype(int)
+            p=ps["pfr_player_id"].map(pid), f=flags, u=(ps["avg_unit_pct"] * 100).round().astype(int),
+            c=ps["cap_hit"].round(2)
         ).values.tolist(),
+        "team_games": {f"{s}|{t}": int(n) for (s, t), n in team_games.items()},
+        # teams that played in each season-week (normalizes for byes)
+        "week_games": {f"{s}|{w}": int(n) for (s, w), n in tw.groupby(["season", "week"]).size().items()},
         "ep": ep_rows(ep),
         # [season, adp_rank, adp_formatted, player, pos_group, team, playerIdx]
         "fan": fan.assign(p=fan["pfr_player_id"].map(pid))[

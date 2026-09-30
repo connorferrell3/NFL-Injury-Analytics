@@ -212,6 +212,7 @@ a { color: var(--accent); }
     <button class="tab" role="tab" id="tab-overview" aria-controls="panel-overview">Overview</button>
     <button class="tab" role="tab" id="tab-injuries" aria-controls="panel-injuries">Injuries</button>
     <button class="tab" role="tab" id="tab-trends" aria-controls="panel-trends">Trends</button>
+    <button class="tab" role="tab" id="tab-teams" aria-controls="panel-teams">Teams</button>
     <button class="tab" role="tab" id="tab-players" aria-controls="panel-players">Players</button>
     <button class="tab" role="tab" id="tab-live" aria-controls="panel-live"><span class="live-dot" aria-hidden="true"></span><span class="cur-season"></span> Live</button>
     <button class="tab" role="tab" id="tab-fantasy" aria-controls="panel-fantasy">Fantasy · PPR</button>
@@ -254,6 +255,8 @@ a { color: var(--accent); }
 
   <!-- ======================= INJURIES ======================= -->
   <div class="tabpanel" role="tabpanel" id="panel-injuries" aria-labelledby="tab-injuries" hidden>
+    <div class="cards" id="inj-cards"></div>
+
     <section>
       <div class="sec-head">
         <h2>Where they get hurt</h2>
@@ -275,8 +278,9 @@ a { color: var(--accent); }
     <section>
       <div class="sec-head">
         <h2>How long they're out</h2>
-        <p>Games missed per absence. Bars span the middle half of absences (25th–75th percentile); the dot marks the median.</p>
+        <p>Bars span the middle half of absences (25th–75th percentile); the dot marks the median. "Games missed" is the real cost. "Share of remaining season" removes the effect of <em>when</em> the injury happened: an Achilles tear in Week 16 can only cost two games, but it still ends the season.</p>
       </div>
+      <div class="fgroup" id="dur-metric"><span class="flabel">Measure</span></div>
       <div class="grid-2b">
         <div class="panel">
           <h3>Games missed by body region</h3>
@@ -287,6 +291,26 @@ a { color: var(--accent); }
           <h3>Length of absences</h3>
           <svg id="hist" viewBox="0 0 420 280" role="img" aria-label="Distribution of games missed per absence"></svg>
           <p class="small-note">Absences still open at the end of the regular season are counted only up to the last game, so long injuries are undercounted.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>When injuries happen</h2>
+        <p>New absences by the week of the first missed game (the injury itself usually happened in the game before). Counts are per team, so bye weeks don't distort the picture. Starter absences can't begin in Week 1 because a player has to appear in a game first.</p>
+      </div>
+      <div class="grid-2b">
+        <div class="panel">
+          <h3>New absences per team, by week</h3>
+          <div class="legend"><span><span class="key-dot" style="background:var(--seq-2);border-radius:2px"></span>Returned that season</span><span><span class="key-dot" style="background:var(--seq-5);border-radius:2px"></span>Season-ending</span></div>
+          <svg id="timing" viewBox="0 0 560 290" role="img" aria-label="New absences per team by week"></svg>
+          <p class="small-note">Week 18 runs high because playoff-bound teams rest starters under minor injury tags.</p>
+        </div>
+        <div class="panel">
+          <h3>Early, middle, or late season?</h3>
+          <p class="small-note" style="margin-top:-4px">Where each injury type falls in the season. If injuries were spread evenly, each column would match the share of weeks in its header.</p>
+          <div class="scroll-x"><table class="rtable" id="phase-table"></table></div>
         </div>
       </div>
     </section>
@@ -330,6 +354,25 @@ a { color: var(--accent); }
           <table class="rtable" id="se-table"></table>
           <p class="small-note" id="se-note"></p>
         </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ======================= TEAMS ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-teams" aria-labelledby="tab-teams" hidden>
+    <div class="cards" id="team-cards"></div>
+
+    <section>
+      <div class="sec-head">
+        <h2>Which teams keep their key players on the field</h2>
+        <p>Each team compared on its own key players, so a team with more stars isn't penalized for having more. "Cap dollars lost" is the share of those players' salary spent on games they missed to injury, so losing a $40M quarterback counts more than losing a $4M guard. The "Team top 30% by cap" definition gives every team the same share of players, which makes this the fairest comparison.</p>
+      </div>
+      <p class="callout" id="team-callout"></p>
+      <div class="panel">
+        <div class="fgroup" id="tm-metric"><span class="flabel">Measure</span></div>
+        <div class="legend" id="team-legend"></div>
+        <svg id="team-health" role="img" aria-label="Team injury comparison"></svg>
       </div>
     </section>
 
@@ -523,17 +566,19 @@ const UNITS = ["All", "Offense", "Defense", ...POS];
 // bit flags mirror FLAGS in src/build_dashboard.py
 const DEFS = [
   {id: "Snap share", bit: 1, full: true, desc: "65%+ of snaps (50% for RBs)"},
-  {id: "Pedigree", bit: 2, full: true, desc: "1st-rd rookie deal, salary top 30%, or prior-season Pro Bowl / All-Pro"},
+  {id: "Pedigree", bit: 2, full: true, desc: "1st-rd rookie deal, salary top 30% at position, or prior-season Pro Bowl / All-Pro"},
+  {id: "Team top 30% cap", bit: 64, full: true, desc: "Each team's highest-paid 30% by cap hit"},
+  {id: "Pro Bowl / All-Pro", bit: 48, full: true, desc: "Pro Bowl or All-Pro the prior season"},
   {id: "1st-round rookie contract", bit: 4},
   {id: "Salary top 30% at position", bit: 8},
   {id: "Pro Bowl, prior season", bit: 16},
   {id: "All-Pro, prior season", bit: 32},
   {id: "Everyone who took a snap", bit: 0},
 ];
-const DEF_LABEL = {"Snap share": "Snap-share starters", "Pedigree": "Pedigree players"};
+const DEF_LABEL = {"Snap share": "Snap-share starters", "Pedigree": "Pedigree players", "Team top 30% cap": "Each team's top-30% cap players", "Pro Bowl / All-Pro": "Prior-season Pro Bowlers and All-Pros"};
 
-const PS = DATA.ps.map(([season, team, pos, p, f, u]) => ({season, team, pos, p, f, u}));
-const toEp = r => ({season: r[0], team: r[1], p: r[2], player: r[3], pos: r[4], start: r[5], games: r[6], region: r[7], ending: !!r[8], ir: !!r[9], label: r[10], ongoing: !!r[11]});
+const PS = DATA.ps.map(([season, team, pos, p, f, u, c]) => ({season, team, pos, p, f, u, c}));
+const toEp = r => ({season: r[0], team: r[1], p: r[2], player: r[3], pos: r[4], start: r[5], games: r[6], region: r[7], ending: !!r[8], ir: !!r[9], label: r[10], ongoing: !!r[11], remaining: r[12]});
 const EP = DATA.ep.map(toEp);
 const FEP = DATA.fep.map(toEp);
 const FAN = DATA.fan.map(([season, rank, adp, player, pos, team, p]) => ({season, rank, adp, player, pos, team, p}));
@@ -551,9 +596,9 @@ const REGIONS = {
 };
 const UNSPEC = "Unspecified (IR)";
 
-const TABS = ["overview", "injuries", "trends", "players", "live", "fantasy", "methods"];
-const NFL_TABS = new Set(["injuries", "trends", "players", "live"]);
-const state = {tab: "overview", season: "All", def: "Snap share", unit: "All", fseason: "All", fpos: "All"};
+const TABS = ["overview", "injuries", "trends", "teams", "players", "live", "fantasy", "methods"];
+const NFL_TABS = new Set(["injuries", "trends", "teams", "players", "live"]);
+const state = {tab: "overview", durMetric: "games", teamMetric: "cap", season: "All", def: "Snap share", unit: "All", fseason: "All", fpos: "All"};
 try {
   const s = JSON.parse(localStorage.getItem("starters-down-v3"));
   if (s) for (const k of Object.keys(state)) if (k in s) state[k] = s[k];
@@ -562,6 +607,8 @@ if (!TABS.includes(state.tab)) state.tab = "overview";
 if (TABS.includes(location.hash.slice(1))) state.tab = location.hash.slice(1);
 if (!DEFS.some(d => d.full && d.id === state.def)) state.def = "Snap share";
 if (!UNITS.includes(state.unit)) state.unit = "All";
+if (!["games", "share"].includes(state.durMetric)) state.durMetric = "games";
+if (!["cap", "rate"].includes(state.teamMetric)) state.teamMetric = "cap";
 if (state.season !== "All" && !ALL_SEASONS.includes(state.season)) state.season = "All";
 if (state.fseason !== "All" && !ALL_SEASONS.includes(state.fseason)) state.fseason = "All";
 if (state.fpos !== "All" && !FPOS.includes(state.fpos)) state.fpos = "All";
@@ -708,8 +755,9 @@ function renderCards(host, ids) {
 
 /* ---------- overview ---------- */
 const EXPLORE = [
-  ["injuries", "Injuries", "Where on the body players get hurt, and how long each injury keeps them out."],
-  ["trends", "Trends", "Offense vs. defense, positions, season-ending injuries by year, and team totals."],
+  ["injuries", "Injuries", "Where on the body players get hurt, how long they're out, and when in the season it happens."],
+  ["trends", "Trends", "Offense vs. defense, positions, and season-ending injuries by year."],
+  ["teams", "Teams", "Which teams keep their highest-paid players on the field, and which lose the most."],
   ["players", "Players", "The longest absences and the players who keep getting hurt."],
   ["live", `${CUR} Live`, `Who's out right now, through Week ${CUR_WEEK}.`],
   ["fantasy", "Fantasy · PPR", "How top-48 PPR draft picks hold up, by position, round, and team."],
@@ -732,7 +780,7 @@ function renderOverview() {
     <span class="ls-stat"><b>${pct(injuredShare(curK))}</b>have missed a game</span>
     <span class="ls-stat"><b>${fanOut}</b>top-48 PPR picks out</span>
     <span class="go">See who's out →</span>`;
-  renderCards("ov-cards", ["recurrence", "same_region", "pro_bowl", "rookies", "knee", "fan_pos"]);
+  renderCards("ov-cards", ["recurrence", "same_region", "team_cap", "pro_bowl", "rookies", "fan_pos"]);
   $("explore").innerHTML = EXPLORE.map(([t, name, d]) => `<button class="xcard" type="button" data-go="${t}"><b>${esc(name)}</b>${esc(d)}</button>`).join("");
   document.querySelectorAll("#explore [data-go]").forEach(b => b.addEventListener("click", () => goTab(b.dataset.go)));
 }
@@ -828,24 +876,28 @@ function renderSeasonEnding() {
   $("se-note").textContent = `${pct(un / Math.max(tot, 1))} of season-ending injuries have no body part on any report, so "top known injury" undercounts them. In ${CUR}, ${curIR} key players are on IR and out as of Week ${CUR_WEEK}; they'll count here only if they're still out at season's end. 2020 was a 16-game season.`;
 }
 function renderDuration(E) {
+  const share = state.durMetric === "share";
+  const val = e => share ? e.games / Math.max(e.remaining, 1) : e.games;
   const by = {};
   for (const e of E) (by[e.region] ||= []).push(e);
   const rows = Object.entries(by).map(([r, v]) => {
-    const g = v.map(e => e.games);
+    const g = v.map(val);
     return {r, n: v.length, q1: quantile(g, .25), med: median(g), q3: quantile(g, .75), mean: mean(g), end: v.filter(e => e.ending).length / v.length};
   }).sort((a, b) => b.med - a.med || b.mean - a.mean);
   const rowH = 27, m = {l: 124, r: 94, t: 26, b: 30}, W = 560;
   const H = m.t + m.b + rows.length * rowH;
-  const xmax = Math.max(6, Math.ceil(Math.max(0, ...rows.map(d => d.q3)) / 2) * 2);
+  const xmax = share ? 1 : Math.max(6, Math.ceil(Math.max(0, ...rows.map(d => d.q3)) / 2) * 2);
   const x = v => m.l + v / xmax * (W - m.l - m.r);
-  const ticks = []; for (let t = 0; t <= xmax; t += xmax > 10 ? 4 : 2) ticks.push(t);
+  const ticks = []; if (share) ticks.push(0, .25, .5, .75, 1); else for (let t = 0; t <= xmax; t += xmax > 10 ? 4 : 2) ticks.push(t);
+  const tl = t => share ? pct(t) : t, vl = v => share ? pct(v) : v.toFixed(0);
   const ramp = seq();
   let s = `<g class="grid">` + ticks.map(t => `<line x1="${x(t)}" x2="${x(t)}" y1="${m.t - 6}" y2="${H - m.b}"/>`).join("") + `</g>`;
-  s += `<g class="axis">` + ticks.map(t => `<text x="${x(t)}" y="${H - m.b + 18}" text-anchor="middle">${t}</text>`).join("") +
-       `<text x="${W - m.r}" y="${H - 2}" text-anchor="end">games missed</text><text x="${W}" y="${m.t - 10}" text-anchor="end">season-ending</text></g>`;
+  s += `<g class="axis">` + ticks.map(t => `<text x="${x(t)}" y="${H - m.b + 18}" text-anchor="middle">${tl(t)}</text>`).join("") +
+       `<text x="${W - m.r}" y="${H - 2}" text-anchor="end">${share ? "share of remaining season missed" : "games missed"}</text><text x="${W}" y="${m.t - 10}" text-anchor="end">season-ending</text></g>`;
   rows.forEach((d, i) => {
     const cy = m.t + i * rowH + rowH / 2, small = d.n < 15;
-    const tip = `<b>${esc(d.r)}</b>${fmt(d.n)} absences<br>Median ${d.med.toFixed(0)} · middle 50%: ${d.q1.toFixed(0)}–${d.q3.toFixed(0)} games<br>Average ${d.mean.toFixed(1)} games<br>${pct(d.end)} season-ending${small ? '<br><span class="muted">Small sample</span>' : ""}`;
+    const unit = share ? " of the remaining season" : " games";
+    const tip = `<b>${esc(d.r)}</b>${fmt(d.n)} absences<br>Median ${vl(d.med)} · middle 50%: ${vl(d.q1)}–${vl(d.q3)}${unit}<br>Average ${share ? pct(d.mean) : d.mean.toFixed(1)}${unit}<br>${pct(d.end)} season-ending${d.r === "Achilles" ? '<br><span class="muted">Label also covers Achilles tendinitis, not only tears</span>' : ""}${small ? '<br><span class="muted">Small sample</span>' : ""}`;
     s += `<g data-tip="${esc(tip)}" opacity="${small ? .55 : 1}"><rect x="0" y="${cy - rowH / 2}" width="${W}" height="${rowH}" fill="transparent"/>`;
     s += `<text x="${m.l - 10}" y="${cy + 4}" text-anchor="end" style="font-size:13px;fill:var(--ink)">${esc(d.r)}</text>`;
     const w = Math.max(x(d.q3) - x(d.q1), 6);
@@ -855,6 +907,102 @@ function renderDuration(E) {
   });
   $("duration").setAttribute("viewBox", `0 0 ${W} ${H}`);
   $("duration").innerHTML = s;
+}
+function renderTiming(E) {
+  const seasons = state.season === "All" ? SEASONS : [state.season];
+  const games = w => seasons.reduce((a, s) => a + (DATA.week_games[`${s}|${w}`] || 0), 0);
+  const weeks = []; for (let w = 2; w <= 18; w++) if (games(w)) weeks.push(w);
+  const rows = weeks.map(w => { const es = E.filter(e => e.start === w), g = games(w);
+    return {w, g, n: es.length, end: es.filter(e => e.ending).length, rate: es.length / g, endRate: es.filter(e => e.ending).length / g}; });
+  const W = 560, H = 290, m = {l: 40, r: 10, t: 16, b: 40};
+  const maxV = Math.max(.1, ...rows.map(r => r.rate));
+  const step = maxV > .6 ? .25 : maxV > .25 ? .1 : .05, top = Math.ceil(maxV / step) * step;
+  const y = v => m.t + (1 - v / top) * (H - m.t - m.b);
+  const slot = (W - m.l - m.r) / Math.max(rows.length, 1), bw = Math.max(6, slot - 6);
+  const ticks = []; for (let t = 0; t <= top + 1e-9; t += step) ticks.push(+t.toFixed(2));
+  let s = `<g class="grid">` + ticks.map(t => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(t)}" y2="${y(t)}"/>`).join("") + `</g>`;
+  s += `<g class="axis">` + ticks.map(t => `<text x="${m.l - 6}" y="${y(t) + 4}" text-anchor="end">${t}</text>`).join("") + `</g>`;
+  rows.forEach((r, i) => {
+    const x = m.l + i * slot + 3, yTop = y(r.rate), yEnd = y(r.endRate);
+    const tip = `<b>Week ${r.w}</b>${fmt(r.n)} new absences · ${r.rate.toFixed(2)} per team<br>${fmt(r.end)} became season-ending${state.season === "All" ? `<br><span class="muted">${r.g} team-games across 2020–2025</span>` : ""}`;
+    s += `<g data-tip="${esc(tip)}"><rect x="${x - 3}" y="${m.t}" width="${slot}" height="${H - m.t - m.b}" fill="transparent"/>`;
+    if (r.rate > r.endRate) s += `<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(yEnd - yTop - (r.endRate ? 2 : 0), 1)}" rx="3" fill="var(--seq-2)"/>`;
+    if (r.endRate) s += `<rect x="${x}" y="${yEnd}" width="${bw}" height="${y(0) - yEnd}" rx="3" fill="var(--seq-5)"/>`;
+    s += `<text x="${x + bw / 2}" y="${H - m.b + 16}" text-anchor="middle" class="num" style="font-size:11px;fill:var(--ink-3)">${r.w}</text></g>`;
+  });
+  s += `<text x="${(m.l + W - m.r) / 2}" y="${H - 6}" text-anchor="middle" style="font-size:12px;fill:var(--ink-3)">week of first missed game</text>`;
+  $("timing").innerHTML = s;
+
+  const phases = [["Weeks 2–6", 2, 6], ["Weeks 7–12", 7, 12], ["Weeks 13–18", 13, 18]];
+  const wk = phases.map(([, a, b]) => weeks.filter(w => w >= a && w <= b).length), totW = wk.reduce((a, b) => a + b, 0) || 1;
+  const exp = wk.map(n => n / totW);
+  const by = {}; for (const e of E) if (e.start >= 2) (by[e.region] ||= []).push(e.start);
+  const regs = Object.entries(by).filter(([r, v]) => r !== UNSPEC && v.length >= 10).map(([r, v]) => ({r, n: v.length,
+    sh: phases.map(([, a, b]) => v.filter(w => w >= a && w <= b).length / v.length)})).sort((a, b) => b.sh[0] - a.sh[0]);
+  const ramp = seq();
+  const cell = (v, e) => { const lift = e ? v / e : 1, i = Math.max(0, Math.min(6, Math.round((lift - .5) / 1 * 6)));
+    const f = ramp[i]; return `<td style="background:${f};color:${inkOn(f)};text-align:center">${pct(v)}</td>`; };
+  $("phase-table").innerHTML = `<thead><tr><th>Injury</th>${phases.map(([l], i) => `<th style="text-align:center">${l}<br><span style="font-weight:400;letter-spacing:0;text-transform:none">${pct(exp[i])} of weeks</span></th>`).join("")}<th>Absences</th></tr></thead><tbody>` +
+    regs.map(r => `<tr class="${r.n < 30 ? "muted" : ""}"><td>${esc(r.r)}</td>${r.sh.map((v, i) => cell(v, exp[i])).join("")}<td>${r.n}</td></tr>`).join("") + `</tbody>`;
+}
+function renderTeamHealth() {
+  const bit = defBit(), cap = state.teamMetric === "cap";
+  const K = PS.filter(k => inSeason(k.season, state.season) && unitMatch(k.pos, state.unit) && inDef(k, bit));
+  const by = {};
+  for (const k of K) {
+    const t = (by[k.team] ||= {t: k.team, n: 0, hurt: 0, cap: 0, lost: 0, worst: []});
+    const eps = EP_BY_KEY.get(kstr(k.season, k.team, k.p)) || [];
+    const gm = eps.reduce((a, e) => a + e.games, 0), tg = DATA.team_games[`${k.season}|${k.team}`] || 17;
+    t.n++; if (eps.length) t.hurt++; t.cap += k.c;
+    const lost = k.c * gm / tg; t.lost += lost;
+    if (lost > 0) t.worst.push({name: eps[0].player, pos: k.pos, season: k.season, gm, lost});
+  }
+  const z = 1.645;
+  const rows = Object.values(by).map(t => {
+    const p = t.hurt / t.n, d = 1 + z * z / t.n, c = (p + z * z / (2 * t.n)) / d, h = z * Math.sqrt(p * (1 - p) / t.n + z * z / (4 * t.n * t.n)) / d;
+    return {...t, rate: p, lo: Math.max(0, c - h), hi: Math.min(1, c + h), share: t.cap ? t.lost / t.cap : 0};
+  }).sort((a, b) => (cap ? a.share - b.share : a.rate - b.rate) || b.n - a.n);
+  const totN = rows.reduce((a, r) => a + r.n, 0), league = cap ? rows.reduce((a, r) => a + r.lost, 0) / Math.max(rows.reduce((a, r) => a + r.cap, 0), 1e-9) : rows.reduce((a, r) => a + r.hurt, 0) / Math.max(totN, 1);
+  const rowH = 20, lx = 48, W = 560, top = 6, xr = 150;
+  const H = top + rows.length * rowH + 28;
+  const maxV = Math.max(.05, ...rows.map(r => cap ? r.share : r.hi));
+  const x = v => lx + v / maxV * (W - lx - xr);
+  let s = "";
+  rows.forEach((r, i) => {
+    const y = top + i * rowH, cy = y + rowH / 2, v = cap ? r.share : r.rate;
+    const worst = r.worst.sort((a, b) => b.lost - a.lost).slice(0, 3).map(w => `${esc(w.name)} (${w.pos}) ${w.season}: $${w.lost.toFixed(1)}M, ${w.gm} g`).join("<br>");
+    const tip = `<b>${r.t}</b>${r.hurt} of ${r.n} key player-seasons missed time (${pct(r.rate)})<br>$${r.lost.toFixed(1)}M of $${r.cap.toFixed(0)}M cap lost to injury (${pct(r.share, 1)})${worst ? `<br><span class="muted">${worst}</span>` : ""}`;
+    s += `<g data-tip="${esc(tip)}"><rect x="0" y="${y}" width="${W}" height="${rowH}" fill="transparent"/>`;
+    s += `<text x="${lx - 10}" y="${cy + 4}" text-anchor="end" style="font:600 13px var(--body);fill:var(--ink)">${r.t}</text>`;
+    if (cap) s += `<rect x="${lx}" y="${y + 5}" width="${Math.max(x(v) - lx, 2)}" height="${rowH - 10}" rx="3" fill="var(--seq-3)"/>`;
+    else s += `<line x1="${x(r.lo)}" x2="${x(r.hi)}" y1="${cy}" y2="${cy}" stroke="var(--seq-2)" stroke-width="3" stroke-linecap="round"/><circle cx="${x(v)}" cy="${cy}" r="5" fill="var(--seq-5)" stroke="var(--surface)" stroke-width="2"/>`;
+    const tx = cap ? x(v) + 6 : x(r.hi) + 8;
+    s += `<text x="${tx}" y="${cy + 4}" class="num" style="font-size:12px">${pct(v, cap ? 1 : 0)} <tspan style="fill:var(--ink-3)">· ${cap ? "$" + r.lost.toFixed(0) + "M" : r.n + " players"}</tspan></text></g>`;
+  });
+  const ay = top + rows.length * rowH;
+  s += `<line x1="${x(league)}" x2="${x(league)}" y1="${top}" y2="${ay}" stroke="var(--ink-3)" stroke-dasharray="4 3"/>`;
+  s += `<text x="${x(league)}" y="${ay + 16}" text-anchor="middle" style="font-size:12px;fill:var(--ink-3)">league ${pct(league, cap ? 1 : 0)}</text>`;
+  $("team-health").setAttribute("viewBox", `0 0 ${W} ${H}`);
+  $("team-health").innerHTML = s;
+  $("team-legend").innerHTML = cap ? `<span>Bar = share of the group's cap dollars spent on games missed to injury (cap hit × games missed ÷ team games). Best teams at the top.</span>`
+    : `<span><span class="key-dot" style="background:var(--seq-5)"></span>Share of key players who missed time</span><span><span class="key-line" style="background:var(--seq-2);height:4px"></span>90% range of plausible true rates</span>`;
+  const best = rows.slice(0, 3).map(r => r.t).join(", "), worstT = rows.slice(-3).reverse().map(r => r.t).join(", ");
+  const avgN = totN / Math.max(rows.length, 1);
+  const tp = (DATA.team_p[bit] || {})[state.teamMetric];
+  const pTxt = tp === undefined ? "" : tp <= 0.001 ? "p < 0.001" : `p = ${tp.toFixed(tp < 0.01 ? 3 : 2)}`;
+  const caution = avgN < 40 ? ` With only about ${Math.round(avgN)} players per team in this view, treat the ranking loosely.`
+    : state.season !== "All" ? " One season is a small sample; the six-season view is more reliable."
+    : state.unit !== "All" || tp === undefined ? " Filtering to one unit or position shrinks each team's sample, so small gaps may be noise."
+    : tp < 0.05 ? ` Over 2020–2025, these team gaps are larger than random chance would produce (permutation test, ${pTxt}).`
+    : ` These team gaps are within what random chance would produce (permutation test, ${pTxt}), so don't read much into the order.`;
+  $("team-callout").innerHTML = `<b>Healthiest:</b> ${best}. <b>Most affected:</b> ${worstT}. ${DEF_LABEL[state.def]}${state.unit === "All" ? "" : ", " + (POS_NAME[state.unit] || state.unit).toLowerCase()}, ${scopeLabel(state.season)}.${caution}`;
+}
+function renderTeams() {
+  const {K, E} = nflScope();
+  renderNflKpis(K, E);
+  renderCards("team-cards", ["team_cap"]);
+  syncChips("tm-metric", state.teamMetric);
+  renderTeamHealth(); renderHeat();
 }
 function renderHist(E) {
   const bins = [["1", 1, 1], ["2", 2, 2], ["3", 3, 3], ["4", 4, 4], ["5–6", 5, 6], ["7–9", 7, 9], ["10+", 10, 99]];
@@ -926,13 +1074,15 @@ function renderInjuries() {
   const {K, E} = nflScope();
   renderNflKpis(K, E);
   renderBody(E, "bodymap", "body-legend", "region-table"); renderRegionTable(E, "region-table", "region-note");
-  renderDuration(E); renderHist(E);
+  renderCards("inj-cards", ["knee", "hamstring_early"]);
+  syncChips("dur-metric", state.durMetric);
+  renderDuration(E); renderHist(E); renderTiming(E);
 }
 function renderTrends() {
   const {K, E} = nflScope();
   renderNflKpis(K, E);
   renderCards("trend-cards", ["starter_rate", "season_ending"]);
-  renderTrend(); renderMultiples(); renderSeasonEnding(); renderHeat();
+  renderTrend(); renderMultiples(); renderSeasonEnding();
 }
 function renderPlayers() {
   const {K, E} = nflScope();
@@ -1086,7 +1236,7 @@ function renderFantasyTeams(F) {
 }
 
 /* ---------- orchestration ---------- */
-const RENDER = {overview: renderOverview, injuries: renderInjuries, trends: renderTrends, players: renderPlayers,
+const RENDER = {overview: renderOverview, injuries: renderInjuries, trends: renderTrends, teams: renderTeams, players: renderPlayers,
   live: renderLive, fantasy: renderFantasy, methods: renderDefTable};
 function render() {
   for (const t of TABS) {
@@ -1140,6 +1290,8 @@ chips("f-def", DEFS.filter(d => d.full).map(d => d.id), "def");
 chips("f-unit", UNITS, "unit");
 chips("ff-season", ["All", ...ALL_SEASONS], "fseason", seasonLabel);
 chips("ff-pos", ["All", ...FPOS], "fpos");
+chips("dur-metric", ["games", "share"], "durMetric", v => v === "games" ? "Games missed" : "Share of remaining season");
+chips("tm-metric", ["cap", "rate"], "teamMetric", v => v === "cap" ? "Cap dollars lost" : "% who missed time");
 render();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
 new MutationObserver(render).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
