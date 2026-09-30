@@ -230,6 +230,41 @@ def summaries(ps: pd.DataFrame, fan: pd.DataFrame, reg: pd.DataFrame) -> None:
           .round(3).to_csv(PROC / f"summary_fantasy_by_{by}.csv"))
 
 
+def risk_payload() -> dict | None:
+    """Live injury scores and a trimmed model card (from src/injury_model.py)."""
+    if not (PROC / "injury_risk_live.csv").exists():
+        return None
+    live = pd.read_csv(PROC / "injury_risk_live.csv")
+    rep = json.loads((PROC / "model_report.json").read_text())
+
+    def card(m: dict) -> dict:
+        key = "baseline_logistic" if m["baseline_logistic"]["config"] == m["chosen"] else "challenger_boosted"
+        t = m[key]["test"]
+        return {"chosen": m["chosen"], "test": {k: t[k] for k in ("roc_auc", "pr_auc", "brier_skill_vs_base_rate", "base_rate",
+                                                                  "top_decile_lift", "precision", "recall", "f1")},
+                "calibration": t["calibration"], "cv": m["season_cv"], "cv_mean": m["season_cv_mean"],
+                "importance": [{"label": f["label"], "mean": f["mean"]} for f in m["permutation_importance"][:8]]}
+
+    cols = ["player", "pos", "team", "ppg", "rank", "startable", "status", "p_next_week", "p_next_4", "expected_missed_4wk", "source", "tier", "drivers", "injury",
+            "games_missed_so_far", "return_status", "report_note", "plays", "out_1", "out_2_3", "out_4plus", "expected_games_out", "backup",
+            "backup_ppg_when_out", "hedge_value_4wk", "advice"]
+    digits = {"p_next_week": 4, "p_next_4": 4, "plays": 4, "out_1": 4, "out_2_3": 4, "out_4plus": 4,
+              "expected_games_out": 2, "expected_missed_4wk": 3, "backup_ppg_when_out": 1, "hedge_value_4wk": 1, "ppg": 1}
+    clean = lambda c, v: None if pd.isna(v) else round(float(v), digits[c]) if c in digits else (v.item() if hasattr(v, "item") else v)
+    rows = [[clean(c, v) for c, v in zip(cols, r)] for r in live[cols].itertuples(index=False)]
+    tm = rep["time_out_model"]
+    return {"live": rep["live"], "rows": rows, "cols": cols, "population": rep["population"],
+            "seasons": rep["seasons"], "recovered_ir": rep["recovered_pre2020_ir"],
+            "models": {"next": card(rep["next_week_model"]), "report": card(rep["injury_report_model"]), "timeout": card(tm)},
+            "high_confidence": rep["next_week_model"]["high_confidence"],
+            "timeout_eval": {k: v for k, v in tm["episode_eval"].items() if k != "by_region"},
+            "base_rate": rep["position_weekly_base_rate"], "hedge": rep["hedge"],
+            "history_signals": rep["next_week_model"].get("history_signals"),
+            "experiment": rep["next_week_model"].get("feature_experiment"),
+            "return_by_report": rep.get("return_by_final_report"),
+            "out_rule": rep["data_validation"]["out_rule_sat_rate"]}
+
+
 def main() -> None:
     ps = pd.read_csv(PROC / "player_seasons.csv")
     ep = pd.read_csv(PROC / "injury_episodes.csv")
@@ -279,6 +314,7 @@ def main() -> None:
             ["season", "adp_rank", "adp_formatted", "player", "pos_group", "team", "p"]].values.tolist(),
         "fep": ep_rows(fep),
     }
+    payload["risk"] = risk_payload()
     html = (DASH / "template.html").read_text()
     html = html.replace("/*__DATA__*/null", json.dumps(payload, separators=(",", ":"), default=lambda o: o.item() if isinstance(o, np.generic) else str(o)))
     # full document so it renders correctly as a standalone file (GitHub Pages, local browser)

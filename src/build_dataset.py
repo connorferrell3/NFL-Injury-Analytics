@@ -56,7 +56,9 @@ SEASONS = list(range(2020, CURRENT_SEASON + 1))
 SNAP_SEASONS = list(range(2019, CURRENT_SEASON + 1))
 SALARY_TOP = 0.30  # top share of each position group's cap hits counted as key
 FANTASY_TOP_N = 48
-NAME_ALIASES = {"camjordan": "cameronjordan"}  # award name -> roster name
+NAME_ALIASES = {"camjordan": "cameronjordan",  # award / ADP name -> roster name
+                "hollywoodbrown": "marquisebrown", "robbiechosen": "robbyanderson", "robbieanderson": "robbyanderson",
+                "kennygainwell": "kennethgainwell"}  # applied to both sides, so either spelling matches
 
 KEY_MIN_GAMES = 2
 KEY_PCT = {"RB": 0.50}  # default 0.65
@@ -221,17 +223,17 @@ def tag_pedigree(ps: pd.DataFrame, xw: pd.DataFrame) -> pd.DataFrame:
     return ps
 
 
-def fantasy_top48(xw: pd.DataFrame) -> pd.DataFrame:
-    """Top-48 ADP players matched to pfr ids and their Week 1 team."""
+def fantasy_top48(xw: pd.DataFrame, top_n: int = FANTASY_TOP_N) -> pd.DataFrame:
+    """Top-N (default 48) ADP players matched to pfr ids and their Week 1 team."""
     adp = pd.read_csv(RAW / "adp.csv").sort_values(["season", "adp"])
     adp = adp[adp["position"].isin(["QB", "RB", "WR", "TE"])]
     adp["adp_rank"] = adp.groupby("season").cumcount() + 1
-    adp = adp[adp["adp_rank"] <= FANTASY_TOP_N].copy()
-    adp["n"] = adp["name"].map(norm_name)
+    adp = adp[adp["adp_rank"] <= top_n].copy()
+    adp["n"] = adp["name"].map(norm_name).replace(NAME_ALIASES)
 
     ros = load("roster_weekly", SEASONS)
     ros = ros[ros["game_type"] == "REG"].dropna(subset=["pfr_id"])
-    ros["n"] = ros["full_name"].map(norm_name)
+    ros["n"] = ros["full_name"].map(norm_name).replace(NAME_ALIASES)
     first = ros.sort_values("week").drop_duplicates(["season", "pfr_id"])  # Week 1 (or first) team
     cand = first[["season", "n", "position", "pfr_id", "team"]].rename(columns={"team": "wk1_team"})
     m = adp.merge(cand, on=["season", "n"], how="left", suffixes=("", "_ros"))
@@ -251,9 +253,9 @@ def fantasy_top48(xw: pd.DataFrame) -> pd.DataFrame:
               "pfr_player_id", "first_week", "max_week"]].sort_values(["season", "adp_rank"])
 
 
-def injury_evidence(xw: pd.DataFrame) -> pd.DataFrame:
+def injury_evidence(xw: pd.DataFrame, seasons=SEASONS) -> pd.DataFrame:
     """Per (season, week, pfr_player_id): injury-report region and/or IR flag."""
-    inj = load("injuries", SEASONS)
+    inj = load("injuries", seasons)
     inj = inj[inj["game_type"] == "REG"].copy()
     inj["region"] = inj["report_primary_injury"].map(body_region)
     # fall back to the practice report when the game-status report has no body part
@@ -263,7 +265,7 @@ def injury_evidence(xw: pd.DataFrame) -> pd.DataFrame:
     inj = inj.merge(xw, on="gsis_id")[["season", "week", "pfr_id", "region", "raw_label",
                                        "report_status"]]
 
-    ros = load("roster_weekly", SEASONS)
+    ros = load("roster_weekly", seasons)
     ros = ros[(ros["game_type"] == "REG") & ros["status_description_abbr"].isin(IR_CODES)]
     ir = ros[["season", "week", "pfr_id"]].dropna().drop_duplicates().assign(on_ir=True)
 
@@ -273,9 +275,9 @@ def injury_evidence(xw: pd.DataFrame) -> pd.DataFrame:
     return ev.rename(columns={"pfr_id": "pfr_player_id"})
 
 
-def roster_weeks() -> pd.DataFrame:
+def roster_weeks(seasons=SEASONS) -> pd.DataFrame:
     """Last REG week each player was on each team's roster (any status)."""
-    ros = load("roster_weekly", SEASONS)
+    ros = load("roster_weekly", seasons)
     ros = ros[ros["game_type"] == "REG"].dropna(subset=["pfr_id"])
     return (ros.groupby(["season", "team", "pfr_id"])["week"].max()
                .rename("last_roster_week").reset_index()

@@ -158,6 +158,35 @@ a { color: var(--accent); }
 .minikpis b { font: 700 28px/1 var(--display); font-variant-numeric: tabular-nums; }
 .minikpis span { font-size: 13px; color: var(--ink-2); }
 
+/* injury risk */
+.adv { display: inline-block; font: 600 12px/1 var(--body); padding: 5px 8px; border-radius: 999px; white-space: nowrap; border: 1px solid var(--rule); color: var(--ink-2); }
+.adv.hedge { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.adv.consider { border-color: var(--accent); color: var(--accent); }
+.adv.out { border-color: var(--serious); color: var(--ink); }
+.riskbar { display: flex; align-items: center; gap: 6px; min-width: 92px; }
+.riskbar i { display: block; height: 8px; border-radius: 0 4px 4px 0; background: var(--seq-4); flex: none; }
+.why { font-size: 12px; color: var(--ink-2); min-width: 190px; max-width: 280px; white-space: normal !important; line-height: 1.35; }
+.lineup-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; }
+.slots { display: grid; gap: 8px; }
+.slot { display: grid; grid-template-columns: 48px minmax(0, 1fr) 32px; gap: 8px; align-items: center; }
+.slot label { font: 700 15px/1 var(--display); letter-spacing: .06em; color: var(--ink-2); }
+.slot input { font: 15px var(--body); padding: 8px 10px; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); color: var(--ink); min-width: 0; }
+.slot input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.slot-x { font: 600 18px/1 var(--body); border: 1px solid var(--rule); background: var(--surface); color: var(--ink-3); border-radius: 6px; height: 34px; cursor: pointer; }
+.slot-x:hover { color: var(--ink); border-color: var(--ink-3); }
+.slot-err { grid-column: 2 / -1; font-size: 12px; color: var(--critical); }
+.slot-err:empty { display: none; }
+.lineup-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.grade-row { display: flex; gap: 14px; align-items: center; }
+.grade { font: 700 56px/1 var(--display); width: 72px; height: 72px; display: grid; place-items: center; border-radius: 12px; border: 2px solid var(--rule); flex: none; }
+.grade.g-A, .grade.g-B { border-color: var(--good); } .grade.g-C { border-color: var(--seq-3); } .grade.g-D { border-color: var(--serious); } .grade.g-F { border-color: var(--critical); }
+.weak { display: grid; gap: 10px; }
+.tobar { display: inline-flex; height: 12px; border-radius: 3px; overflow: hidden; vertical-align: middle; gap: 1px; background: var(--surface); }
+.tobar i { display: block; height: 100%; }
+@media (max-width: 900px) { .lineup-grid { grid-template-columns: minmax(0, 1fr); } }
+.mcards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .mcards { grid-template-columns: minmax(0, 1fr); } }
+
 /* overview */
 .hero-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-block: 1px solid var(--rule); }
 .hs { padding: 22px 18px 18px; display: grid; gap: 6px; align-content: start; }
@@ -215,6 +244,7 @@ a { color: var(--accent); }
     <button class="tab" role="tab" id="tab-teams" aria-controls="panel-teams">Teams</button>
     <button class="tab" role="tab" id="tab-players" aria-controls="panel-players">Players</button>
     <button class="tab" role="tab" id="tab-live" aria-controls="panel-live"><span class="live-dot" aria-hidden="true"></span><span class="cur-season"></span> Live</button>
+    <button class="tab" role="tab" id="tab-risk" aria-controls="panel-risk">My Lineup &amp; Risk</button>
     <button class="tab" role="tab" id="tab-fantasy" aria-controls="panel-fantasy">Fantasy · PPR</button>
     <button class="tab" role="tab" id="tab-methods" aria-controls="panel-methods">Methods</button>
   </div>
@@ -445,6 +475,99 @@ a { color: var(--accent); }
     </section>
   </div>
 
+  <!-- ======================= INJURY RISK ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-risk" aria-labelledby="tab-risk" hidden>
+    <section>
+      <div class="sec-head">
+        <div class="fgroup-h"><h2>My lineup</h2><span class="live"><i></i><span id="risk-week"></span></span></div>
+        <p>Enter your starters for a 12-team PPR lineup. We estimate how likely each one is to miss time, how long if he does, and where your lineup is most exposed. Your picks are saved in this browser.</p>
+      </div>
+      <div class="lineup-grid">
+        <div class="panel">
+          <h3>Starting lineup</h3>
+          <div id="lineup-slots" class="slots"></div>
+          <datalist id="pool-list"></datalist>
+          <div class="lineup-actions">
+            <button type="button" class="chip" id="lu-example">Load example lineup</button>
+            <button type="button" class="chip" id="lu-clear">Clear all</button>
+          </div>
+          <p class="small-note" id="lu-note"></p>
+        </div>
+        <div class="panel" id="team-summary"></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Where your lineup is exposed</h3>
+          <p class="small-note" style="margin-top:-4px">Bar = chance each starter misses at least one of the next four games.</p>
+          <svg id="lu-chart" role="img" aria-label="Injury exposure by lineup slot"></svg>
+          <div class="legend" id="lu-pos"></div>
+        </div>
+        <div class="panel">
+          <h3>Your weakest links</h3>
+          <div id="lu-weak" class="weak"></div>
+        </div>
+      </div>
+      <div class="panel scroll-x"><table class="ptable" id="lu-table" style="min-width:980px"></table></div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>All players</h2>
+        <p id="risk-sub"></p>
+      </div>
+      <p class="callout" id="risk-callout"></p>
+      <div class="filters" style="position:static;border-bottom:0;padding-block:0">
+        <div class="fgroup" id="rk-pos"><span class="flabel">Position</span></div>
+        <div class="fgroup" id="rk-adv"><span class="flabel">Show</span></div>
+        <div class="fgroup" id="rk-pool"><span class="flabel">Players</span></div>
+      </div>
+      <div class="panel scroll-x"><table class="ptable" id="risk-table" style="min-width:1180px"></table></div>
+      <p class="small-note">"Time out" is the chance he misses 0, 1, 2–3 or 4+ of the coming games: from the time-out model for players already out, and from next-week risk × typical injury length for everyone else. Return status for injured players uses the time-out model until his team's final (Friday) injury report is out, then the report. Deeper players (outside the startable top 90) are scored with the same models, which were trained on startable players, so treat their numbers as rougher.</p>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>How much to trust it</h2>
+        <p id="trust-sub"></p>
+      </div>
+      <div class="mcards" id="model-cards"></div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Next week: do the percentages come true?</h3>
+          <p class="small-note" style="margin-top:-4px">2025 test season. Each dot groups a tenth of predictions; on the dashed line, predicted equals actual.</p>
+          <svg id="risk-calib" viewBox="0 0 420 320" role="img" aria-label="Calibration of next-week risk"></svg>
+        </div>
+        <div class="panel">
+          <h3>Time out: do the "4+ games" calls come true?</h3>
+          <p class="small-note" style="margin-top:-4px">2025 test season, forecast from the first missed game. Each dot groups a fifth of injuries.</p>
+          <svg id="to-calib" viewBox="0 0 420 320" role="img" aria-label="Calibration of out 4+ games"></svg>
+        </div>
+        <div class="panel">
+          <h3>What drives next-week risk</h3>
+          <svg id="risk-imp" viewBox="0 0 420 300" role="img" aria-label="Top next-week risk factors"></svg>
+        </div>
+        <div class="panel" style="grid-column:1 / -1">
+          <h3>Players with no warning signs: which history signals matter?</h3>
+          <p class="small-note" style="margin-top:-4px" id="hist-sub"></p>
+          <div class="scroll-x"><table class="rtable" id="hist-table" style="min-width:560px"></table></div>
+          <p class="small-note" id="exp-note"></p>
+        </div>
+        <div class="panel">
+          <h3>What drives time out</h3>
+          <svg id="to-imp" viewBox="0 0 420 300" role="img" aria-label="Top time-out factors"></svg>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>How the hedge advice works</h2>
+        <p>Hedging means rostering a starter's backup. It pays off only if the starter misses time <em>and</em> the backup outscores whoever you could grab off waivers.</p>
+      </div>
+      <div class="panel methods" id="hedge-explain"></div>
+    </section>
+  </div>
+
   <!-- ======================= FANTASY ======================= -->
   <div class="tabpanel" role="tabpanel" id="panel-fantasy" aria-labelledby="tab-fantasy" hidden>
     <div class="kpis" id="fkpis"></div>
@@ -597,9 +720,9 @@ const REGIONS = {
 };
 const UNSPEC = "Unspecified (IR)";
 
-const TABS = ["overview", "injuries", "trends", "teams", "players", "live", "fantasy", "methods"];
+const TABS = ["overview", "injuries", "trends", "teams", "players", "live", "risk", "fantasy", "methods"];
 const NFL_TABS = new Set(["injuries", "trends", "teams", "players", "live"]);
-const state = {tab: "overview", durMetric: "games", teamMetric: "cap", season: "All", def: "Snap share", unit: "All", fseason: "All", fpos: "All"};
+const state = {tab: "overview", lineup: null, rkPool: "startable", rkPos: "All", rkAdv: "All", durMetric: "games", teamMetric: "cap", season: "All", def: "Snap share", unit: "All", fseason: "All", fpos: "All"};
 try {
   const s = JSON.parse(localStorage.getItem("starters-down-v3"));
   if (s) for (const k of Object.keys(state)) if (k in s) state[k] = s[k];
@@ -761,6 +884,7 @@ const EXPLORE = [
   ["teams", "Teams", "Which teams keep their highest-paid players on the field, and which lose the most."],
   ["players", "Players", "The longest absences and the players who keep getting hurt."],
   ["live", `${CUR} Live`, `Who's out right now, through Week ${CUR_WEEK}.`],
+  ["risk", "Injury Risk", "Enter your lineup: see who's likely to miss time, for how long, and where your team is exposed."],
   ["fantasy", "Fantasy · PPR", "How top-48 PPR draft picks hold up, by position, round, and team."],
   ["methods", "Methods", "How key players and absences are defined, and whether the definition matters."],
 ];
@@ -1257,9 +1381,238 @@ function renderFantasyTeams(F) {
   $("fteam").innerHTML = s;
 }
 
+/* ---------- injury risk + my lineup ---------- */
+const RISK = DATA.risk;
+const RK = RISK ? RISK.rows.map(r => Object.fromEntries(RISK.cols.map((c, i) => [c, r[i]]))) : [];
+RK.forEach(r => { r.key = `${r.player}|${r.team}`; r.label = `${r.player} (${r.pos} · ${r.team})`; });
+const RK_BY_KEY = Object.fromEntries(RK.map(r => [r.key, r]));
+const RK_BY_LABEL = Object.fromEntries(RK.map(r => [r.label.toLowerCase(), r]));
+const SLOTS = [["QB", ["QB"]], ["RB", ["RB"]], ["RB", ["RB"]], ["WR", ["WR"]], ["WR", ["WR"]], ["TE", ["TE"]], ["FLEX", ["RB", "WR", "TE"]]];
+const exampleLineup = () => {
+  const pick = (pos, rank, taken) => RK.filter(r => r.pos === pos && r.startable && r.status === "Active" && !taken.includes(r.key)).sort((a, b) => a.rank - b.rank)[rank - 1]?.key || "";
+  const t = [];
+  for (const [pos, rank] of [["QB", 4], ["RB", 3], ["RB", 11], ["WR", 2], ["WR", 14], ["TE", 3], ["WR", 22]]) t.push(pick(pos, rank, t));
+  return t;
+};
+if (!Array.isArray(state.lineup) || state.lineup.length !== SLOTS.length) state.lineup = exampleLineup();
+state.lineup = state.lineup.map((k, i) => RK_BY_KEY[k] && SLOTS[i][1].includes(RK_BY_KEY[k].pos) ? k : "");
+
+const advChip = a => {
+  if (!a) return "";
+  const cls = a === "Hedge" ? "hedge" : a === "Consider" ? "consider" : a.startsWith("Starter out") ? "out" : "";
+  return `<span class="adv ${cls}">${esc(a)}</span>`;
+};
+const tierChip = t => t ? `<span class="status"><i style="background:${t === "High" ? "var(--critical)" : t === "Elevated" ? "var(--serious)" : "var(--good)"}"></i>${t}</span>` : "";
+const RET_COLOR = {"Likely to play": "var(--good)", "Game-time decision": "var(--seq-3)", "Unlikely to play": "var(--serious)", "Expected out": "var(--critical)", "On IR": "var(--critical)"};
+const statusChipR = r => r.status === "Out now" ? `<span class="status" data-tip="${esc(`<b>${esc(r.player)}: ${esc(r.return_status)}</b>${pct(r.plays)} chance he plays Week ${RISK.live.predicting_week}<br><span class="muted">${esc(r.report_note)}</span>`)}"><i style="background:${RET_COLOR[r.return_status] || "var(--serious)"}"></i>Out ${r.games_missed_so_far} g · ${esc(r.return_status)}</span>`
+  : r.status === "Left last game early" ? `<span class="status"><i style="background:var(--critical)"></i>Left early</span>`
+  : r.status === "Active" ? `<span class="status"><i style="background:var(--good)"></i>Active</span>` : `<span class="status"><i style="background:var(--rule)"></i>Didn't play</span>`;
+function riskCell(v, max) {
+  if (v === null || v === undefined) return `<td class="r" style="color:var(--ink-3)">—</td>`;
+  return `<td><div class="riskbar"><i style="width:${Math.max(2, v / max * 56).toFixed(0)}px"></i><span class="num">${pct(v, v < .1 ? 1 : 0)}</span></div></td>`;
+}
+function timeOutBar(r, w = 120) {
+  if (r.plays === null) return `<span class="small-note">—</span>`;
+  const seg = [["plays", "Plays next week", "var(--rule)"], ["out_1", "Out 1 game", "var(--seq-2)"], ["out_2_3", "Out 2–3 games", "var(--seq-4)"], ["out_4plus", "Out 4+ games", "var(--seq-6)"]];
+  const tip = `<b>${esc(r.player)}: time out</b>` + seg.map(([k, l]) => `${l}: ${pct(r[k] || 0)}`).join("<br>") +
+    (r.expected_games_out !== null ? `<br><span class="muted">Expected games missed: ${r.expected_games_out.toFixed(1)}${r.injury ? " · " + esc(r.injury) : ""}</span>` : "");
+  return `<span class="tobar" data-tip="${esc(tip)}" style="width:${w}px">${seg.map(([k, , c]) => `<i style="width:${((r[k] || 0) * 100).toFixed(1)}%;background:${c}"></i>`).join("")}</span>`;
+}
+const p4Of = r => r.status === "Out now" ? 1 - (r.plays ?? 0) : r.p_next_4 ?? RISK.base_rate[r.pos] * 4;
+const e4Of = r => r.expected_missed_4wk ?? mean(RK.filter(x => x.pos === r.pos && x.expected_missed_4wk !== null).map(x => x.expected_missed_4wk));
+const p1Of = r => r.p_next_week ?? RISK.base_rate[r.pos];
+const whyOf = r => (r.tier === "High" || r.tier === "Elevated") && r.drivers ? r.drivers : "No major warning signs";
+const gamesTxt = v => v === null || v === undefined ? "" : v < 0.1 ? "<0.1 exp. games" : `${v.toFixed(1)} exp. games`;
+
+// seeded RNG so the lineup grade is stable between visits
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+let SIM = null;
+function simulateLineups() {
+  if (SIM) return SIM;
+  const pool = RK.filter(r => r.startable), by = p => pool.filter(r => p.includes(r.pos)), R = rng(7), out = [];
+  for (let n = 0; n < 2000; n++) {
+    const taken = new Set(); let e = 0;
+    for (const [, pos] of SLOTS) {
+      const c = by(pos).filter(r => !taken.has(r.key));
+      const r = c[Math.floor(R() * c.length)]; taken.add(r.key); e += e4Of(r);
+    }
+    out.push(e);
+  }
+  return SIM = out.sort((a, b) => a - b);
+}
+function gradeFor(e) {
+  const sim = simulateLineups(), pctile = sim.filter(x => x < e).length / sim.length;
+  const g = pctile < .2 ? ["A", "Lower risk than 80% of lineups"] : pctile < .4 ? ["B", "Below-average risk"] : pctile < .6 ? ["C", "About average risk"] :
+            pctile < .8 ? ["D", "Above-average risk"] : ["F", "Riskier than 80% of lineups"];
+  return {letter: g[0], text: g[1], pctile, median: sim[Math.floor(sim.length / 2)]};
+}
+
+function buildLineupInputs() {
+  $("pool-list").innerHTML = [...RK].sort((a, b) => a.pos.localeCompare(b.pos) || a.rank - b.rank).map(r => `<option value="${esc(r.label)}"></option>`).join("");
+  $("lineup-slots").innerHTML = SLOTS.map(([slot, allowed], i) => `<div class="slot">
+      <label for="slot-${i}">${slot}</label>
+      <input id="slot-${i}" list="pool-list" autocomplete="off" placeholder="${allowed.join("/")} name…" data-i="${i}">
+      <button type="button" class="slot-x" data-i="${i}" aria-label="Clear ${slot}">×</button>
+      <span class="slot-err" id="slot-err-${i}"></span></div>`).join("");
+  document.querySelectorAll("#lineup-slots input").forEach(inp => inp.addEventListener("change", () => {
+    const i = +inp.dataset.i, r = RK_BY_LABEL[inp.value.trim().toLowerCase()], err = $("slot-err-" + i);
+    if (!inp.value.trim()) { state.lineup[i] = ""; err.textContent = ""; return setState({}); }
+    if (!r) { err.textContent = "Pick a name from the list (rosterable players only)."; return; }
+    if (!SLOTS[i][1].includes(r.pos)) { err.textContent = `${r.player} is a ${r.pos}; this slot takes ${SLOTS[i][1].join("/")}.`; return; }
+    const dup = state.lineup.findIndex((k, j) => j !== i && k === r.key);
+    if (dup >= 0) { err.textContent = `${r.player} is already in your ${SLOTS[dup][0]} slot.`; return; }
+    err.textContent = ""; state.lineup[i] = r.key; setState({});
+  }));
+  document.querySelectorAll("#lineup-slots .slot-x").forEach(b => b.addEventListener("click", () => { state.lineup[+b.dataset.i] = ""; setState({}); }));
+  $("lu-example").addEventListener("click", () => setState({lineup: exampleLineup()}));
+  $("lu-clear").addEventListener("click", () => setState({lineup: SLOTS.map(() => "")}));
+}
+
+function renderLineup() {
+  SLOTS.forEach((_, i) => { const inp = $("slot-" + i); const r = RK_BY_KEY[state.lineup[i]]; if (document.activeElement !== inp) inp.value = r ? r.label : ""; });
+  const picks = SLOTS.map(([slot], i) => ({slot, r: RK_BY_KEY[state.lineup[i]]})).filter(x => x.r);
+  const isExample = JSON.stringify(state.lineup) === JSON.stringify(exampleLineup());
+  $("lu-note").textContent = isExample ? "Showing an example lineup. Type over any slot to use your own players." :
+    picks.length < SLOTS.length ? `${SLOTS.length - picks.length} slot${SLOTS.length - picks.length === 1 ? "" : "s"} empty. Team numbers cover the players entered.` : "";
+  if (!picks.length) {
+    $("team-summary").innerHTML = `<h3>Your lineup's injury outlook</h3><p class="small-note">Add players to see your lineup's chance of losing a starter, expected games lost, and grade.</p>`;
+    ["lu-chart", "lu-pos", "lu-weak", "lu-table"].forEach(id => $(id).innerHTML = ""); return;
+  }
+  const P1 = picks.map(x => p1Of(x.r)), P4 = picks.map(x => p4Of(x.r)), E4 = picks.map(x => e4Of(x.r));
+  const any1 = 1 - P1.reduce((a, p) => a * (1 - p), 1), any4 = 1 - P4.reduce((a, p) => a * (1 - p), 1);
+  const eLost = E4.reduce((a, b) => a + b, 0), ptsRisk = picks.reduce((a, x, i) => a + E4[i] * (x.r.ppg || 0), 0);
+  const outNow = picks.filter(x => x.r.status === "Out now");
+  const g = gradeFor(eLost * SLOTS.length / picks.length);
+  $("team-summary").innerHTML = `<h3>Your lineup's injury outlook</h3>
+    <div class="grade-row"><span class="grade g-${g.letter}">${g.letter}</span><div><b>${esc(g.text)}</b><br><span class="small-note">Compared with 2,000 random lineups of startable players (expected starter-games lost over the next four weeks).</span></div></div>
+    <div class="minikpis">
+      <div><b>${pct(any1)}</b><span>chance a starter misses Week ${RISK.live.predicting_week}</span></div>
+      <div><b>${pct(any4)}</b><span>chance a starter misses a game in the next 4 weeks</span></div>
+      <div><b>${eLost.toFixed(1)}</b><span>expected starter-games lost, next 4 weeks (typical lineup ${g.median.toFixed(1)})</span></div>
+      <div><b>${ptsRisk.toFixed(0)}</b><span>PPR points at risk over 4 weeks</span></div>
+    </div>
+    ${outNow.length ? `<p class="callout" style="margin:0">${outNow.map(x => `<b>${esc(x.r.player)}</b>: ${esc(x.r.return_status.toLowerCase())} (${pct(x.r.plays)} to play)`).join("; ")}. Bench anyone below "Likely to play" unless you have no better option; statuses firm up when Friday injury reports come out.</p>` : ""}`;
+
+  // exposure chart
+  const rowH = 30, lw = 150, W = 520, H = picks.length * rowH + 8, bw = W - lw - 120;
+  $("lu-chart").setAttribute("viewBox", `0 0 ${W} ${H}`);
+  $("lu-chart").innerHTML = picks.map((x, i) => {
+    const y = 4 + i * rowH, p4 = P4[i], r = x.r;
+    const tip = `<b>${esc(r.player)}</b>${x.slot} · ${r.pos} · ${esc(r.team)}<br>Misses Week ${RISK.live.predicting_week}: ${pct(P1[i], 1)}<br>Misses a game in next 4: ${pct(p4)}<br>Expected games lost (4 wks): ${E4[i].toFixed(2)}`;
+    return `<g data-tip="${esc(tip)}"><rect x="0" y="${y}" width="${W}" height="${rowH}" fill="transparent"/>
+      <text x="${lw - 8}" y="${y + 19}" text-anchor="end" style="font-size:13px"><tspan style="fill:var(--ink-3);font-size:11px">${x.slot} </tspan><tspan style="fill:var(--ink);font-weight:600">${esc(r.player.length > 17 ? r.player.slice(0, 16) + "…" : r.player)}</tspan></text>
+      <rect x="${lw}" y="${y + 8}" width="${Math.max(2, p4 * bw)}" height="14" rx="3" fill="${r.status === "Out now" ? "var(--serious)" : "var(--seq-4)"}"/>
+      <text x="${lw + Math.max(2, p4 * bw) + 6}" y="${y + 19}" class="num" style="font-size:12px">${pct(p4)} <tspan style="fill:var(--ink-3)">· ${pct(P1[i], 0)} next wk</tspan></text></g>`;
+  }).join("");
+  const byPos = {}; picks.forEach((x, i) => byPos[x.r.pos] = (byPos[x.r.pos] || 0) + E4[i]);
+  const top = Object.entries(byPos).sort((a, b) => b[1] - a[1]);
+  $("lu-pos").innerHTML = `<span>Share of expected games lost: ${top.map(([p, v]) => `<b style="color:var(--ink)">${p}</b> ${pct(v / eLost)}`).join(" · ")}</span>`;
+
+  // weakest links
+  const weak = picks.map((x, i) => ({...x, e: E4[i], p1: P1[i]})).sort((a, b) => b.e - a.e).slice(0, 2);
+  $("lu-weak").innerHTML = weak.map(({slot, r, e, p1}) => `<article class="card">
+      <span class="t">${esc(r.player)} <span class="small-note">${slot} · ${r.pos} · ${esc(r.team)}</span></span>
+      <span>${statusChipR(r)} ${r.status === "Out now" ? "" : tierChip(r.tier)}</span>
+      <span class="d">${r.status === "Out now" ? `Out ${r.games_missed_so_far} game${r.games_missed_so_far === 1 ? "" : "s"}${r.injury ? " (" + esc(r.injury) + ")" : ""}. <b style="color:var(--ink)">${esc(r.return_status)}</b>: ${pct(r.plays)} chance he plays Week ${RISK.live.predicting_week} (${esc(r.report_note)}).` :
+        `${pct(p1, 1)} chance he misses Week ${RISK.live.predicting_week} (${esc(r.pos)} average ${pct(RISK.base_rate[r.pos], 1)}). ${whyOf(r) === "No major warning signs" ? "No major warning signs." : "Why: " + esc(whyOf(r)) + "."}`}</span>
+      <span class="d">Time out ${timeOutBar(r, 150)} <span class="num">${gamesTxt(r.expected_games_out)}</span></span>
+      <span class="d">${r.backup ? `Backup: <b style="color:var(--ink)">${esc(r.backup)}</b> (${r.backup_ppg_when_out.toFixed(1)} PPR when the starter sits) ${advChip(r.advice)}` : r.pos === "QB" ? "QB: no hedge advice in 1-QB leagues." : "No clear backup."}</span>
+      <span class="d small-note">Expected games lost, next 4 weeks: ${e.toFixed(2)}</span></article>`).join("");
+
+  // lineup detail table
+  $("lu-table").innerHTML = `<thead><tr><th>Slot</th><th>Player</th><th>Status</th><th>Misses Wk ${RISK.live.predicting_week}</th><th>Misses a game, next 4</th><th class="r">Exp. games lost (4 wks)</th><th>Time out</th><th>Backup</th><th>Advice</th></tr></thead><tbody>` +
+    picks.map((x, i) => `<tr><td>${x.slot}</td><td class="player">${esc(x.r.player)} <span class="small-note">${x.r.pos} · ${esc(x.r.team)}${x.r.startable ? "" : " · deeper"}</span></td><td>${statusChipR(x.r)}</td>` +
+      riskCell(P1[i], 1) + riskCell(P4[i], 1) + `<td class="r num">${E4[i].toFixed(2)}</td><td>${timeOutBar(x.r)}</td><td>${x.r.backup ? esc(x.r.backup) : "—"}</td><td>${advChip(x.r.advice)}</td></tr>`).join("") + `</tbody>`;
+}
+
+function calibChart(svgId, bins, xKey, yKey, xlabel, ylabel) {
+  const W = 420, H = 320, mg = {l: 44, r: 12, t: 12, b: 40};
+  const top = Math.min(1, Math.ceil(Math.max(...bins.map(c => Math.max(c[xKey], c[yKey]))) * 10 + .5) / 10);
+  const x = v => mg.l + v / top * (W - mg.l - mg.r), y = v => H - mg.b - v / top * (H - mg.t - mg.b);
+  const ticks = [0, top / 2, top];
+  let sv = `<g class="grid">${ticks.map(t => `<line x1="${mg.l}" x2="${W - mg.r}" y1="${y(t)}" y2="${y(t)}"/>`).join("")}</g>`;
+  sv += `<g class="axis">${ticks.map(t => `<text x="${mg.l - 6}" y="${y(t) + 4}" text-anchor="end">${pct(t)}</text><text x="${x(t)}" y="${H - mg.b + 16}" text-anchor="middle">${pct(t)}</text>`).join("")}
+    <text x="${(mg.l + W - mg.r) / 2}" y="${H - 6}" text-anchor="middle">${xlabel}</text><text x="12" y="${(mg.t + H - mg.b) / 2}" transform="rotate(-90 12 ${(mg.t + H - mg.b) / 2})" text-anchor="middle">${ylabel}</text></g>`;
+  sv += `<line x1="${x(0)}" y1="${y(0)}" x2="${x(top)}" y2="${y(top)}" stroke="var(--ink-3)" stroke-dasharray="4 4"/>`;
+  sv += bins.map((c, i) => `<g data-tip="${esc(`<b>Group ${i + 1} of ${bins.length}</b>Predicted ${pct(c[xKey], 1)} · actual ${pct(c[yKey], 1)}<br>${c.n} cases`)}"><circle cx="${x(c[xKey])}" cy="${y(c[yKey])}" r="12" fill="transparent"/><circle cx="${x(c[xKey])}" cy="${y(c[yKey])}" r="5.5" fill="var(--seq-5)" stroke="var(--surface)" stroke-width="2"/></g>`).join("");
+  $(svgId).innerHTML = sv;
+}
+function impChart(svgId, imp) {
+  const rowH = 34, lw = 180, total = imp.reduce((a, g) => a + Math.max(g.mean, 0), 0) || 1, mx = Math.max(...imp.map(f => f.mean), 1e-9);
+  $(svgId).setAttribute("viewBox", `0 0 420 ${imp.length * rowH + 10}`);
+  $(svgId).innerHTML = imp.map((f, i) => { const yy = 6 + i * rowH, w = Math.max(2, Math.max(f.mean, 0) / mx * (420 - lw - 50));
+    return `<g data-tip="${esc(`<b>${esc(f.label)}</b>Accuracy lost when scrambled: ${f.mean.toFixed(4)}`)}"><rect x="0" y="${yy}" width="420" height="${rowH}" fill="transparent"/>
+      <text x="${lw - 8}" y="${yy + 18}" text-anchor="end" style="font-size:12px;fill:var(--ink)">${esc(f.label.length > 28 ? f.label.slice(0, 27) + "…" : f.label)}</text>
+      <rect x="${lw}" y="${yy + 9}" width="${w}" height="12" rx="3" fill="var(--seq-4)"/>
+      <text x="${lw + w + 6}" y="${yy + 19}" class="num" style="font-size:11px;fill:var(--ink-3)">${(Math.max(f.mean, 0) / total * 100).toFixed(0)}%</text></g>`; }).join("");
+}
+
+function renderRisk() {
+  syncChips("rk-pos", state.rkPos); syncChips("rk-adv", state.rkAdv); syncChips("rk-pool", state.rkPool);
+  if (!RISK) { $("risk-table").innerHTML = "<tbody><tr><td>Run src/injury_model.py to generate scores.</td></tr></tbody>"; return; }
+  const L = RISK.live, m = RISK.models, hc = RISK.high_confidence.find(h => h.threshold === 0.4), te = RISK.timeout_eval;
+  $("risk-week").textContent = `Scored after Week ${L.scored_after_week} · for Week ${L.predicting_week}`;
+  renderLineup();
+
+  const pop = RISK.population;
+  $("risk-sub").textContent = `${L.startable_players} startable players (top ${pop.QB} QB, ${pop.RB} RB, ${pop.WR} WR, ${pop.TE} TE by PPR points per game) plus deeper rosterable players, ${L.scored_players} in all. Players already out are listed first.`;
+  const act = RK.filter(r => r.startable && r.status !== "Out now" && r.p_next_week !== null);
+  $("risk-callout").innerHTML = `The average startable player has a <b>${pct(mean(act.map(r => r.p_next_week)), 1)}</b> chance of missing next week. Most risk sits with a few players showing warning signs: when the model says <b>40% or more</b>, the player missed the game <b>${pct(hc.hit_rate)}</b> of the time in 2025 (about ${hc.per_week.toFixed(1)} such players a week). Beyond next week, risk returns to each position's league rate, because no model we tested could tell healthy players apart further out.`;
+  let rows = RK.filter(r => (state.rkPool === "all" || r.startable) && (state.rkPos === "All" || r.pos === state.rkPos));
+  if (state.rkAdv === "High") rows = rows.filter(r => r.tier === "High" || r.tier === "Elevated");
+  else if (state.rkAdv === "Hedge") rows = rows.filter(r => r.advice === "Hedge" || r.advice === "Starter out: add backup");
+  else if (state.rkAdv === "Out now") rows = rows.filter(r => r.status === "Out now");
+  const order = {"Out now": 0, "Left last game early": 1, "Active": 2};
+  rows.sort((a, b) => (order[a.status] ?? 3) - (order[b.status] ?? 3) || (b.p_next_week ?? -1) - (a.p_next_week ?? -1) || a.rank - b.rank);
+  const maxP = Math.max(.05, ...rows.map(r => r.p_next_week || 0));
+  $("risk-table").innerHTML = `<thead><tr><th>Player</th><th>Pos</th><th>Status</th><th>Misses Wk ${L.predicting_week}</th><th>Next 4 wks</th><th>Risk</th><th>Why</th><th>Time out</th><th>Backup</th><th class="r">Hedge value</th><th>Advice</th></tr></thead><tbody>` +
+    rows.map(r => `<tr><td class="player">${esc(r.player)} <span class="small-note">${esc(r.team)} · ${r.ppg.toFixed(1)} PPR/g${r.startable ? "" : " · deeper"}</span></td><td>${r.pos}</td><td>${statusChipR(r)}</td>` +
+      riskCell(r.p_next_week, maxP) + riskCell(r.status === "Out now" ? null : r.p_next_4, 1) + `<td>${r.status === "Out now" ? "" : tierChip(r.tier)}</td>` +
+      `<td class="why">${esc(r.status === "Out now" ? (r.injury ? r.injury + ", out " + r.games_missed_so_far + " g" : "Out") : whyOf(r))}${r.source && r.source.startsWith("injury report") ? `<br><span class="small-note">${esc(r.source)}</span>` : ""}</td>` +
+      `<td>${timeOutBar(r)}${r.expected_games_out !== null ? `<br><span class="small-note num">${gamesTxt(r.expected_games_out)}</span>` : ""}</td>` +
+      `<td>${r.backup ? `${esc(r.backup)}<br><span class="small-note">${r.backup_ppg_when_out !== null ? r.backup_ppg_when_out.toFixed(1) + " PPR when starter sits" : ""}</span>` : "—"}</td>` +
+      `<td class="r num">${r.hedge_value_4wk !== null ? r.hedge_value_4wk.toFixed(1) : "—"}</td><td>${advChip(r.advice)}</td></tr>`).join("") + `</tbody>`;
+
+  $("trust-sub").textContent = `Trained on ${RISK.seasons.train[0]}–${RISK.seasons.train.at(-1)}, tuned on ${RISK.seasons.val.join("–")}, tested on ${RISK.seasons.test[0]}, then re-checked with each season held out in turn. Older seasons are adjusted for changes in IR rules.`;
+  const cards = [
+    ["Next week", "Will a player who played last week miss the next game?", m.next.cv_mean.roc_auc, "ROC-AUC across held-out seasons",
+     `At 40%+ it was right ${pct(hc.hit_rate)} of the time. Reliable for warning signs; injuries with no warning stay hard to call.`],
+    ["Injury report", "Will a Questionable or Doubtful player sit?", m.report.cv_mean.roc_auc, "ROC-AUC across held-out seasons",
+     `Very reliable. Players ruled Out sat ${pct(RISK.out_rule)} of the time. Kicks in once Wednesday–Friday reports are out.`],
+    ["Time out", "Once he's out, how many games will he miss?", te.c_index, "C-index (ranking of injury lengths)",
+     `Within one game ${pct(te.within_one_game)} of the time; "out 4+" calls AUC ${te.out_4plus_auc.toFixed(2)}. Average miss ${te.mean_abs_error_games.toFixed(1)} games vs. ${te.naive_mean_abs_error_games.toFixed(1)} for a flat guess.`],
+  ];
+  $("model-cards").innerHTML = cards.map(([t, q, v, what, verdict]) => `<article class="card"><span class="t">${esc(t)}</span><span class="d">${esc(q)}</span>
+    <span class="v">${v.toFixed(2)}</span><span class="d">${esc(what)} (0.5 = coin flip, 1.0 = perfect)</span><span class="d" style="color:var(--ink)">${esc(verdict)}</span></article>`).join("");
+  calibChart("risk-calib", m.next.calibration, "mean_pred", "observed", "predicted chance", "actually missed");
+  calibChart("to-calib", te.calibration_out_4plus, "mean_pred", "observed", "predicted chance of 4+ games out", "actually out 4+");
+  impChart("risk-imp", m.next.importance); impChart("to-imp", m.timeout.importance);
+  const hs = RISK.history_signals;
+  if (hs) {
+    const [meta, ...sig] = hs, maxL = Math.max(...sig.map(x => x.lift));
+    $("hist-sub").textContent = `Half of all injuries (${pct(meta.share_of_injuries)}) come with no warning sign: the player finished his last game normally and wasn't on the injury report. These players miss the next game ${pct(meta.base_rate, 1)} of the time. Each row compares players with the signal against those without, 2016–2025.`;
+    $("hist-table").innerHTML = `<thead><tr><th>Signal</th><th>Player-weeks</th><th class="barcell">Miss rate vs. average</th><th>Miss rate</th><th>Real?</th></tr></thead><tbody>` +
+      sig.map(x => `<tr><td class="name">${esc(x.signal)}</td><td>${fmt(x.n)}</td>${barCell(x.lift, maxL, x.lift.toFixed(1) + "×")}<td>${pct(x.miss_rate, 1)}</td>` +
+        `<td style="text-align:left">${x.z === null ? "—" : Math.abs(x.z) >= 2 ? `<b style="color:var(--ink)">Yes</b> <span class="small-note">(z ${x.z})</span>` : Math.abs(x.z) >= 1.3 ? `Maybe <span class="small-note">(z ${x.z})</span>` : `No <span class="small-note">(z ${x.z})</span>`}</td></tr>`).join("") + `</tbody>`;
+  }
+  const ex = RISK.experiment;
+  if (ex) {
+    const g = k => ex[Object.keys(ex).find(x => x.startsWith(k) && x.endsWith("boosted"))];
+    const a = g("current"), b = g("plus history"), c = g("split");
+    $("exp-note").textContent = `Tested head to head (each season held out in turn): adding these history signals left accuracy on no-warning players unchanged (ROC-AUC ${a.auc_quiet.toFixed(2)} → ${b.auc_quiet.toFixed(2)}), because the effects are modest and overlap with history the model already used. A separate model for no-warning players did worse (${c.auc_quiet.toFixed(2)}). The model keeps the history signals because they explain risk for quiet players; the realistic ceiling for predicting no-warning injuries with public data is about ${b.auc_quiet.toFixed(2)}.`;
+  }
+
+  const hz = RISK.hedge;
+  $("hedge-explain").innerHTML = `
+    <div><h3>1. Who's the backup</h3><p>The teammate at the same position with the most snaps over the last three weeks who isn't himself startable and isn't on IR. Fullbacks are excluded.</p></div>
+    <div><h3>2. What he's worth</h3><p>His PPR points in past games where a starter sat, blended with the league average for fill-ins (${Object.entries(hz.fill_in_prior_ppg).map(([k, v]) => `${k} ${v.toFixed(1)}`).join(", ")} per game). Only the gain over a waiver pickup counts (${Object.entries(hz.waiver_ppg).map(([k, v]) => `${k} ${v.toFixed(1)}`).join(", ")} per game in a 12-team PPR league).</p></div>
+    <div><h3>3. Hedge value</h3><p>Expected games the starter misses over the next four weeks × the backup's gain over waivers. Missed games combine next-week risk, the position's league rate for weeks 2–4, and the time-out model's forecast of how long an injury lasts.</p></div>
+    <div><h3>4. The call</h3><p><b>Hedge</b> at ${hz.thresholds_4wk_points[1]}+ points over four weeks, <b>Consider</b> at ${hz.thresholds_4wk_points[0]}+. If the starter is already out, add the backup only if he beats waiver level by 2+ points a game.</p></div>`;
+}
+
 /* ---------- orchestration ---------- */
 const RENDER = {overview: renderOverview, injuries: renderInjuries, trends: renderTrends, teams: renderTeams, players: renderPlayers,
-  live: renderLive, fantasy: renderFantasy, methods: renderDefTable};
+  live: renderLive, risk: renderRisk, fantasy: renderFantasy, methods: renderDefTable};
 function render() {
   for (const t of TABS) {
     const on = state.tab === t;
@@ -1313,6 +1666,10 @@ chips("f-unit", UNITS, "unit");
 chips("ff-season", ["All", ...ALL_SEASONS], "fseason", seasonLabel);
 chips("ff-pos", ["All", ...FPOS], "fpos");
 chips("dur-metric", ["games", "share"], "durMetric", v => v === "games" ? "Games missed" : "Share of remaining season");
+chips("rk-pos", ["All", ...FPOS], "rkPos");
+chips("rk-adv", ["All", "High", "Out now", "Hedge"], "rkAdv", v => v === "All" ? "Everyone" : v === "High" ? "High & elevated risk" : v === "Hedge" ? "Hedge or add backup" : "Out now");
+chips("rk-pool", ["startable", "all"], "rkPool", v => v === "startable" ? "Startable (top 90)" : "Include deeper players");
+if (RISK) buildLineupInputs();
 chips("tm-season", ["All", ...ALL_SEASONS], "season", v => v === "All" ? "2020–25" : seasonLabel(v));
 chips("tm-metric", ["cap", "rate"], "teamMetric", v => v === "cap" ? "Cap dollars lost" : "% who missed time");
 render();

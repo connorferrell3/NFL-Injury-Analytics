@@ -23,6 +23,8 @@ RAW = Path(__file__).resolve().parents[1] / "data" / "raw"
 CURRENT_SEASON = 2026  # in progress; always re-downloaded
 SEASONS = range(2020, CURRENT_SEASON + 1)  # 6 completed seasons + the current one
 SNAP_SEASONS = range(2019, CURRENT_SEASON + 1)  # +1 prior season to identify returning starters
+MODEL_SEASONS = range(2012, CURRENT_SEASON + 1)  # longer history for the injury model (2012 = first snap counts)
+GAMES_URL = "https://github.com/nflverse/nfldata/raw/master/data/games.csv"  # schedule: rest days, surface
 SLEEPER_URL = ("https://api.sleeper.app/projections/nfl/{season}?season_type=regular"
                "&position[]=QB&position[]=RB&position[]=WR&position[]=TE&order_by=adp_ppr")
 
@@ -30,6 +32,7 @@ DATASETS = {
     "injuries": "injuries/injuries_{season}.parquet",
     "snap_counts": "snap_counts/snap_counts_{season}.parquet",
     "weekly_rosters": "weekly_rosters/roster_weekly_{season}.parquet",
+    "stats_player": "stats_player/stats_player_week_{season}.parquet",  # workload + PPR points
 }
 SINGLE_FILES = {
     "players.parquet": "players/players.parquet",
@@ -85,12 +88,19 @@ def sleeper_adp(season: int) -> pd.DataFrame:
 def main(force: bool = False) -> None:
     RAW.mkdir(parents=True, exist_ok=True)
     for name, pattern in DATASETS.items():
-        for season in (SNAP_SEASONS if name == "snap_counts" else SEASONS):
+        for season in MODEL_SEASONS:
             rel = pattern.format(season=season)
             download(f"{BASE}/{rel}", RAW / Path(rel).name, force or season == CURRENT_SEASON)
+    # season-end rosters before 2020 mark IR players as RES (weekly rosters don't), used to
+    # recover IR placements that never appeared on an injury report
+    for season in range(MODEL_SEASONS[0], 2020):
+        download(f"{BASE}/rosters/roster_{season}.parquet", RAW / f"roster_season_{season}.parquet", force)
     for fname, rel in SINGLE_FILES.items():
         download(f"{BASE}/{rel}", RAW / fname, force)
     download_adp(True)  # small; refreshed each run so the current season stays current
+    resp = requests.get(GAMES_URL, timeout=120)
+    resp.raise_for_status()
+    (RAW / "games.csv").write_bytes(resp.content)  # refreshed each run (scores fill in weekly)
     print("Raw data ready in data/raw/")
 
 

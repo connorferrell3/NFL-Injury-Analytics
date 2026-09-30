@@ -1,0 +1,1531 @@
+{
+ "live": {
+  "season": 2026,
+  "scored_after_week": 3,
+  "predicting_week": 4,
+  "scored_players": 523,
+  "startable_players": 90,
+  "injury_report_published": false
+ },
+ "population": {
+  "QB": 12,
+  "RB": 30,
+  "WR": 36,
+  "TE": 12
+ },
+ "seasons": {
+  "train": [
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022
+  ],
+  "val": [
+   2023,
+   2024
+  ],
+  "test": [
+   2025
+  ]
+ },
+ "recovered_pre2020_ir": 197,
+ "data_validation": {
+  "next_week": {
+   "rows": 15587,
+   "labeled_rows": 15194,
+   "positive_rate": {
+    "train": 0.0432,
+    "val": 0.0502,
+    "test": 0.0478
+   },
+   "positives": {
+    "train": 490,
+    "val": 124,
+    "test": 58
+   },
+   "rows_by_split": {
+    "train": 11348,
+    "val": 2468,
+    "test": 1213
+   },
+   "missing_pct": {
+    "prior_opp_pg": 0.095,
+    "opp_ratio": 0.096,
+    "snap_drop": 0.084,
+    "abs_3y": 0.144,
+    "gm_3y": 0.144,
+    "last_injury_recur_rate": 0.465,
+    "return_vs_typical": 0.898
+   }
+  },
+  "injury_report": {
+   "rows": 4115,
+   "labeled_rows": 4115,
+   "positive_rate": {
+    "train": 0.134,
+    "val": 0.1672,
+    "test": 0.0806
+   },
+   "positives": {
+    "train": 410,
+    "val": 115,
+    "test": 20
+   },
+   "rows_by_split": {
+    "train": 3059,
+    "val": 688,
+    "test": 248
+   },
+   "missing_pct": {
+    "opp_avg3": 0.061,
+    "snap_drop_prev": 0.127
+   }
+  },
+  "time_out": {
+   "rows": 1891,
+   "labeled_rows": 1891,
+   "positive_rate": {
+    "train": 0.255,
+    "val": 0.2288,
+    "test": 0.1701
+   },
+   "positives": {
+    "train": 342,
+    "val": 81,
+    "test": 33
+   },
+   "rows_by_split": {
+    "train": 1341,
+    "val": 354,
+    "test": 194
+   },
+   "missing_pct": {}
+  },
+  "out_rule_sat_rate": 1.0
+ },
+ "next_week_model": {
+  "validation_log_loss": {
+   "logistic_C0.03": 0.16783,
+   "logistic_C0.1": 0.16817,
+   "logistic_C0.3": 0.16867,
+   "logistic_C1.0": 0.16887,
+   "boosted_d2_lr0.03_it150": 0.16721,
+   "boosted_d2_lr0.03_it300": 0.16786,
+   "boosted_d2_lr0.06_it150": 0.16745,
+   "boosted_d2_lr0.06_it300": 0.16862,
+   "boosted_d3_lr0.03_it150": 0.16756,
+   "boosted_d3_lr0.03_it300": 0.16816,
+   "boosted_d3_lr0.06_it150": 0.1683,
+   "boosted_d3_lr0.06_it300": 0.17025
+  },
+  "chosen": "logistic_C0.03",
+  "baseline_logistic": {
+   "config": "logistic_C0.03",
+   "test": {
+    "n": 1213,
+    "positives": 58,
+    "base_rate": 0.0478,
+    "roc_auc": 0.7867,
+    "pr_auc": 0.288,
+    "brier": 0.03962,
+    "brier_skill_vs_base_rate": 0.1299,
+    "log_loss": 0.1608,
+    "threshold": 0.0917,
+    "precision": 0.2295,
+    "recall": 0.4828,
+    "f1": 0.3111,
+    "top_decile_rate": 0.2295,
+    "top_decile_lift": 4.8,
+    "calibration": [
+     {
+      "mean_pred": 0.0087,
+      "observed": 0.0164,
+      "n": 122
+     },
+     {
+      "mean_pred": 0.0159,
+      "observed": 0.0165,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0198,
+      "observed": 0.0165,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0235,
+      "observed": 0.0083,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0277,
+      "observed": 0.0246,
+      "n": 122
+     },
+     {
+      "mean_pred": 0.0326,
+      "observed": 0.0165,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0391,
+      "observed": 0.0331,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0498,
+      "observed": 0.0413,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0727,
+      "observed": 0.0744,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.1937,
+      "observed": 0.2295,
+      "n": 122
+     }
+    ]
+   }
+  },
+  "challenger_boosted": {
+   "config": "boosted_d2_lr0.03_it150",
+   "test": {
+    "n": 1213,
+    "positives": 58,
+    "base_rate": 0.0478,
+    "roc_auc": 0.7978,
+    "pr_auc": 0.3115,
+    "brier": 0.03947,
+    "brier_skill_vs_base_rate": 0.1333,
+    "log_loss": 0.158,
+    "threshold": 0.0778,
+    "precision": 0.2377,
+    "recall": 0.5,
+    "f1": 0.3222,
+    "top_decile_rate": 0.2377,
+    "top_decile_lift": 4.97,
+    "calibration": [
+     {
+      "mean_pred": 0.0155,
+      "observed": 0.0082,
+      "n": 122
+     },
+     {
+      "mean_pred": 0.0202,
+      "observed": 0.0083,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0221,
+      "observed": 0.0248,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0236,
+      "observed": 0.0083,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0251,
+      "observed": 0.0328,
+      "n": 122
+     },
+     {
+      "mean_pred": 0.0275,
+      "observed": 0.0,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0317,
+      "observed": 0.0496,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0394,
+      "observed": 0.0579,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.0608,
+      "observed": 0.0496,
+      "n": 121
+     },
+     {
+      "mean_pred": 0.207,
+      "observed": 0.2377,
+      "n": 122
+     }
+    ]
+   }
+  },
+  "permutation_importance": [
+   {
+    "feature": "snap_drop",
+    "label": "left last game early (snap drop)",
+    "mean": 0.033114,
+    "std": 0.004634
+   },
+   {
+    "feature": "opp_last",
+    "label": "workload last game",
+    "mean": 0.002375,
+    "std": 0.001747
+   },
+   {
+    "feature": "after_bye",
+    "label": "coming off a bye",
+    "mean": 0.001783,
+    "std": 0.000659
+   },
+   {
+    "feature": "snap_avg3",
+    "label": "recent snap share",
+    "mean": 0.00159,
+    "std": 0.000477
+   },
+   {
+    "feature": "played_through_injury",
+    "label": "played through an injury last game",
+    "mean": 0.001409,
+    "std": 0.000226
+   },
+   {
+    "feature": "prior_opp_pg",
+    "label": "workload last season",
+    "mean": 0.001385,
+    "std": 0.000856
+   },
+   {
+    "feature": "last_injury_soft_tissue",
+    "label": "last injury was soft-tissue",
+    "mean": 0.001031,
+    "std": 0.000341
+   },
+   {
+    "feature": "played_through_soft_tissue",
+    "label": "played through a soft-tissue injury",
+    "mean": 0.000896,
+    "std": 0.000392
+   },
+   {
+    "feature": "prior1_games_missed",
+    "label": "games missed last season",
+    "mean": 0.000893,
+    "std": 0.000313
+   },
+   {
+    "feature": "questionable_last",
+    "label": "was listed Questionable/Doubtful last week",
+    "mean": 0.000852,
+    "std": 0.000229
+   },
+   {
+    "feature": "ytd_absences",
+    "label": "injuries this season",
+    "mean": 0.000558,
+    "std": 0.000522
+   },
+   {
+    "feature": "abs_3y",
+    "label": "injuries in the last 3 seasons",
+    "mean": 0.000484,
+    "std": 0.000301
+   },
+   {
+    "feature": "pos",
+    "label": "position",
+    "mean": 0.000456,
+    "std": 0.000244
+   },
+   {
+    "feature": "return_vs_typical",
+    "label": "recovery time vs. typical for that injury",
+    "mean": 0.000376,
+    "std": 0.000421
+   },
+   {
+    "feature": "frequent_injury",
+    "label": "frequently injured (3+ injuries in 3 seasons)",
+    "mean": 0.000287,
+    "std": 0.000167
+   },
+   {
+    "feature": "weeks_since_return",
+    "label": "weeks since returning from injury",
+    "mean": 0.000282,
+    "std": 0.00065
+   },
+   {
+    "feature": "reinjured_same_region",
+    "label": "has already re-injured the same body part",
+    "mean": 0.000192,
+    "std": 0.000147
+   },
+   {
+    "feature": "opp_ratio",
+    "label": "workload vs. last season",
+    "mean": 0.000149,
+    "std": 0.000109
+   },
+   {
+    "feature": "ppg",
+    "label": "PPR points per game",
+    "mean": 0.000106,
+    "std": 0.000298
+   },
+   {
+    "feature": "prior2_games_missed",
+    "label": "games missed two seasons ago",
+    "mean": 8.2e-05,
+    "std": 8.2e-05
+   },
+   {
+    "feature": "turf_last",
+    "label": "played on artificial turf",
+    "mean": 7.9e-05,
+    "std": 0.000385
+   },
+   {
+    "feature": "bmi",
+    "label": "body mass index",
+    "mean": 7.6e-05,
+    "std": 0.000172
+   },
+   {
+    "feature": "experience",
+    "label": "years in league",
+    "mean": 7.5e-05,
+    "std": 0.000285
+   },
+   {
+    "feature": "starter_rank_pct",
+    "label": "fantasy rank",
+    "mean": 4.6e-05,
+    "std": 0.000244
+   },
+   {
+    "feature": "opp_season_avg",
+    "label": "season workload",
+    "mean": 1.8e-05,
+    "std": 4.8e-05
+   },
+   {
+    "feature": "prior1_absences",
+    "label": "injuries last season",
+    "mean": 1.1e-05,
+    "std": 7.2e-05
+   },
+   {
+    "feature": "era",
+    "label": "IR rules era",
+    "mean": 0.0,
+    "std": 0.0
+   },
+   {
+    "feature": "opp_avg3",
+    "label": "recent workload",
+    "mean": -1e-06,
+    "std": 1.7e-05
+   },
+   {
+    "feature": "age",
+    "label": "age",
+    "mean": -5e-06,
+    "std": 4.9e-05
+   },
+   {
+    "feature": "week_next",
+    "label": "week of season",
+    "mean": -8e-06,
+    "std": 0.000199
+   },
+   {
+    "feature": "rest_next",
+    "label": "days of rest before next game",
+    "mean": -1.6e-05,
+    "std": 3.5e-05
+   },
+   {
+    "feature": "short_week_next",
+    "label": "short week next (Thursday game)",
+    "mean": -4.1e-05,
+    "std": 0.000364
+   },
+   {
+    "feature": "ytd_games_missed",
+    "label": "games missed this season",
+    "mean": -8.4e-05,
+    "std": 0.00011
+   },
+   {
+    "feature": "turf_next",
+    "label": "next game on artificial turf",
+    "mean": -0.000123,
+    "std": 9.2e-05
+   },
+   {
+    "feature": "rushed_return",
+    "label": "came back faster than that injury usually takes",
+    "mean": -0.000126,
+    "std": 0.000208
+   },
+   {
+    "feature": "limited_practice_last",
+    "label": "was limited in practice last week",
+    "mean": -0.000214,
+    "std": 4.5e-05
+   },
+   {
+    "feature": "last_injury_group",
+    "label": "type of last injury",
+    "mean": -0.000292,
+    "std": 0.000166
+   },
+   {
+    "feature": "gm_3y",
+    "label": "games missed in the last 3 seasons",
+    "mean": -0.000384,
+    "std": 0.000558
+   },
+   {
+    "feature": "last_injury_recur_rate",
+    "label": "recurrence rate of his last injury type",
+    "mean": -0.000797,
+    "std": 0.000374
+   }
+  ],
+  "season_cv": [
+   {
+    "season": 2013,
+    "roc_auc": 0.7876,
+    "brier_skill_vs_base_rate": 0.1376,
+    "positives": 36
+   },
+   {
+    "season": 2014,
+    "roc_auc": 0.7664,
+    "brier_skill_vs_base_rate": 0.126,
+    "positives": 40
+   },
+   {
+    "season": 2015,
+    "roc_auc": 0.7948,
+    "brier_skill_vs_base_rate": 0.1571,
+    "positives": 48
+   },
+   {
+    "season": 2016,
+    "roc_auc": 0.7781,
+    "brier_skill_vs_base_rate": 0.1332,
+    "positives": 41
+   },
+   {
+    "season": 2017,
+    "roc_auc": 0.7251,
+    "brier_skill_vs_base_rate": 0.1441,
+    "positives": 36
+   },
+   {
+    "season": 2018,
+    "roc_auc": 0.7176,
+    "brier_skill_vs_base_rate": 0.0746,
+    "positives": 44
+   },
+   {
+    "season": 2019,
+    "roc_auc": 0.7804,
+    "brier_skill_vs_base_rate": 0.1898,
+    "positives": 55
+   },
+   {
+    "season": 2020,
+    "roc_auc": 0.7478,
+    "brier_skill_vs_base_rate": 0.1783,
+    "positives": 58
+   },
+   {
+    "season": 2021,
+    "roc_auc": 0.7366,
+    "brier_skill_vs_base_rate": 0.2083,
+    "positives": 74
+   },
+   {
+    "season": 2022,
+    "roc_auc": 0.7627,
+    "brier_skill_vs_base_rate": 0.1339,
+    "positives": 58
+   },
+   {
+    "season": 2023,
+    "roc_auc": 0.7954,
+    "brier_skill_vs_base_rate": 0.1963,
+    "positives": 57
+   },
+   {
+    "season": 2024,
+    "roc_auc": 0.725,
+    "brier_skill_vs_base_rate": 0.0738,
+    "positives": 67
+   },
+   {
+    "season": 2025,
+    "roc_auc": 0.786,
+    "brier_skill_vs_base_rate": 0.1289,
+    "positives": 58
+   }
+  ],
+  "season_cv_mean": {
+   "roc_auc": 0.7618,
+   "brier_skill_vs_base_rate": 0.1448
+  },
+  "high_confidence": [
+   {
+    "threshold": 0.25,
+    "hit_rate": 0.48,
+    "flags": 25,
+    "per_week": 1.47,
+    "share_of_all_injuries": 0.207
+   },
+   {
+    "threshold": 0.4,
+    "hit_rate": 0.5,
+    "flags": 12,
+    "per_week": 0.71,
+    "share_of_all_injuries": 0.103
+   },
+   {
+    "threshold": 0.6,
+    "hit_rate": 0.667,
+    "flags": 3,
+    "per_week": 0.18,
+    "share_of_all_injuries": 0.034
+   }
+  ],
+  "history_signals": [
+   {
+    "base_rate": 0.0293,
+    "n": 9010,
+    "injuries": 264,
+    "share_of_injuries": 0.482
+   },
+   {
+    "signal": "Frequently injured (3+ injuries in 3 seasons)",
+    "n": 970,
+    "miss_rate": 0.0464,
+    "lift": 1.58,
+    "z": 3.3
+   },
+   {
+    "signal": "Already re-injured the same body part",
+    "n": 725,
+    "miss_rate": 0.0441,
+    "lift": 1.51,
+    "z": 2.5
+   },
+   {
+    "signal": "Came back faster than that injury usually takes",
+    "n": 221,
+    "miss_rate": 0.0452,
+    "lift": 1.54,
+    "z": 1.4
+   },
+   {
+    "signal": "Returned from injury within the last 2 weeks",
+    "n": 133,
+    "miss_rate": 0.0526,
+    "lift": 1.8,
+    "z": 1.6
+   },
+   {
+    "signal": "Last injury was a concussion",
+    "n": 524,
+    "miss_rate": 0.0439,
+    "lift": 1.5,
+    "z": 2.0
+   },
+   {
+    "signal": "Last injury was soft-tissue",
+    "n": 1572,
+    "miss_rate": 0.0363,
+    "lift": 1.24,
+    "z": 1.8
+   },
+   {
+    "signal": "Last injury was a knee",
+    "n": 791,
+    "miss_rate": 0.0354,
+    "lift": 1.21,
+    "z": 1.1
+   },
+   {
+    "signal": "Played 60-85% of his usual snaps last game",
+    "n": 924,
+    "miss_rate": 0.0898,
+    "lift": 3.07,
+    "z": 11.5
+   },
+   {
+    "signal": "Short week next (Thursday game)",
+    "n": 645,
+    "miss_rate": 0.031,
+    "lift": 1.06,
+    "z": 0.3
+   },
+   {
+    "signal": "Next game on artificial turf",
+    "n": 3855,
+    "miss_rate": 0.0291,
+    "lift": 0.99,
+    "z": -0.1
+   },
+   {
+    "signal": "Heavy recent workload (top 20%)",
+    "n": 1804,
+    "miss_rate": 0.0183,
+    "lift": 0.62,
+    "z": -3.1
+   },
+   {
+    "signal": "Age 30+",
+    "n": 1209,
+    "miss_rate": 0.0215,
+    "lift": 0.73,
+    "z": -1.7
+   }
+  ],
+  "feature_experiment": {
+   "current (no history) | logistic": {
+    "auc_all": 0.7556,
+    "auc_quiet": 0.659,
+    "auc_warning": 0.815,
+    "brier_skill": 0.1505,
+    "quiet_share_of_injuries": 0.482
+   },
+   "current (no history) | boosted": {
+    "auc_all": 0.7653,
+    "auc_quiet": 0.666,
+    "auc_warning": 0.822,
+    "brier_skill": 0.1528,
+    "quiet_share_of_injuries": 0.482
+   },
+   "plus history | logistic": {
+    "auc_all": 0.751,
+    "auc_quiet": 0.6516,
+    "auc_warning": 0.8127,
+    "brier_skill": 0.1485,
+    "quiet_share_of_injuries": 0.482
+   },
+   "plus history | boosted": {
+    "auc_all": 0.764,
+    "auc_quiet": 0.6642,
+    "auc_warning": 0.8229,
+    "brier_skill": 0.1533,
+    "quiet_share_of_injuries": 0.482
+   },
+   "split: quiet + warning models | logistic": {
+    "auc_all": 0.7089,
+    "auc_quiet": 0.5674,
+    "auc_warning": 0.8115,
+    "brier_skill": 0.1369,
+    "quiet_share_of_injuries": 0.482
+   },
+   "split: quiet + warning models | boosted": {
+    "auc_all": 0.7149,
+    "auc_quiet": 0.5704,
+    "auc_warning": 0.8169,
+    "brier_skill": 0.1409,
+    "quiet_share_of_injuries": 0.482
+   }
+  }
+ },
+ "injury_report_model": {
+  "validation_log_loss": {
+   "logistic_C0.03": 0.25136,
+   "logistic_C0.1": 0.23022,
+   "logistic_C0.3": 0.22099,
+   "logistic_C1.0": 0.21702,
+   "boosted_d2_lr0.03_it150": 0.2369,
+   "boosted_d2_lr0.03_it300": 0.22841,
+   "boosted_d2_lr0.06_it150": 0.22751,
+   "boosted_d2_lr0.06_it300": 0.22374,
+   "boosted_d3_lr0.03_it150": 0.22897,
+   "boosted_d3_lr0.03_it300": 0.22238,
+   "boosted_d3_lr0.06_it150": 0.22149,
+   "boosted_d3_lr0.06_it300": 0.22423
+  },
+  "chosen": "logistic_C1.0",
+  "baseline_logistic": {
+   "config": "logistic_C1.0",
+   "test": {
+    "n": 248,
+    "positives": 20,
+    "base_rate": 0.0806,
+    "roc_auc": 0.905,
+    "pr_auc": 0.5077,
+    "brier": 0.05954,
+    "brier_skill_vs_base_rate": 0.2335,
+    "log_loss": 0.1953,
+    "threshold": 0.5,
+    "precision": 0.4286,
+    "recall": 0.3,
+    "f1": 0.3529,
+    "top_decile_rate": 0.4,
+    "top_decile_lift": 4.96,
+    "calibration": [
+     {
+      "mean_pred": 0.0042,
+      "observed": 0.0,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0058,
+      "observed": 0.0,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0077,
+      "observed": 0.0,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0104,
+      "observed": 0.0,
+      "n": 24
+     },
+     {
+      "mean_pred": 0.0153,
+      "observed": 0.04,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0256,
+      "observed": 0.0,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0568,
+      "observed": 0.0,
+      "n": 24
+     },
+     {
+      "mean_pred": 0.107,
+      "observed": 0.12,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.2035,
+      "observed": 0.24,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.5824,
+      "observed": 0.4,
+      "n": 25
+     }
+    ]
+   }
+  },
+  "challenger_boosted": {
+   "config": "boosted_d3_lr0.06_it150",
+   "test": {
+    "n": 248,
+    "positives": 20,
+    "base_rate": 0.0806,
+    "roc_auc": 0.9168,
+    "pr_auc": 0.5522,
+    "brier": 0.05353,
+    "brier_skill_vs_base_rate": 0.3109,
+    "log_loss": 0.1799,
+    "threshold": 0.5,
+    "precision": 0.6667,
+    "recall": 0.3,
+    "f1": 0.4138,
+    "top_decile_rate": 0.44,
+    "top_decile_lift": 5.46,
+    "calibration": [
+     {
+      "mean_pred": 0.0057,
+      "observed": 0.0,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0072,
+      "observed": 0.0,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0082,
+      "observed": 0.0,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0103,
+      "observed": 0.0,
+      "n": 24
+     },
+     {
+      "mean_pred": 0.0161,
+      "observed": 0.04,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0301,
+      "observed": 0.0,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.0557,
+      "observed": 0.0,
+      "n": 24
+     },
+     {
+      "mean_pred": 0.1343,
+      "observed": 0.08,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.2301,
+      "observed": 0.24,
+      "n": 25
+     },
+     {
+      "mean_pred": 0.5521,
+      "observed": 0.44,
+      "n": 25
+     }
+    ]
+   }
+  },
+  "permutation_importance": [
+   {
+    "feature": "practice",
+    "label": "practice participation",
+    "mean": 0.094964,
+    "std": 0.015852
+   },
+   {
+    "feature": "report_status",
+    "label": "game status",
+    "mean": 0.03289,
+    "std": 0.009424
+   },
+   {
+    "feature": "pos",
+    "label": "position",
+    "mean": 0.01368,
+    "std": 0.008192
+   },
+   {
+    "feature": "week",
+    "label": "week of season",
+    "mean": 0.003204,
+    "std": 0.003226
+   },
+   {
+    "feature": "opp_avg3",
+    "label": "recent workload",
+    "mean": 0.002567,
+    "std": 0.00473
+   },
+   {
+    "feature": "region_group",
+    "label": "type of injury",
+    "mean": 0.002276,
+    "std": 0.003468
+   },
+   {
+    "feature": "missed_prev",
+    "label": "missed the previous game",
+    "mean": 0.001511,
+    "std": 0.009228
+   },
+   {
+    "feature": "age",
+    "label": "age",
+    "mean": 0.001249,
+    "std": 0.001036
+   },
+   {
+    "feature": "weeks_on_report",
+    "label": "weeks on report",
+    "mean": 0.000426,
+    "std": 0.002372
+   },
+   {
+    "feature": "rest",
+    "label": "days of rest",
+    "mean": 0.000249,
+    "std": 0.00041
+   },
+   {
+    "feature": "snap_drop_prev",
+    "label": "left last game early",
+    "mean": 0.000189,
+    "std": 0.001913
+   },
+   {
+    "feature": "ppg",
+    "label": "PPR points per game",
+    "mean": 0.000135,
+    "std": 0.000273
+   },
+   {
+    "feature": "era",
+    "label": "IR rules era",
+    "mean": 0.0,
+    "std": 0.0
+   }
+  ],
+  "season_cv": [
+   {
+    "season": 2013,
+    "roc_auc": 0.9715,
+    "brier_skill_vs_base_rate": 0.5979,
+    "positives": 40
+   },
+   {
+    "season": 2014,
+    "roc_auc": 0.9557,
+    "brier_skill_vs_base_rate": 0.4944,
+    "positives": 39
+   },
+   {
+    "season": 2015,
+    "roc_auc": 0.9361,
+    "brier_skill_vs_base_rate": 0.4236,
+    "positives": 39
+   },
+   {
+    "season": 2016,
+    "roc_auc": 0.9152,
+    "brier_skill_vs_base_rate": 0.4443,
+    "positives": 33
+   },
+   {
+    "season": 2017,
+    "roc_auc": 0.8865,
+    "brier_skill_vs_base_rate": 0.2515,
+    "positives": 30
+   },
+   {
+    "season": 2018,
+    "roc_auc": 0.9312,
+    "brier_skill_vs_base_rate": 0.4322,
+    "positives": 42
+   },
+   {
+    "season": 2019,
+    "roc_auc": 0.9398,
+    "brier_skill_vs_base_rate": 0.4678,
+    "positives": 43
+   },
+   {
+    "season": 2020,
+    "roc_auc": 0.9299,
+    "brier_skill_vs_base_rate": 0.417,
+    "positives": 40
+   },
+   {
+    "season": 2021,
+    "roc_auc": 0.9004,
+    "brier_skill_vs_base_rate": 0.4468,
+    "positives": 63
+   },
+   {
+    "season": 2022,
+    "roc_auc": 0.903,
+    "brier_skill_vs_base_rate": 0.3979,
+    "positives": 41
+   },
+   {
+    "season": 2023,
+    "roc_auc": 0.9257,
+    "brier_skill_vs_base_rate": 0.4806,
+    "positives": 53
+   },
+   {
+    "season": 2024,
+    "roc_auc": 0.9558,
+    "brier_skill_vs_base_rate": 0.5686,
+    "positives": 62
+   },
+   {
+    "season": 2025,
+    "roc_auc": 0.905,
+    "brier_skill_vs_base_rate": 0.2388,
+    "positives": 20
+   }
+  ],
+  "season_cv_mean": {
+   "roc_auc": 0.9274,
+   "brier_skill_vs_base_rate": 0.4355
+  }
+ },
+ "time_out_model": {
+  "validation_log_loss": {
+   "logistic_C0.03": 0.42358,
+   "logistic_C0.1": 0.4189,
+   "logistic_C0.3": 0.41837,
+   "logistic_C1.0": 0.41879,
+   "boosted_d2_lr0.03_it150": 0.3989,
+   "boosted_d2_lr0.03_it300": 0.39306,
+   "boosted_d2_lr0.06_it150": 0.39329,
+   "boosted_d2_lr0.06_it300": 0.39502,
+   "boosted_d3_lr0.03_it150": 0.39372,
+   "boosted_d3_lr0.03_it300": 0.40597,
+   "boosted_d3_lr0.06_it150": 0.4021,
+   "boosted_d3_lr0.06_it300": 0.42086
+  },
+  "chosen": "boosted_d2_lr0.03_it300",
+  "baseline_logistic": {
+   "config": "logistic_C0.3",
+   "test": {
+    "n": 194,
+    "positives": 33,
+    "base_rate": 0.1701,
+    "roc_auc": 0.8739,
+    "pr_auc": 0.6055,
+    "brier": 0.09977,
+    "brier_skill_vs_base_rate": 0.3235,
+    "log_loss": 0.3152,
+    "threshold": 0.5,
+    "precision": 0.625,
+    "recall": 0.303,
+    "f1": 0.4082,
+    "top_decile_rate": 0.5,
+    "top_decile_lift": 2.94,
+    "calibration": [
+     {
+      "mean_pred": 0.0188,
+      "observed": 0.0,
+      "n": 20
+     },
+     {
+      "mean_pred": 0.0279,
+      "observed": 0.0,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.0403,
+      "observed": 0.0,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.0646,
+      "observed": 0.0,
+      "n": 20
+     },
+     {
+      "mean_pred": 0.0819,
+      "observed": 0.0526,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.1304,
+      "observed": 0.1053,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.2316,
+      "observed": 0.2,
+      "n": 20
+     },
+     {
+      "mean_pred": 0.3229,
+      "observed": 0.3684,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.4011,
+      "observed": 0.4737,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.5957,
+      "observed": 0.5,
+      "n": 20
+     }
+    ]
+   }
+  },
+  "challenger_boosted": {
+   "config": "boosted_d2_lr0.03_it300",
+   "test": {
+    "n": 194,
+    "positives": 33,
+    "base_rate": 0.1701,
+    "roc_auc": 0.9006,
+    "pr_auc": 0.6909,
+    "brier": 0.09163,
+    "brier_skill_vs_base_rate": 0.3787,
+    "log_loss": 0.2971,
+    "threshold": 0.5,
+    "precision": 0.8462,
+    "recall": 0.3333,
+    "f1": 0.4783,
+    "top_decile_rate": 0.75,
+    "top_decile_lift": 4.41,
+    "calibration": [
+     {
+      "mean_pred": 0.0089,
+      "observed": 0.0,
+      "n": 20
+     },
+     {
+      "mean_pred": 0.0272,
+      "observed": 0.0,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.0454,
+      "observed": 0.0,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.0597,
+      "observed": 0.0,
+      "n": 20
+     },
+     {
+      "mean_pred": 0.0871,
+      "observed": 0.1053,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.1234,
+      "observed": 0.0526,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.2395,
+      "observed": 0.2,
+      "n": 20
+     },
+     {
+      "mean_pred": 0.3276,
+      "observed": 0.2105,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.364,
+      "observed": 0.3684,
+      "n": 19
+     },
+     {
+      "mean_pred": 0.5673,
+      "observed": 0.75,
+      "n": 20
+     }
+    ]
+   }
+  },
+  "permutation_importance": [
+   {
+    "feature": "games_left",
+    "label": "games left in season",
+    "mean": 0.098697,
+    "std": 0.016909
+   },
+   {
+    "feature": "report_status",
+    "label": "game status",
+    "mean": 0.072194,
+    "std": 0.017123
+   },
+   {
+    "feature": "on_ir",
+    "label": "on Injured Reserve",
+    "mean": 0.028726,
+    "std": 0.010639
+   },
+   {
+    "feature": "region_group",
+    "label": "type of injury",
+    "mean": 0.019339,
+    "std": 0.00338
+   },
+   {
+    "feature": "practice",
+    "label": "practice participation",
+    "mean": 0.015976,
+    "std": 0.003384
+   },
+   {
+    "feature": "k",
+    "label": "games missed so far",
+    "mean": 0.011358,
+    "std": 0.00748
+   },
+   {
+    "feature": "prior1_games_missed",
+    "label": "games missed last season",
+    "mean": 0.004263,
+    "std": 0.00202
+   },
+   {
+    "feature": "week",
+    "label": "week of season",
+    "mean": 0.001616,
+    "std": 0.001393
+   },
+   {
+    "feature": "same_region_before",
+    "label": "same body part hurt before",
+    "mean": 0.000488,
+    "std": 0.000318
+   },
+   {
+    "feature": "k_log",
+    "label": "games missed so far (log)",
+    "mean": 0.0,
+    "std": 0.0
+   },
+   {
+    "feature": "left_early",
+    "label": "left the injury game early",
+    "mean": 0.0,
+    "std": 0.0
+   },
+   {
+    "feature": "era",
+    "label": "IR rules era",
+    "mean": 0.0,
+    "std": 0.0
+   },
+   {
+    "feature": "pos",
+    "label": "position",
+    "mean": -0.000347,
+    "std": 0.000516
+   },
+   {
+    "feature": "ppg",
+    "label": "PPR points per game",
+    "mean": -0.000648,
+    "std": 0.001286
+   },
+   {
+    "feature": "injury_game_snap",
+    "label": "snaps in injury game",
+    "mean": -0.001323,
+    "std": 0.001259
+   },
+   {
+    "feature": "age",
+    "label": "age",
+    "mean": -0.002368,
+    "std": 0.001589
+   }
+  ],
+  "season_cv": [
+   {
+    "season": 2013,
+    "roc_auc": 0.865,
+    "brier_skill_vs_base_rate": 0.2404,
+    "positives": 22
+   },
+   {
+    "season": 2014,
+    "roc_auc": 0.8473,
+    "brier_skill_vs_base_rate": 0.3248,
+    "positives": 32
+   },
+   {
+    "season": 2015,
+    "roc_auc": 0.868,
+    "brier_skill_vs_base_rate": 0.2841,
+    "positives": 29
+   },
+   {
+    "season": 2016,
+    "roc_auc": 0.8646,
+    "brier_skill_vs_base_rate": 0.2863,
+    "positives": 26
+   },
+   {
+    "season": 2017,
+    "roc_auc": 0.8445,
+    "brier_skill_vs_base_rate": 0.3438,
+    "positives": 25
+   },
+   {
+    "season": 2018,
+    "roc_auc": 0.8354,
+    "brier_skill_vs_base_rate": 0.2562,
+    "positives": 28
+   },
+   {
+    "season": 2019,
+    "roc_auc": 0.7627,
+    "brier_skill_vs_base_rate": 0.1507,
+    "positives": 39
+   },
+   {
+    "season": 2020,
+    "roc_auc": 0.7926,
+    "brier_skill_vs_base_rate": 0.1771,
+    "positives": 42
+   },
+   {
+    "season": 2021,
+    "roc_auc": 0.7952,
+    "brier_skill_vs_base_rate": 0.2257,
+    "positives": 54
+   },
+   {
+    "season": 2022,
+    "roc_auc": 0.8353,
+    "brier_skill_vs_base_rate": 0.2797,
+    "positives": 45
+   },
+   {
+    "season": 2023,
+    "roc_auc": 0.8937,
+    "brier_skill_vs_base_rate": 0.3581,
+    "positives": 36
+   },
+   {
+    "season": 2024,
+    "roc_auc": 0.8323,
+    "brier_skill_vs_base_rate": 0.234,
+    "positives": 45
+   },
+   {
+    "season": 2025,
+    "roc_auc": 0.8998,
+    "brier_skill_vs_base_rate": 0.3791,
+    "positives": 33
+   }
+  ],
+  "season_cv_mean": {
+   "roc_auc": 0.8413,
+   "brier_skill_vs_base_rate": 0.2723
+  },
+  "episode_eval": {
+   "episodes": 58,
+   "c_index": 0.8537,
+   "back_after_one_game_auc": 0.9375,
+   "out_4plus_auc": 0.9522,
+   "out_4plus_brier": 0.1095,
+   "mean_abs_error_games": 0.97,
+   "naive_mean_abs_error_games": 1.42,
+   "within_one_game": 0.818,
+   "calibration_out_4plus": [
+    {
+     "mean_pred": 0.043,
+     "observed": 0.0,
+     "n": 9
+    },
+    {
+     "mean_pred": 0.197,
+     "observed": 0.0,
+     "n": 8
+    },
+    {
+     "mean_pred": 0.309,
+     "observed": 0.444,
+     "n": 9
+    },
+    {
+     "mean_pred": 0.426,
+     "observed": 0.625,
+     "n": 8
+    },
+    {
+     "mean_pred": 0.862,
+     "observed": 1.0,
+     "n": 9
+    }
+   ],
+   "by_region": [
+    {
+     "region": "Ankle",
+     "n": 5,
+     "predicted_median": 2.0,
+     "actual_median": 1.0
+    },
+    {
+     "region": "Hamstring",
+     "n": 8,
+     "predicted_median": 2.0,
+     "actual_median": 3.0
+    },
+    {
+     "region": "Knee",
+     "n": 6,
+     "predicted_median": 2.0,
+     "actual_median": 2.0
+    }
+   ]
+  }
+ },
+ "position_weekly_base_rate": {
+  "QB": 0.0249,
+  "RB": 0.0575,
+  "TE": 0.0451,
+  "WR": 0.0408
+ },
+ "return_by_final_report": [
+  {
+   "next_report": "Doubtful",
+   "mean": 0.0182,
+   "size": 55
+  },
+  {
+   "next_report": "No report",
+   "mean": 0.0584,
+   "size": 154
+  },
+  {
+   "next_report": "None",
+   "mean": 0.9253,
+   "size": 174
+  },
+  {
+   "next_report": "Not listed",
+   "mean": 0.0539,
+   "size": 167
+  },
+  {
+   "next_report": "Out",
+   "mean": 0.0,
+   "size": 359
+  },
+  {
+   "next_report": "Probable",
+   "mean": 1.0,
+   "size": 41
+  },
+  {
+   "next_report": "Questionable",
+   "mean": 0.6431,
+   "size": 311
+  }
+ ],
+ "hedge": {
+  "waiver_ppg": {
+   "RB": 4.862773415990328,
+   "WR": 6.338418803418804,
+   "TE": 7.150800877363378
+  },
+  "fill_in_prior_ppg": {
+   "RB": 11.93,
+   "TE": 5.99,
+   "WR": 8.96
+  },
+  "fill_in_games": 996,
+  "thresholds_4wk_points": [
+   2.0,
+   4.0
+  ]
+ }
+}

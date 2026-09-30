@@ -1,0 +1,44 @@
+{
+ "current (no history) | logistic": {
+  "auc_all": 0.7556,
+  "auc_quiet": 0.659,
+  "auc_warning": 0.815,
+  "brier_skill": 0.1505,
+  "quiet_share_of_injuries": 0.482
+ },
+ "current (no history) | boosted": {
+  "auc_all": 0.7653,
+  "auc_quiet": 0.666,
+  "auc_warning": 0.822,
+  "brier_skill": 0.1528,
+  "quiet_share_of_injuries": 0.482
+ },
+ "plus history | logistic": {
+  "auc_all": 0.751,
+  "auc_quiet": 0.6516,
+  "auc_warning": 0.8127,
+  "brier_skill": 0.1485,
+  "quiet_share_of_injuries": 0.482
+ },
+ "plus history | boosted": {
+  "auc_all": 0.764,
+  "auc_quiet": 0.6642,
+  "auc_warning": 0.8229,
+  "brier_skill": 0.1533,
+  "quiet_share_of_injuries": 0.482
+ },
+ "split: quiet + warning models | logistic": {
+  "auc_all": 0.7089,
+  "auc_quiet": 0.5674,
+  "auc_warning": 0.8115,
+  "brier_skill": 0.1369,
+  "quiet_share_of_injuries": 0.482
+ },
+ "split: quiet + warning models | boosted": {
+  "auc_all": 0.7149,
+  "auc_quiet": 0.5704,
+  "auc_warning": 0.8169,
+  "brier_skill": 0.1409,
+  "quiet_share_of_injuries": 0.482
+ }
+}
