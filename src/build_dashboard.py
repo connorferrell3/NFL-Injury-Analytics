@@ -222,6 +222,10 @@ def main() -> None:
     }
     html = (DASH / "template.html").read_text()
     html = html.replace("/*__DATA__*/null", json.dumps(payload, separators=(",", ":"), default=lambda o: o.item() if isinstance(o, np.generic) else str(o)))
+    # full document so it renders correctly as a standalone file (GitHub Pages, local browser)
+    html = ('<!doctype html>\n<html lang="en">\n<head>\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+            + html.replace("</style>", "</style>\n</head>\n<body>", 1) + "\n</body>\n</html>\n")
     (DASH / "index.html").write_text(html)
     print(f"Wrote dashboard/index.html ({len(html) / 1024:.0f} KB)")
 

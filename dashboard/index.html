@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta charset="utf-8">
 <title>Starters Down</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -177,6 +181,8 @@ a { color: var(--accent); }
   .bub { transition: r .35s ease, fill .35s ease; }
 }
 </style>
+</head>
+<body>
 
 <div class="wrap">
   <header>
@@ -1029,3 +1035,6 @@ render();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
 new MutationObserver(render).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
 </script>
+
+</body>
+</html>
