@@ -370,6 +370,7 @@ a { color: var(--accent); }
       </div>
       <p class="callout" id="team-callout"></p>
       <div class="panel">
+        <div class="fgroup" id="tm-season"><span class="flabel">Season</span></div>
         <div class="fgroup" id="tm-metric"><span class="flabel">Measure</span></div>
         <div class="legend" id="team-legend"></div>
         <svg id="team-health" role="img" aria-label="Team injury comparison"></svg>
@@ -379,7 +380,7 @@ a { color: var(--accent); }
     <section>
       <div class="sec-head">
         <h2>Which teams lose the most</h2>
-        <p>Total regular-season games key players missed to injury. Teams are ranked by their six-season total.</p>
+        <p>Total regular-season games key players missed to injury. Teams are ranked by their 2020–2025 total. The live column shows the current season so far, with how many key players are out right now; it isn't part of the total.</p>
       </div>
       <div class="panel">
         <div class="legend" id="heat-legend"></div>
@@ -640,7 +641,7 @@ function injuredShare(K) { return K.length ? K.filter(k => EP_BY_KEY.has(kstr(k.
 function chips(host, values, key, labelFn = v => v) {
   values.forEach(v => {
     const b = document.createElement("button");
-    b.className = "chip"; b.textContent = labelFn(v); b.dataset.v = v; b.id = `chip-${key}-${String(v).replace(/\W+/g, "")}`;
+    b.className = "chip"; b.textContent = labelFn(v); b.dataset.v = v; b.id = `chip-${host}-${String(v).replace(/\W+/g, "")}`;
     b.addEventListener("click", () => setState({[key]: v}));
     $(host).appendChild(b);
   });
@@ -991,6 +992,7 @@ function renderTeamHealth() {
   const tp = (DATA.team_p[bit] || {})[state.teamMetric];
   const pTxt = tp === undefined ? "" : tp <= 0.001 ? "p < 0.001" : `p = ${tp.toFixed(tp < 0.01 ? 3 : 2)}`;
   const caution = avgN < 40 ? ` With only about ${Math.round(avgN)} players per team in this view, treat the ranking loosely.`
+    : state.season === CUR ? ` ${CUR} covers only Weeks 1–${CUR_WEEK}, so this is an early read.`
     : state.season !== "All" ? " One season is a small sample; the six-season view is more reliable."
     : state.unit !== "All" || tp === undefined ? " Filtering to one unit or position shrinks each team's sample, so small gaps may be noise."
     : tp < 0.05 ? ` Over 2020–2025, these team gaps are larger than random chance would produce (permutation test, ${pTxt}).`
@@ -1001,7 +1003,7 @@ function renderTeams() {
   const {K, E} = nflScope();
   renderNflKpis(K, E);
   renderCards("team-cards", ["team_cap"]);
-  syncChips("tm-metric", state.teamMetric);
+  syncChips("tm-metric", state.teamMetric); syncChips("tm-season", state.season);
   renderTeamHealth(); renderHeat();
 }
 function renderHist(E) {
@@ -1023,37 +1025,57 @@ function renderHist(E) {
 }
 function renderHeat() {
   const bit = defBit();
-  const E = epsFor(PS.filter(k => SEASONS.includes(k.season) && unitMatch(k.pos, state.unit) && inDef(k, bit)));
+  const E = epsFor(PS.filter(k => ALL_SEASONS.includes(k.season) && unitMatch(k.pos, state.unit) && inDef(k, bit)));
   const teams = [...new Set(PS.map(k => k.team))];
   const cell = {}, tot = {};
-  for (const t of teams) { tot[t] = 0; for (const s of SEASONS) cell[t + s] = {g: 0, eps: []}; }
-  for (const e of E) { cell[e.team + e.season].g += e.games; cell[e.team + e.season].eps.push(e); tot[e.team] += e.games; }
+  for (const t of teams) { tot[t] = 0; for (const s of ALL_SEASONS) cell[t + s] = {g: 0, eps: []}; }
+  for (const e of E) {
+    const c = cell[e.team + e.season]; if (!c) continue;
+    c.g += e.games; c.eps.push(e);
+    if (SEASONS.includes(e.season)) tot[e.team] += e.games;
+  }
   teams.sort((a, b) => tot[b] - tot[a]);
-  const cw = 50, ch = 24, gap = 2, lx = 56, top = 28, barW = 140;
-  const W = lx + SEASONS.length * (cw + gap) + 16 + barW + 40, H = top + teams.length * (ch + gap) + 4;
+  const cw = 50, ch = 24, gap = 2, liveGap = 14, lx = 56, top = 40, barW = 130;
+  const colX = i => lx + i * (cw + gap) + (i >= SEASONS.length ? liveGap : 0);
+  const barX = colX(ALL_SEASONS.length) + 14;
+  const W = barX + barW + 44, H = top + teams.length * (ch + gap) + 4;
   const maxCell = Math.max(1, ...teams.flatMap(t => SEASONS.map(s => cell[t + s].g)));
   const maxTot = Math.max(1, ...Object.values(tot));
   const ramp = seq(), step = v => Math.min(6, Math.floor(v / maxCell * 7));
-  let s = SEASONS.map((yr, i) => `<text x="${lx + i * (cw + gap) + cw / 2}" y="${top - 10}" text-anchor="middle" class="num" style="font-size:12px;${state.season === yr ? "font-weight:700;fill:var(--ink)" : "fill:var(--ink-3)"}">${yr}</text>`).join("");
-  s += `<text x="${lx + SEASONS.length * (cw + gap) + 16}" y="${top - 10}" style="font-size:12px;fill:var(--ink-3)">6-season total</text>`;
+  const hdr = (yr, i) => {
+    const on = state.season === yr, live = yr === CUR, x = colX(i) + cw / 2;
+    const st = on ? "font-weight:700;fill:var(--ink)" : "fill:var(--ink-3)";
+    return `<text x="${x}" y="${live ? top - 22 : top - 10}" text-anchor="middle" class="num" style="font-size:12px;${st}">${yr}</text>` +
+      (live ? `<text x="${x}" y="${top - 9}" text-anchor="middle" style="font-size:10px;fill:var(--ink-3)">thru Wk ${CUR_WEEK}</text><circle cx="${x - 20}" cy="${top - 26}" r="3" fill="var(--serious)"/>` : "");
+  };
+  let s = ALL_SEASONS.map(hdr).join("");
+  const sepX = colX(SEASONS.length) - liveGap / 2 - 1;
+  s += `<line x1="${sepX}" x2="${sepX}" y1="${top - 4}" y2="${H - 4}" stroke="var(--rule)" stroke-dasharray="3 3"/>`;
+  s += `<text x="${barX}" y="${top - 10}" style="font-size:12px;fill:var(--ink-3)">2020–25 total</text>`;
   teams.forEach((t, r) => {
     const yy = top + r * (ch + gap);
     s += `<text class="team" x="${lx - 10}" y="${yy + ch / 2 + 4}" text-anchor="end">${t}</text>`;
-    SEASONS.forEach((yr, i) => {
-      const c = cell[t + yr], fill = ramp[step(c.g)];
-      const worst = [...c.eps].sort((a, b) => b.games - a.games).slice(0, 3).map(e => `${esc(e.player)} (${e.pos}), ${e.games} g · ${esc(e.region)}`).join("<br>");
-      const tip = `<b>${t} · ${yr}</b>${fmt(c.g)} games lost · ${c.eps.length} absences${worst ? `<br><span class="muted">${worst}</span>` : ""}`;
-      s += `<g data-tip="${esc(tip)}" opacity="${state.season !== "All" && state.season !== yr ? .35 : 1}"><rect x="${lx + i * (cw + gap)}" y="${yy}" width="${cw}" height="${ch}" rx="3" fill="${fill}"/>`;
-      s += `<text class="v" x="${lx + i * (cw + gap) + cw / 2}" y="${yy + ch / 2 + 4}" text-anchor="middle" style="fill:${inkOn(fill)}">${c.g}</text></g>`;
+    ALL_SEASONS.forEach((yr, i) => {
+      const c = cell[t + yr], fill = ramp[step(c.g)], live = yr === CUR;
+      const out = live ? c.eps.filter(e => e.ongoing) : [];
+      const list = (live ? out : [...c.eps].sort((a, b) => b.games - a.games)).slice(0, live ? 6 : 3)
+        .map(e => `${esc(e.player)} (${e.pos}), ${live ? "out since Wk " + e.start : e.games + " g"} · ${esc(e.region)}`).join("<br>");
+      const tip = live
+        ? `<b>${t} · ${yr} through Week ${CUR_WEEK}</b>${fmt(c.g)} game${c.g === 1 ? "" : "s"} lost so far · ${out.length} key player${out.length === 1 ? "" : "s"} out now${list ? `<br><span class="muted">${list}</span>` : ""}`
+        : `<b>${t} · ${yr}</b>${fmt(c.g)} game${c.g === 1 ? "" : "s"} lost · ${c.eps.length} absence${c.eps.length === 1 ? "" : "s"}${list ? `<br><span class="muted">${list}</span>` : ""}`;
+      s += `<g data-tip="${esc(tip)}"><rect x="${colX(i)}" y="${yy}" width="${cw}" height="${ch}" rx="3" fill="${fill}"${live ? ' stroke="var(--serious)" stroke-width="1" stroke-opacity=".55"' : ""}/>`;
+      s += `<text class="v" x="${colX(i) + cw / 2}" y="${yy + ch / 2 + 4}" text-anchor="middle" style="fill:${inkOn(fill)}">${c.g}${live && out.length ? ` · ${out.length}` : ""}</text></g>`;
     });
-    const bx = lx + SEASONS.length * (cw + gap) + 16, bw = tot[t] / maxTot * barW;
-    s += `<g data-tip="${esc(`<b>${t}</b>${fmt(tot[t])} games lost, 2020–2025`)}"><rect x="${bx}" y="${yy + 5}" width="${Math.max(bw, 2)}" height="${ch - 10}" rx="3" fill="var(--seq-3)"/>`;
-    s += `<text x="${bx + bw + 6}" y="${yy + ch / 2 + 4}" class="num" style="font-size:12px;fill:var(--ink-2)">${tot[t]}</text></g>`;
+    const bw = tot[t] / maxTot * barW;
+    s += `<g data-tip="${esc(`<b>${t}</b>${fmt(tot[t])} games lost, 2020–2025`)}"><rect x="${barX}" y="${yy + 5}" width="${Math.max(bw, 2)}" height="${ch - 10}" rx="3" fill="var(--seq-3)"/>`;
+    s += `<text x="${barX + bw + 6}" y="${yy + ch / 2 + 4}" class="num" style="font-size:12px;fill:var(--ink-2)">${tot[t]}</text></g>`;
   });
+  const selIdx = ALL_SEASONS.indexOf(state.season);
+  if (selIdx >= 0) s += `<rect x="${colX(selIdx) - 3}" y="${top - 4}" width="${cw + 6}" height="${H - top + 2}" rx="5" fill="none" stroke="var(--ink)" stroke-width="1.5" pointer-events="none"/>`;
   const svg = $("heat");
-  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.minWidth = "540px"; svg.style.maxWidth = W + "px";
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.minWidth = "600px"; svg.style.maxWidth = W + "px";
   svg.innerHTML = s;
-  $("heat-legend").innerHTML = `<span>Games lost in a season <span class="swatch-ramp">${ramp.map(c => `<i style="background:${c}"></i>`).join("")}</span>0 → ${maxCell}</span><span>${DEF_LABEL[state.def]}${state.unit === "All" ? "" : " · " + (POS_NAME[state.unit] || state.unit)}</span>`;
+  $("heat-legend").innerHTML = `<span>Games lost in a season <span class="swatch-ramp">${ramp.map(c => `<i style="background:${c}"></i>`).join("")}</span>0 → ${maxCell}</span><span>${CUR} column: games lost so far · key players out now</span><span>${DEF_LABEL[state.def]}${state.unit === "All" ? "" : " · " + (POS_NAME[state.unit] || state.unit)}</span>`;
 }
 function nflScope() {
   const bit = defBit();
@@ -1291,6 +1313,7 @@ chips("f-unit", UNITS, "unit");
 chips("ff-season", ["All", ...ALL_SEASONS], "fseason", seasonLabel);
 chips("ff-pos", ["All", ...FPOS], "fpos");
 chips("dur-metric", ["games", "share"], "durMetric", v => v === "games" ? "Games missed" : "Share of remaining season");
+chips("tm-season", ["All", ...ALL_SEASONS], "season", v => v === "All" ? "2020–25" : seasonLabel(v));
 chips("tm-metric", ["cap", "rate"], "teamMetric", v => v === "cap" ? "Cap dollars lost" : "% who missed time");
 render();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
