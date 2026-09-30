@@ -47,8 +47,9 @@ header { display: grid; gap: 12px; }
 .num { font-variant-numeric: tabular-nums; }
 
 /* tabs */
-.tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--rule); flex-wrap: wrap; }
-.tab { font: 700 20px/1 var(--display); text-transform: uppercase; letter-spacing: .04em; padding: 12px 16px 10px; border: 0; background: none; color: var(--ink-3); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+.tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--rule); overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; font: 700 20px/1 var(--display); text-transform: uppercase; letter-spacing: .04em; padding: 12px 16px 10px; border: 0; background: none; color: var(--ink-3); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
 .tab:hover { color: var(--ink); }
 .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
 .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -138,7 +139,6 @@ footer { font-size: 13px; color: var(--ink-3); border-top: 1px solid var(--rule)
 a { color: var(--accent); }
 
 /* key findings */
-.findings { display: grid; gap: 22px; }
 .fgroup-h { display: flex; align-items: baseline; gap: 10px; }
 .fgroup-h h3 { color: var(--ink); }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
@@ -158,7 +158,29 @@ a { color: var(--accent); }
 .minikpis b { font: 700 28px/1 var(--display); font-variant-numeric: tabular-nums; }
 .minikpis span { font-size: 13px; color: var(--ink-2); }
 
+/* overview */
+.hero-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-block: 1px solid var(--rule); }
+.hs { padding: 22px 18px 18px; display: grid; gap: 6px; align-content: start; }
+.hs + .hs { border-left: 1px solid var(--rule); }
+.hs .v { font: 700 clamp(44px, 6vw, 68px)/.95 var(--display); font-variant-numeric: tabular-nums; }
+.hs .l { font-size: 15px; color: var(--ink-2); max-width: 26ch; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--serious); display: inline-block; }
+.live-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; width: 100%; text-align: left; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 18px; cursor: pointer; }
+.live-strip:hover { border-color: var(--ink-3); }
+.live-strip:focus-visible, .xcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.live-strip .ls-stat { display: inline-flex; align-items: baseline; gap: 6px; font-size: 14px; color: var(--ink-2); }
+.live-strip .ls-stat b { font: 700 24px/1 var(--display); color: var(--ink); font-variant-numeric: tabular-nums; }
+.live-strip .go { margin-left: auto; font-weight: 600; color: var(--accent); white-space: nowrap; }
+.explore { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.xcard { display: grid; gap: 4px; text-align: left; font: inherit; color: var(--ink-2); background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; cursor: pointer; font-size: 14px; line-height: 1.4; }
+.xcard:hover { border-color: var(--ink-3); }
+.xcard b { font: 700 19px/1.1 var(--display); text-transform: uppercase; letter-spacing: .03em; color: var(--ink); }
+
 @media (max-width: 900px) {
+  .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hs + .hs { border-left: 0; }
+  .hs:nth-child(even) { border-left: 1px solid var(--rule); }
+  .hs:nth-child(n+3) { border-top: 1px solid var(--rule); }
   .grid-2, .grid-2b, .grid-2e { grid-template-columns: minmax(0, 1fr); }
   .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .kpi + .kpi { border-left: 0; }
@@ -172,6 +194,7 @@ a { color: var(--accent); }
   .wrap { padding-inline: 16px; }
   .kpi .v { font-size: 32px; }
   .tab { font-size: 17px; padding-inline: 10px; }
+  .live-strip .go { margin-left: 0; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .bub { transition: r .35s ease, fill .35s ease; }
@@ -180,55 +203,57 @@ a { color: var(--accent); }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow" id="eyebrow">NFL injury report · 2020–2025 + current season</div>
+    <div class="eyebrow" id="eyebrow">NFL injury report</div>
     <h1>Starters Down</h1>
-    <p class="lede">Where key NFL players get hurt, how often, and how long they're out. Built from official injury reports, snap counts, Injured Reserve designations, contracts, honors, and fantasy draft data for six full seasons plus the season in progress.</p>
+    <p class="lede">Where key NFL players and top fantasy picks get hurt, how often, and how long they're out.</p>
   </header>
 
-  <section aria-labelledby="kf-h">
-    <div class="sec-head">
-      <h2 id="kf-h">Key findings</h2>
-      <p>Headline results from the six completed seasons (2020–2025), each checked with a two-proportion significance test. The p-value is the chance of seeing a gap this large if there were no real difference.</p>
-    </div>
-    <div class="findings" id="findings"></div>
-  </section>
-
-  <div class="tabs" role="tablist" aria-label="Views">
-    <button class="tab" role="tab" id="tab-starters" aria-controls="panel-starters">Starters</button>
-    <button class="tab" role="tab" id="tab-fantasy" aria-controls="panel-fantasy">Fantasy top 48 · PPR</button>
+  <div class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-overview" aria-controls="panel-overview">Overview</button>
+    <button class="tab" role="tab" id="tab-injuries" aria-controls="panel-injuries">Injuries</button>
+    <button class="tab" role="tab" id="tab-trends" aria-controls="panel-trends">Trends</button>
+    <button class="tab" role="tab" id="tab-players" aria-controls="panel-players">Players</button>
+    <button class="tab" role="tab" id="tab-live" aria-controls="panel-live"><span class="live-dot" aria-hidden="true"></span><span class="cur-season"></span> Live</button>
+    <button class="tab" role="tab" id="tab-fantasy" aria-controls="panel-fantasy">Fantasy · PPR</button>
+    <button class="tab" role="tab" id="tab-methods" aria-controls="panel-methods">Methods</button>
   </div>
 
-  <!-- ======================= STARTERS ======================= -->
-  <div class="tabpanel" role="tabpanel" id="panel-starters" aria-labelledby="tab-starters">
-    <nav class="filters" aria-label="Starter filters">
-      <div class="fgroup" id="f-season"><span class="flabel">Season</span></div>
-      <div class="fgroup" id="f-def"><span class="flabel">Key player =</span></div>
-      <div class="fgroup" id="f-unit"><span class="flabel">Unit</span></div>
-    </nav>
+  <nav class="filters" id="nfl-filters" aria-label="NFL filters" hidden>
+    <div class="fgroup" id="f-season"><span class="flabel">Season</span></div>
+    <div class="fgroup" id="f-def"><span class="flabel">Key player =</span></div>
+    <div class="fgroup" id="f-unit"><span class="flabel">Unit</span></div>
+  </nav>
+  <nav class="filters" id="fan-filters" aria-label="Fantasy filters" hidden>
+    <div class="fgroup" id="ff-season"><span class="flabel">Season</span></div>
+    <div class="fgroup" id="ff-pos"><span class="flabel">Position</span></div>
+  </nav>
+  <div class="kpis" id="kpis" hidden></div>
 
-    <div class="kpis" id="kpis"></div>
+  <!-- ======================= OVERVIEW ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview">
+    <section aria-label="Headline numbers">
+      <div class="hero-stats" id="hero-stats"></div>
+      <p class="small-note">Six completed regular seasons, 2020–2025. "Key players" are starters who play 65%+ of their unit's snaps (50% for running backs), about 22 per team.</p>
+    </section>
+
+    <button class="live-strip" id="live-strip" type="button"></button>
 
     <section>
       <div class="sec-head">
-        <div class="fgroup-h"><h2 class="cur-title"></h2><span class="live"><i></i><span class="cur-week"></span></span></div>
-        <p>Key players who have missed a game to injury this season. "Out now" means still out after the latest game week.</p>
+        <h2>Six things worth knowing</h2>
+        <p>Each result is checked with a significance test. The p-value is the chance of seeing a gap this large if there were no real difference.</p>
       </div>
-      <div class="panel">
-        <div class="minikpis" id="cur-kpis"></div>
-        <div class="scroll-x"><table class="ptable" id="cur-table"></table></div>
-        <p class="small-note" id="cur-note"></p>
-      </div>
+      <div class="cards" id="ov-cards"></div>
     </section>
 
     <section>
-      <div class="sec-head">
-        <h2>Does the definition matter?</h2>
-        <p>The same absence logic applied to different ways of picking key players. The injury rate barely moves; what changes is who's in the pool. Click a full definition to switch the whole tab to it.</p>
-      </div>
-      <p class="callout" id="def-callout"></p>
-      <div class="panel scroll-x"><table class="rtable" id="def-table" style="min-width:640px"></table></div>
+      <div class="sec-head"><h2>Explore</h2></div>
+      <div class="explore" id="explore"></div>
     </section>
+  </div>
 
+  <!-- ======================= INJURIES ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-injuries" aria-labelledby="tab-injuries" hidden>
     <section>
       <div class="sec-head">
         <h2>Where they get hurt</h2>
@@ -243,43 +268,6 @@ a { color: var(--accent); }
           <h3>Absences by body region</h3>
           <table class="rtable" id="region-table"></table>
           <p class="small-note" id="region-note"></p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="sec-head">
-        <h2>How many starters go down</h2>
-        <p>Share of key players who missed at least one regular-season game to injury. Click a position to filter the tab.</p>
-      </div>
-      <div class="grid-2b">
-        <div class="panel">
-          <h3>Offense vs. defense, by season</h3>
-          <div class="legend"><span><span class="key-line" style="background:var(--off)"></span>Offense</span><span><span class="key-line" style="background:var(--def)"></span>Defense</span></div>
-          <svg id="trend" viewBox="0 0 560 290" role="img" aria-label="Share of key players injured by season"></svg>
-        </div>
-        <div class="panel">
-          <h3>By position, 2020–2025</h3>
-          <div class="multiples" id="multiples"></div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="sec-head">
-        <h2>Season-ending injuries</h2>
-        <p>Key players who were on Injured Reserve and still out when their team's regular season ended. The current season isn't shown because no injury is season-ending until the season is over.</p>
-      </div>
-      <div class="grid-2b">
-        <div class="panel">
-          <h3>Season-ending injuries by season</h3>
-          <div class="legend"><span><span class="key-dot" style="background:var(--off);border-radius:2px"></span>Offense</span><span><span class="key-dot" style="background:var(--def);border-radius:2px"></span>Defense</span></div>
-          <svg id="se-chart" viewBox="0 0 560 300" role="img" aria-label="Season-ending injuries per season"></svg>
-        </div>
-        <div class="panel">
-          <h3>Season by season</h3>
-          <table class="rtable" id="se-table"></table>
-          <p class="small-note" id="se-note"></p>
         </div>
       </div>
     </section>
@@ -302,18 +290,63 @@ a { color: var(--accent); }
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- ======================= TRENDS ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-trends" aria-labelledby="tab-trends" hidden>
+    <div class="cards" id="trend-cards"></div>
+
+    <section>
+      <div class="sec-head">
+        <h2>How many starters go down</h2>
+        <p>Share of key players who missed at least one regular-season game to injury. Each player counts once, however many times he was hurt. Click a position to filter.</p>
+      </div>
+      <div class="grid-2b">
+        <div class="panel">
+          <h3>Offense vs. defense, by season</h3>
+          <div class="legend"><span><span class="key-line" style="background:var(--off)"></span>Offense</span><span><span class="key-line" style="background:var(--def)"></span>Defense</span></div>
+          <svg id="trend" viewBox="0 0 560 290" role="img" aria-label="Share of key players injured by season"></svg>
+        </div>
+        <div class="panel">
+          <h3>By position, 2020–2025</h3>
+          <div class="multiples" id="multiples"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>Season-ending injuries</h2>
+        <p>Key players who were on Injured Reserve and still out when their team's regular season ended.</p>
+      </div>
+      <div class="grid-2b">
+        <div class="panel">
+          <h3>Season-ending injuries by season</h3>
+          <div class="legend"><span><span class="key-dot" style="background:var(--off);border-radius:2px"></span>Offense</span><span><span class="key-dot" style="background:var(--def);border-radius:2px"></span>Defense</span></div>
+          <svg id="se-chart" viewBox="0 0 560 300" role="img" aria-label="Season-ending injuries per season"></svg>
+        </div>
+        <div class="panel">
+          <h3>Season by season</h3>
+          <table class="rtable" id="se-table"></table>
+          <p class="small-note" id="se-note"></p>
+        </div>
+      </div>
+    </section>
 
     <section>
       <div class="sec-head">
         <h2>Which teams lose the most</h2>
-        <p>Starter-games lost: the total regular-season games key players missed to injury. Teams are ranked by their six-season total.</p>
+        <p>Total regular-season games key players missed to injury. Teams are ranked by their six-season total.</p>
       </div>
       <div class="panel">
         <div class="legend" id="heat-legend"></div>
-        <div class="scroll-x"><svg id="heat" class="heat" role="img" aria-label="Starter-games lost by team and season"></svg></div>
+        <div class="scroll-x"><svg id="heat" class="heat" role="img" aria-label="Games lost by team and season"></svg></div>
       </div>
     </section>
+  </div>
 
+  <!-- ======================= PLAYERS ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-players" aria-labelledby="tab-players" hidden>
     <section>
       <div class="sec-head">
         <h2>Longest absences</h2>
@@ -331,29 +364,34 @@ a { color: var(--accent); }
         <div class="panel">
           <h3>Most frequently injured key players, 2020–<span class="cur-season"></span></h3>
           <div class="scroll-x"><table class="rtable" id="repeat-table" style="min-width:560px"></table></div>
-          <p class="small-note">Ranked by absences while a key player under the selected definition and unit. Seasons counts seasons with at least one absence.</p>
+          <p class="small-note">Ranked by absences while a key player under the selected definition and unit. The season filter doesn't apply here.</p>
         </div>
         <div class="panel">
           <h3>Same body part, again</h3>
-          <p class="small-note" style="margin-top:-4px">When a starter's next absence is the same region as his last one, compared with the rate you'd expect by chance.</p>
+          <p class="small-note" style="margin-top:-4px">How often a starter's next absence is the same region as his last one, compared with the rate you'd expect by chance.</p>
           <table class="rtable" id="samereg-table"></table>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- ======================= FANTASY ======================= -->
-  <div class="tabpanel" role="tabpanel" id="panel-fantasy" aria-labelledby="tab-fantasy" hidden>
-    <nav class="filters" aria-label="Fantasy filters">
-      <div class="fgroup" id="ff-season"><span class="flabel">Season</span></div>
-      <div class="fgroup" id="ff-pos"><span class="flabel">Position</span></div>
-    </nav>
-
-    <div class="kpis" id="fkpis"></div>
+  <!-- ======================= LIVE ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-live" aria-labelledby="tab-live" hidden>
+    <section>
+      <div class="sec-head">
+        <div class="fgroup-h"><h2>Key players out</h2><span class="live"><i></i><span class="cur-week"></span></span></div>
+        <p>Every key player who has missed a game to injury this season. "Out now" means still out after the latest game week. Use the filters above to switch definition or position group.</p>
+      </div>
+      <div class="panel">
+        <div class="minikpis" id="cur-kpis"></div>
+        <div class="scroll-x"><table class="ptable" id="cur-table"></table></div>
+        <p class="small-note" id="cur-note"></p>
+      </div>
+    </section>
 
     <section>
       <div class="sec-head">
-        <div class="fgroup-h"><h2 class="cur-title"></h2><span class="live"><i></i><span class="cur-week"></span></span></div>
+        <div class="fgroup-h"><h2>Top-48 PPR picks out</h2><span class="live"><i></i><span class="cur-week"></span></span></div>
         <p id="fcur-sub"></p>
       </div>
       <div class="panel">
@@ -361,6 +399,12 @@ a { color: var(--accent); }
         <div class="scroll-x"><table class="ptable" id="fcur-table"></table></div>
       </div>
     </section>
+  </div>
+
+  <!-- ======================= FANTASY ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-fantasy" aria-labelledby="tab-fantasy" hidden>
+    <div class="kpis" id="fkpis"></div>
+    <div class="cards" id="fan-cards"></div>
 
     <section>
       <div class="sec-head">
@@ -386,14 +430,6 @@ a { color: var(--accent); }
 
     <section>
       <div class="sec-head">
-        <h2>Season-ending injuries</h2>
-        <p>Top-48 PPR picks who were on Injured Reserve and still out at the end of the fantasy season.</p>
-      </div>
-      <div class="panel scroll-x"><table class="rtable" id="fse-table" style="min-width:560px"></table></div>
-    </section>
-
-    <section>
-      <div class="sec-head">
         <h2>Where fantasy players get hurt</h2>
         <p>Skill-position players have a different injury mix from starters overall: hamstrings lead, not knees.</p>
       </div>
@@ -412,12 +448,10 @@ a { color: var(--accent); }
 
     <section>
       <div class="sec-head">
-        <h2>By team</h2>
-        <p>Average fantasy weeks lost per top-48 pick, by the player's Week 1 team. Most teams have only 10–15 picks across six seasons, and a permutation test finds these team gaps are consistent with random chance (p = 0.17). Read this as a record of what happened, not a prediction.</p>
+        <h2>Season-ending injuries</h2>
+        <p>Top-48 PPR picks who were on Injured Reserve and still out at the end of the fantasy season.</p>
       </div>
-      <div class="panel">
-        <svg id="fteam" role="img" aria-label="Fantasy weeks lost per pick by team"></svg>
-      </div>
+      <div class="panel scroll-x"><table class="rtable" id="fse-table" style="min-width:560px"></table></div>
     </section>
 
     <section>
@@ -435,22 +469,44 @@ a { color: var(--accent); }
       </div>
       <div class="panel scroll-x"><table class="ptable" id="frepeat-table"></table></div>
     </section>
+
+    <section>
+      <div class="sec-head">
+        <h2>By team</h2>
+        <p>Average fantasy weeks lost per top-48 pick, by the player's Week 1 team. Most teams have only 10–15 picks across six seasons, and a permutation test finds these gaps are consistent with random chance (p = 0.17). Read this as a record of what happened, not a prediction.</p>
+      </div>
+      <div class="panel">
+        <svg id="fteam" role="img" aria-label="Fantasy weeks lost per pick by team"></svg>
+      </div>
+    </section>
   </div>
 
-  <section>
-    <div class="sec-head"><h2>How this was built</h2></div>
-    <div class="methods">
-      <div><h3>Snap-share starters</h3><p>An offensive or defensive player who averaged at least 65% of his unit's snaps in the games he played (50% for running backs), minimum two games. Last season's starters also count if hurt early. About 22 per team.</p></div>
-      <div><h3>Pedigree players</h3><p>Any of: a first-round pick still on his rookie contract (up to year 5, ending early with an extension or new deal); a cap hit in the top 30% of his position group that season, from OverTheCap; or a Pro Bowl or All-Pro selection the season before. Prior-season honors are used because players who get hurt are less likely to be selected that same year.</p></div>
-      <div><h3>Repeat injuries</h3><p>Next-season risk compares starters who were key players in back-to-back seasons. Same-region recurrence looks at each player's consecutive absences with a known body part; the chance rate is what you'd get if the next injury were drawn at random from the overall injury mix.</p></div>
-      <div><h3>Absences</h3><p>A run of consecutive team games a player missed, counted only when there is injury evidence: an injury-related listing on the official report, or an Injured Reserve designation. Benchings, suspensions and personal absences are excluded. Releases and trades end the run.</p></div>
-      <div><h3>Body region</h3><p>Free-text report labels are mapped to 16 regions. Players sent straight to IR often never appear on the report while out, so the label comes from the week before or the practice report after they return. About 5% of absences still have no body part.</p></div>
-      <div><h3>Fantasy</h3><p>ADP from Fantasy Football Calculator's PPR 12-team drafts in the week before each season (2020–2025) and Sleeper's PPR ADP for the current season, since Fantasy Football Calculator only serves in-season drafts once the season starts. Weeks are counted from Week 1 even if the player never suited up. A season-ending absence means IR and still out at the final fantasy week.</p></div>
-      <div><h3>Caveats</h3><p>Current-season numbers cover only the weeks played so far and are kept out of the six-season averages. 2020 had a 16-game season and a separate COVID list, which is not counted as injury. Week 18 has extra one-game absences from playoff teams resting starters. Durations stop at the end of the regular season. Pro Bowl and All-Pro rosters come from Wikipedia.</p></div>
-    </div>
-  </section>
+  <!-- ======================= METHODS ======================= -->
+  <div class="tabpanel" role="tabpanel" id="panel-methods" aria-labelledby="tab-methods" hidden>
+    <section>
+      <div class="sec-head">
+        <h2>Does the definition matter?</h2>
+        <p>The same absence logic applied to different ways of picking key players, 2020–2025. Click a full definition to use it on the NFL tabs.</p>
+      </div>
+      <p class="callout" id="def-callout"></p>
+      <div class="panel scroll-x"><table class="rtable" id="def-table" style="min-width:640px"></table></div>
+    </section>
 
-  <footer>Data: <a href="https://github.com/nflverse/nflverse-data" target="_blank" rel="noopener">nflverse</a> injury reports, snap counts, weekly rosters, draft picks and OverTheCap contracts; <a href="https://fantasyfootballcalculator.com/adp/ppr" target="_blank" rel="noopener">Fantasy Football Calculator</a> and <a href="https://sleeper.com" target="_blank" rel="noopener">Sleeper</a> ADP; Wikipedia Pro Bowl and All-Pro rosters. 2020 through the current regular season.</footer>
+    <section>
+      <div class="sec-head"><h2>How this was built</h2></div>
+      <div class="methods">
+        <div><h3>Snap-share starters</h3><p>An offensive or defensive player who averaged at least 65% of his unit's snaps in the games he played (50% for running backs), minimum two games. Last season's starters also count if hurt early. About 22 per team.</p></div>
+        <div><h3>Pedigree players</h3><p>Any of: a first-round pick still on his rookie contract (up to year 5, ending early with an extension or new deal); a cap hit in the top 30% of his position group that season, from OverTheCap; or a Pro Bowl or All-Pro selection the season before. Prior-season honors are used because players who get hurt are less likely to be selected that same year.</p></div>
+        <div><h3>Absences</h3><p>A run of consecutive team games a player missed, counted only when there is injury evidence: an injury-related listing on the official report, or an Injured Reserve designation. Benchings, suspensions and personal absences are excluded. Releases and trades end the run.</p></div>
+        <div><h3>Body region</h3><p>Free-text report labels are mapped to 16 regions. Players sent straight to IR often never appear on the report while out, so the label comes from the week before or the practice report after they return. About 5% of absences, and a third of season-ending ones, still have no body part.</p></div>
+        <div><h3>Repeat injuries</h3><p>Next-season risk compares starters who were key players in back-to-back seasons. Same-region recurrence looks at each player's consecutive absences with a known body part; the chance rate is what you'd get if the next injury were drawn at random from the overall injury mix.</p></div>
+        <div><h3>Fantasy</h3><p>ADP from Fantasy Football Calculator's PPR 12-team drafts in the week before each season (2020–2025) and Sleeper's PPR ADP for the current season, since Fantasy Football Calculator only serves in-season drafts once the season starts. Weeks are counted from Week 1 even if the player never suited up.</p></div>
+        <div><h3>Caveats</h3><p>Current-season numbers cover only the weeks played so far and are kept out of the six-season averages. 2020 had a 16-game season and a separate COVID list, which is not counted as injury. Week 18 has extra one-game absences from playoff teams resting starters. Durations stop at the end of the regular season.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>Data: <a href="https://github.com/nflverse/nflverse-data" target="_blank" rel="noopener">nflverse</a> injury reports, snap counts, weekly rosters, draft picks and OverTheCap contracts; <a href="https://fantasyfootballcalculator.com/adp/ppr" target="_blank" rel="noopener">Fantasy Football Calculator</a> and <a href="https://sleeper.com" target="_blank" rel="noopener">Sleeper</a> PPR ADP; Wikipedia Pro Bowl and All-Pro rosters. 2020 through the current regular season.</footer>
 </div>
 <div class="tip" id="tip" hidden></div>
 
@@ -495,13 +551,15 @@ const REGIONS = {
 };
 const UNSPEC = "Unspecified (IR)";
 
-const state = {tab: "starters", season: "All", def: "Snap share", unit: "All", fseason: "All", fpos: "All"};
+const TABS = ["overview", "injuries", "trends", "players", "live", "fantasy", "methods"];
+const NFL_TABS = new Set(["injuries", "trends", "players", "live"]);
+const state = {tab: "overview", season: "All", def: "Snap share", unit: "All", fseason: "All", fpos: "All"};
 try {
-  const s = JSON.parse(localStorage.getItem("starters-down-v2"));
+  const s = JSON.parse(localStorage.getItem("starters-down-v3"));
   if (s) for (const k of Object.keys(state)) if (k in s) state[k] = s[k];
 } catch (e) {}
-if (!["starters", "fantasy"].includes(state.tab)) state.tab = "starters";
-if (location.hash === "#fantasy" || location.hash === "#starters") state.tab = location.hash.slice(1);
+if (!TABS.includes(state.tab)) state.tab = "overview";
+if (TABS.includes(location.hash.slice(1))) state.tab = location.hash.slice(1);
 if (!DEFS.some(d => d.full && d.id === state.def)) state.def = "Snap share";
 if (!UNITS.includes(state.unit)) state.unit = "All";
 if (state.season !== "All" && !ALL_SEASONS.includes(state.season)) state.season = "All";
@@ -543,7 +601,7 @@ function chips(host, values, key, labelFn = v => v) {
 function syncChips(host, value) { document.querySelectorAll(`#${host} .chip`).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === String(value)))); }
 function setState(patch) {
   Object.assign(state, patch);
-  try { localStorage.setItem("starters-down-v2", JSON.stringify(state)); } catch (e) {}
+  try { localStorage.setItem("starters-down-v3", JSON.stringify(state)); } catch (e) {}
   render();
 }
 function kpis(host, items) { $(host).innerHTML = items.map(([v, l]) => `<div class="kpi"><span class="v">${v}</span><span class="l">${l}</span></div>`).join(""); }
@@ -638,23 +696,51 @@ function statusChip(e) {
 }
 
 /* ---------- key findings ---------- */
-function renderFindings() {
-  const groups = [...new Set(DATA.findings.map(c => c.group))];
-  $("findings").innerHTML = groups.map(g => {
-    const cards = DATA.findings.filter(c => c.group === g).map(c => {
-      const max = c.bars ? Math.max(...c.bars.map(b => b[1])) : 1;
-      const bars = c.bars ? `<div class="cbars">${c.bars.map(([l, v], i) => `<div class="cbar"><span>${esc(l)}</span><div class="track"><div class="fill" style="width:${(v / max * 100).toFixed(1)}%;background:${i === 0 || c.bars.length > 3 ? "var(--seq-4)" : "var(--seq-1)"}"></div></div><span class="n">${pct(v)}</span></div>`).join("")}</div>` : "";
-      return `<article class="card"><span class="v">${esc(c.value)}</span><span class="t">${esc(c.title)}</span><span class="d">${esc(c.detail)}</span>${bars}</article>`;
-    }).join("");
-    const live = g.includes("so far") ? `<span class="live"><i></i>Through Week ${CUR_WEEK}</span>` : "";
-    return `<div style="display:grid;gap:10px"><div class="fgroup-h"><h3>${esc(g)}</h3>${live}</div><div class="cards">${cards}</div></div>`;
+const CARD = Object.fromEntries(DATA.findings.map(c => [c.id, c]));
+function renderCards(host, ids) {
+  $(host).innerHTML = ids.filter(id => CARD[id]).map(id => {
+    const c = CARD[id];
+    const max = c.bars ? Math.max(...c.bars.map(b => b[1])) : 1;
+    const bars = c.bars ? `<div class="cbars">${c.bars.map(([l, v], i) => `<div class="cbar"><span>${esc(l)}</span><div class="track"><div class="fill" style="width:${(v / max * 100).toFixed(1)}%;background:${i === 0 || c.bars.length > 3 ? "var(--seq-4)" : "var(--seq-1)"}"></div></div><span class="n">${pct(v)}</span></div>`).join("")}</div>` : "";
+    return `<article class="card"><span class="v">${esc(c.value)}</span><span class="t">${esc(c.title)}</span><span class="d">${esc(c.detail)}</span>${bars}</article>`;
   }).join("");
+}
+
+/* ---------- overview ---------- */
+const EXPLORE = [
+  ["injuries", "Injuries", "Where on the body players get hurt, and how long each injury keeps them out."],
+  ["trends", "Trends", "Offense vs. defense, positions, season-ending injuries by year, and team totals."],
+  ["players", "Players", "The longest absences and the players who keep getting hurt."],
+  ["live", `${CUR} Live`, `Who's out right now, through Week ${CUR_WEEK}.`],
+  ["fantasy", "Fantasy · PPR", "How top-48 PPR draft picks hold up, by position, round, and team."],
+  ["methods", "Methods", "How key players and absences are defined, and whether the definition matters."],
+];
+function renderOverview() {
+  const snapDone = PS.filter(k => SEASONS.includes(k.season) && (k.f & 1));
+  const medGames = median(epsFor(snapDone).map(e => e.games));
+  const hero = [
+    [CARD.starter_rate.value, "of starters miss at least one game to injury every season"],
+    [CARD.season_ending.value, "starters a season suffer a season-ending injury"],
+    [`${medGames.toFixed(0)} games`, "is the typical (median) length of an injury absence"],
+    [CARD.fan_rate.value, "of top-48 PPR fantasy picks miss at least one week"],
+  ];
+  $("hero-stats").innerHTML = hero.map(([v, l]) => `<div class="hs"><span class="v">${esc(v)}</span><span class="l">${esc(l)}</span></div>`).join("");
+  const curK = PS.filter(k => k.season === CUR && (k.f & 1)), curE = epsFor(curK);
+  const fanOut = FAN.filter(f => f.season === CUR && f.ongoing).length;
+  $("live-strip").innerHTML = `<span class="live"><i></i>${CUR} · through Week ${CUR_WEEK}</span>
+    <span class="ls-stat"><b>${curE.filter(e => e.ongoing).length}</b>starters out now</span>
+    <span class="ls-stat"><b>${pct(injuredShare(curK))}</b>have missed a game</span>
+    <span class="ls-stat"><b>${fanOut}</b>top-48 PPR picks out</span>
+    <span class="go">See who's out →</span>`;
+  renderCards("ov-cards", ["recurrence", "same_region", "pro_bowl", "rookies", "knee", "fan_pos"]);
+  $("explore").innerHTML = EXPLORE.map(([t, name, d]) => `<button class="xcard" type="button" data-go="${t}"><b>${esc(name)}</b>${esc(d)}</button>`).join("");
+  document.querySelectorAll("#explore [data-go]").forEach(b => b.addEventListener("click", () => goTab(b.dataset.go)));
 }
 
 /* ---------- starters tab ---------- */
 function renderDefTable() {
-  const base = PS.filter(k => inSeason(k.season, state.season) && unitMatch(k.pos, state.unit));
-  const nS = state.season === "All" ? SEASONS.length : 1;
+  const base = PS.filter(k => SEASONS.includes(k.season));
+  const nS = SEASONS.length;
   const rows = DEFS.map(d => {
     const K = base.filter(k => inDef(k, d.bit));
     const E = epsFor(K);
@@ -670,13 +756,13 @@ function renderDefTable() {
     `<tr class="group"><td colspan="6">Individual pedigree criteria</td></tr>` + rows.filter(r => !r.full && r.bit).map(row).join("") +
     `<tr class="group"><td colspan="6">Baseline</td></tr>` + rows.filter(r => r.bit === 0).map(row).join("") + `</tbody>`;
   document.querySelectorAll("#def-table tr[data-def]").forEach(tr => {
-    const go = () => setState({def: tr.dataset.def});
+    const go = () => { state.def = tr.dataset.def; goTab("injuries"); };
     tr.addEventListener("click", go);
     tr.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); go(); } });
   });
   const [snap, ped] = rows;
   const pb = rows.find(r => r.bit === 16), rk = rows.find(r => r.bit === 4);
-  $("def-callout").innerHTML = `Switching definitions moves the injury rate by only a few points: <b>${pct(snap.inj)}</b> of snap-share starters missed time, vs. <b>${pct(ped.inj)}</b> of pedigree players, and ${pct(ped.overlap)} of pedigree players are also snap-share starters. Prior-season Pro Bowlers get hurt most often (<b>${pct(pb.inj)}</b>), while first-round picks on rookie deals match everyone else (<b>${pct(rk.inj)}</b>).${state.season === CUR ? ` <span class="small-note">(${CUR} covers Weeks 1–${CUR_WEEK} only.)</span>` : ""}`;
+  $("def-callout").innerHTML = `Switching definitions moves the injury rate by only a few points: <b>${pct(snap.inj)}</b> of snap-share starters missed time, vs. <b>${pct(ped.inj)}</b> of pedigree players, and ${pct(ped.overlap)} of pedigree players are also snap-share starters. Prior-season Pro Bowlers get hurt most often (<b>${pct(pb.inj)}</b>), while first-round picks on rookie deals match everyone else (<b>${pct(rk.inj)}</b>).`;
 }
 function renderTrend() {
   const bit = defBit();
@@ -821,12 +907,13 @@ function renderHeat() {
   svg.innerHTML = s;
   $("heat-legend").innerHTML = `<span>Games lost in a season <span class="swatch-ramp">${ramp.map(c => `<i style="background:${c}"></i>`).join("")}</span>0 → ${maxCell}</span><span>${DEF_LABEL[state.def]}${state.unit === "All" ? "" : " · " + (POS_NAME[state.unit] || state.unit)}</span>`;
 }
-function renderStarters() {
-  syncChips("f-season", state.season); syncChips("f-def", state.def); syncChips("f-unit", state.unit);
-  const bit = defBit(), nS = state.season === "All" ? SEASONS.length : 1;
+function nflScope() {
+  const bit = defBit();
   const K = PS.filter(k => inSeason(k.season, state.season) && unitMatch(k.pos, state.unit) && inDef(k, bit));
-  const E = epsFor(K);
-  const isCur = state.season === CUR;
+  return {K, E: epsFor(K)};
+}
+function renderNflKpis(K, E) {
+  const nS = state.season === "All" ? SEASONS.length : 1, isCur = state.season === CUR;
   kpis("kpis", [
     [fmt(Math.round(K.length / nS)), nS > 1 ? "key players per season" : "key players tracked"],
     [pct(injuredShare(K)), isCur ? `missed a game so far (Weeks 1–${CUR_WEEK})` : "missed at least one game to injury"],
@@ -834,14 +921,28 @@ function renderStarters() {
     [median(E.map(e => e.games)).toFixed(0), "median games missed per absence"],
     isCur ? [fmt(E.filter(e => e.ongoing).length), "out right now"] : [fmt(E.filter(e => e.ending).length), "season-ending injuries"],
   ]);
-  renderCurrentStarters(); renderRepeatStarters();
-  renderDefTable();
+}
+function renderInjuries() {
+  const {K, E} = nflScope();
+  renderNflKpis(K, E);
   renderBody(E, "bodymap", "body-legend", "region-table"); renderRegionTable(E, "region-table", "region-note");
-  renderTrend(); renderMultiples(); renderSeasonEnding(); renderDuration(E); renderHist(E); renderHeat();
+  renderDuration(E); renderHist(E);
+}
+function renderTrends() {
+  const {K, E} = nflScope();
+  renderNflKpis(K, E);
+  renderCards("trend-cards", ["starter_rate", "season_ending"]);
+  renderTrend(); renderMultiples(); renderSeasonEnding(); renderHeat();
+}
+function renderPlayers() {
+  const {K, E} = nflScope();
+  renderNflKpis(K, E);
   const scope = [scopeLabel(state.season), DEF_LABEL[state.def].toLowerCase(), state.unit === "All" ? "" : (POS_NAME[state.unit] || state.unit).toLowerCase()].filter(Boolean).join(", ");
   $("table-sub").textContent = `The 15 longest single absences: ${scope}.`;
   renderPlayerTable([...E].sort((a, b) => b.games - a.games || a.season - b.season).slice(0, 15), "ptable", false);
+  renderRepeatStarters();
 }
+function renderLive() { renderCurrentStarters(); renderCurrentFantasy(); }
 
 function renderCurrentStarters() {
   const bit = defBit();
@@ -907,7 +1008,8 @@ function renderFantasy() {
     [S.gpp.toFixed(1), "weeks lost per pick"],
     isCur ? [fmt(F.filter(f => f.ongoing).length), "out right now"] : [fmt(S.ending), "season-ending injuries"],
   ]);
-  renderCurrentFantasy(); renderRepeatFantasy(); renderFantasySeasonEnding();
+  renderCards("fan-cards", ["fan_round", "fan_recur"]);
+  renderRepeatFantasy(); renderFantasySeasonEnding();
   const Fpos = FAN.filter(f => state.fpos === "All" || f.pos === state.fpos);
   renderLines("ftrend", [
     {name: "Missed at least 1 week", short: "1+ weeks", color: "var(--off)", vals: SEASONS.map(s => fanSummary(Fpos.filter(f => f.season === s)).hurt)},
@@ -933,9 +1035,9 @@ function renderFantasySeasonEnding() {
     }).join("") + `</tbody>`;
 }
 function renderCurrentFantasy() {
-  const F = FAN.filter(f => f.season === CUR && (state.fpos === "All" || f.pos === state.fpos));
+  const F = FAN.filter(f => f.season === CUR);
   const hurt = F.filter(f => f.hurt).sort((a, b) => b.ongoing - a.ongoing || b.games - a.games || a.rank - b.rank);
-  $("fcur-sub").textContent = `The ${CUR} top 48 by ${DATA.current.adp_source} PPR ADP${state.fpos === "All" ? "" : " (" + POS_NAME[state.fpos].toLowerCase() + ")"}, and every pick who has missed a week so far.`;
+  $("fcur-sub").textContent = `The ${CUR} top 48 by ${DATA.current.adp_source} PPR ADP, and every pick who has missed a fantasy week so far.`;
   $("fcur-kpis").innerHTML = [[fmt(F.filter(f => f.ongoing).length), "out right now"], [`${hurt.length} of ${F.length}`, "have missed a week"], [fmt(F.reduce((a, f) => a + f.games, 0)), "fantasy weeks lost so far"]]
     .map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join("");
   const rows = hurt.flatMap(f => f.eps.map(e => ({...e, adp: f.adp, rank: f.rank})));
@@ -984,19 +1086,34 @@ function renderFantasyTeams(F) {
 }
 
 /* ---------- orchestration ---------- */
+const RENDER = {overview: renderOverview, injuries: renderInjuries, trends: renderTrends, players: renderPlayers,
+  live: renderLive, fantasy: renderFantasy, methods: renderDefTable};
 function render() {
-  for (const t of ["starters", "fantasy"]) {
-    $("tab-" + t).setAttribute("aria-selected", String(state.tab === t));
-    $("tab-" + t).tabIndex = state.tab === t ? 0 : -1;
-    $("panel-" + t).hidden = state.tab !== t;
+  for (const t of TABS) {
+    const on = state.tab === t;
+    $("tab-" + t).setAttribute("aria-selected", String(on));
+    $("tab-" + t).tabIndex = on ? 0 : -1;
+    $("panel-" + t).hidden = !on;
   }
-  if (state.tab === "starters") renderStarters(); else renderFantasy();
+  $("nfl-filters").hidden = !NFL_TABS.has(state.tab);
+  $("f-season").hidden = state.tab === "live";
+  $("kpis").hidden = !NFL_TABS.has(state.tab) || state.tab === "live";
+  $("fan-filters").hidden = state.tab !== "fantasy";
+  syncChips("f-season", state.season); syncChips("f-def", state.def); syncChips("f-unit", state.unit);
+  syncChips("ff-season", state.fseason); syncChips("ff-pos", state.fpos);
+  RENDER[state.tab]();
 }
-for (const t of ["starters", "fantasy"]) $("tab-" + t).addEventListener("click", () => { setState({tab: t}); try { history.replaceState(null, "", "#" + t); } catch (e) {} });
-$("tab-starters").parentElement.addEventListener("keydown", ev => {
+function goTab(t) {
+  setState({tab: t});
+  try { history.replaceState(null, "", "#" + t); } catch (e) {}
+  window.scrollTo({top: 0});
+}
+for (const t of TABS) $("tab-" + t).addEventListener("click", () => goTab(t));
+$("live-strip").addEventListener("click", () => goTab("live"));
+$("tab-overview").parentElement.addEventListener("keydown", ev => {
   if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
-  const next = state.tab === "starters" ? "fantasy" : "starters";
-  setState({tab: next}); $("tab-" + next).focus();
+  const i = TABS.indexOf(state.tab), next = TABS[(i + (ev.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length];
+  goTab(next); $("tab-" + next).focus();
 });
 
 const tip = $("tip");
@@ -1015,11 +1132,9 @@ document.addEventListener("pointermove", ev => {
 });
 document.addEventListener("pointerleave", () => { tip.hidden = true; });
 
-document.querySelectorAll(".cur-title").forEach(el => el.textContent = `${CUR} so far`);
 document.querySelectorAll(".cur-week").forEach(el => el.textContent = `Through Week ${CUR_WEEK}`);
 document.querySelectorAll(".cur-season").forEach(el => el.textContent = CUR);
 $("eyebrow").textContent = `NFL injury report · 2020–2025 + ${CUR} through Week ${CUR_WEEK}`;
-renderFindings();
 chips("f-season", ["All", ...ALL_SEASONS], "season", seasonLabel);
 chips("f-def", DEFS.filter(d => d.full).map(d => d.id), "def");
 chips("f-unit", UNITS, "unit");
