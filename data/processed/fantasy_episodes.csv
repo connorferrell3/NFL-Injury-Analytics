@@ -126,6 +126,7 @@ season,team,pfr_player_id,player,pos_group,side,start_week,end_week,games_missed
 2023,NO,OlavCh00,Chris Olave,WR,Offense,15,15,1,3,Ankle,Ankle,False,False,False,False
 2023,LV,JacoJo01,Josh Jacobs,RB,Offense,15,17,3,3,Quad / Thigh,Quadricep,False,True,False,False
 2023,NE,StevRh00,Rhamondre Stevenson,RB,Offense,14,17,4,4,Ankle,Ankle,True,True,True,False
+2023,IND,TaylJo02,Jonathan Taylor,RB,Offense,1,4,4,16,Ankle,Ankle,True,False,False,False
 2023,IND,TaylJo02,Jonathan Taylor,RB,Offense,13,15,3,5,Hand / Wrist,Thumb,False,False,False,False
 2023,CIN,HiggTe00,Tee Higgins,WR,Offense,5,5,1,12,Chest / Ribs,Ribs,False,False,False,False
 2023,CIN,HiggTe00,Tee Higgins,WR,Offense,10,12,3,8,Hamstring,Hamstring,False,False,False,False

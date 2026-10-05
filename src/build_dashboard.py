@@ -138,8 +138,10 @@ def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame, team_games: 
     league_share = float((top["cap_hit"] * top["games_missed"] / team_games.reindex(
         pd.MultiIndex.from_arrays([top["season"], top["team"]])).to_numpy()).sum() / top["cap_hit"].sum())
 
-    early = sk_eps["start_week"] <= 6
-    ham = sk_eps["body_region"] == "Hamstring"
+    # timing uses in-season injuries only: an absence starting in Week 1 is usually a camp injury
+    ins = sk_eps[sk_eps["start_week"] >= 2]
+    early = ins["start_week"] <= 6
+    ham = ins["body_region"] == "Hamstring"
     weeks_early = 5 / 17  # Weeks 2-6 of the Week 2-18 window where starter absences can begin
 
     f = fan[fan["season"] < CURRENT_SEASON].assign(missed4=lambda d: d["games_missed"] >= 4,
@@ -167,8 +169,12 @@ def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame, team_games: 
         {"group": "NFL", "id": "same_region", "value": f"{same_all / chance:.1f}×", "title": "more likely than chance that a repeat injury hits the same body part",
          "detail": f"{pct(same_all)} of repeat absences are the same region, vs. {pct(chance)} by chance. Knees repeat {pct(reg.loc['Knee', 'same_region'])} of the time, hamstrings {pct(reg.loc['Hamstring', 'same_region'])}.",
          "bars": [["Same region", round(same_all, 3)], ["Chance", round(chance, 3)]]},
-        {"group": "NFL", "id": "pro_bowl", "value": pct(pb.mean()), "title": "of prior-season Pro Bowlers miss time, the highest of any group",
-         "detail": f"vs. {pct(not_pb.mean())} of other starters ({fmt_p(p_two_prop(pb, not_pb))}). Stars play more snaps, so they're exposed more.",
+        {"group": "NFL", "id": "pro_bowl", "value": pct(pb.mean()),
+         "title": ("of prior-season Pro Bowlers miss time, more than other starters" if p_two_prop(pb, not_pb) < 0.05
+                   else "of prior-season Pro Bowlers miss time, a little more than other starters"),
+         "detail": f"vs. {pct(not_pb.mean())} of other starters ({fmt_p(p_two_prop(pb, not_pb))}). " +
+                   ("Stars play more snaps, so they're exposed more." if p_two_prop(pb, not_pb) < 0.05
+                    else "The gap is small enough that it could be chance, so treat it as a lean, not a rule."),
          "bars": [["Pro Bowlers", round(pb.mean(), 3)], ["Other starters", round(not_pb.mean(), 3)]]},
         {"group": "NFL", "id": "rookies", "value": pct(rk.mean()), "title": "of first-round picks on rookie deals miss time, the same as everyone else",
          "detail": f"vs. {pct(not_rk.mean())} of other starters ({fmt_p(p_two_prop(rk, not_rk))}). Youth doesn't protect them.",
@@ -180,9 +186,9 @@ def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame, team_games: 
          "detail": f"Share of each team's top-30% cap dollars spent on games those players missed, 2020–2025. League average {pct(league_share)}. "
                    f"Team gaps are real, not noise (permutation test, {'p < 0.001' if p_team == 0 else fmt_p(p_team)}).",
          "bars": [[t, round(v, 3)] for t, v in list(share.head(2).items()) + list(share.tail(2).items())]},
-        {"group": "NFL", "id": "hamstring_early", "value": pct(sk_eps[ham & early].shape[0] / ham.sum()),
+        {"group": "NFL", "id": "hamstring_early", "value": pct(ins[ham & early].shape[0] / ham.sum()),
          "title": "of hamstring injuries start in the first five weeks of the season",
-         "detail": f"Weeks 2–6 are only {pct(weeks_early)} of the season. Other injuries: {pct(early[~ham].mean())} "
+         "detail": f"Weeks 2–6 are only {pct(weeks_early)} of the in-season weeks. Other injuries: {pct(early[~ham].mean())} "
                    f"({fmt_p(p_two_prop(early[ham], early[~ham]))}). Soft-tissue pulls cluster early; knees and necks lean late.",
          "bars": [["Hamstrings", round(float(early[ham].mean()), 3)], ["Other injuries", round(float(early[~ham].mean()), 3)], ["Share of weeks", round(weeks_early, 3)]]},
         {"group": "Fantasy", "id": "fan_rate", "value": pct(f["injured"].mean()), "title": "of top-48 fantasy picks miss at least one week to injury",
@@ -302,8 +308,8 @@ def main() -> None:
         "recur": found["recur"],
         # [season, team, pos_group, playerIdx, flags, avg_unit_pct x100, cap hit $M]
         "ps": ps[["season", "team", "pos_group"]].assign(
-            p=ps["pfr_player_id"].map(pid), f=flags, u=(ps["avg_unit_pct"] * 100).round().astype(int),
-            c=ps["cap_hit"].round(2)
+            p=ps["pfr_player_id"].map(pid), f=flags, u=(ps["avg_unit_pct"].fillna(0) * 100).round().astype(int),  # 0 = never took a snap (started on IR/PUP)
+            c=ps["cap_hit"].fillna(0).round(2)
         ).values.tolist(),
         "team_games": {f"{s}|{t}": int(n) for (s, t), n in team_games.items()},
         # teams that played in each season-week (normalizes for byes)

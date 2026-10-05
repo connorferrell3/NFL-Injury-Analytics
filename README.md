@@ -12,6 +12,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python src/build_dataset.py   # player-seasons, absences, fantasy picks -> data/processed/
 .venv/bin/python src/injury_model.py    # train/evaluate injury-risk models, score the live week
 .venv/bin/python src/build_dashboard.py # summaries + dashboard/index.html
+.venv/bin/python src/audit_teams.py     # optional: team-by-team check vs. raw rosters and injury reports
 ```
 
 ## Outputs
@@ -21,6 +22,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 | `data/processed/player_seasons.csv` | Every player-team-season with a snap, tagged with each key-player criterion (snap share, 1st-round rookie, salary percentile, prior-season Pro Bowl / All-Pro) |
 | `data/processed/injury_episodes.csv` | One row per injury absence for any player: body region, start week, games missed, IR, season-ending |
 | `data/processed/fantasy_top48.csv` / `fantasy_episodes.csv` | Top-48 PPR ADP picks per season and their fantasy-week absences |
+| `data/processed/audit_team_injuries.csv` | Every injured player-week from raw rosters/reports, and whether the pipeline captured it |
 | `data/processed/summary_*.csv` | Definition comparison, % injured by side, same-region recurrence, fantasy by season / position / round / team |
 | `data/processed/injury_risk_live.csv` | This week's risk scores for the top-125 PPR players, with backup and hedge advice |
 | `reports/injury_model_report.md` | Model evaluation: metrics, leave-one-season-out results, feature importance, hedge assumptions |

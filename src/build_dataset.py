@@ -27,11 +27,14 @@ Fantasy top 48
     from Week 1 through the fantasy season (Week 16 in 2020, Week 17 after).
 
 Injury episode
-    A run of consecutive team regular-season games a key player missed after his first
-    appearance of the season, where at least one missed week has injury evidence:
-    an injury-related listing on the official injury report, or an IR designation
-    (R01 / R48) on the weekly roster. Runs ending in release/trade are cut at the
-    last week the player was on the team's roster.
+    A run of consecutive team regular-season games a key player missed while on the
+    team's roster, where at least one missed week has injury evidence:
+    an injury-related listing on the official injury report, or an injury reserve
+    designation on the weekly roster (IR R01 / R48, PUP R04, non-football injury R05).
+    Runs ending in release/trade are cut at the last week the player was on the
+    team's roster. Absences are counted from the week he joined the team's roster, not his
+    first game, so a camp injury (on IR from Week 1, or simply listed Out) counts even if
+    he never takes a snap.
 
 Duration
     Games missed in the episode. Body part comes from injury-report entries during the
@@ -64,7 +67,8 @@ KEY_MIN_GAMES = 2
 KEY_PCT = {"RB": 0.50}  # default 0.65
 RETURNING_KEY_PCT = {"RB": 0.35}  # default 0.50
 RETURN_LOOKAHEAD = 3
-IR_CODES = {"R01", "R48"}  # Reserve/Injured, IR - designated for return
+# injury reserve lists: Reserve/Injured, IR - designated for return, PUP, non-football injury
+IR_CODES = {"R01", "R48", "R04", "R05"}
 
 POS_GROUP = {
     "QB": "QB", "RB": "RB", "FB": "RB", "WR": "WR", "TE": "TE",
@@ -153,6 +157,41 @@ def player_seasons(snaps: pd.DataFrame) -> pd.DataFrame:
              .reset_index())
     agg["side"] = np.where(agg["pos_group"].isin(OFFENSE), "Offense", "Defense")
     return agg
+
+
+def add_preplay_absences(ps: pd.DataFrame, snaps: pd.DataFrame) -> pd.DataFrame:
+    """Count absences from the week a player joined the team's roster, not from his first
+    game, so injuries before he first plays (camp injuries, "Out" in Week 1, mid-season
+    signings who arrive hurt) are captured. Injury evidence is still required for every
+    absence, so healthy scratches and inactive rookies don't count. Players with injury
+    evidence who never took a snap get a games = 0 row so they can qualify as key players
+    (prior-season role, salary, honors)."""
+    ros = load("roster_weekly", SEASONS)
+    ros = ros[ros["game_type"] == "REG"].dropna(subset=["pfr_id"])
+    joined = ros.groupby(["season", "team", "pfr_id"])["week"].min()
+    keys = list(zip(ps["season"], ps["team"], ps["pfr_player_id"]))
+    jw = pd.Series([joined.get(k, np.nan) for k in keys], index=ps.index)
+    start = (jw - 1).where(jw.notna(), ps["first_week"])
+    moved = int((start < ps["first_week"]).sum())
+    ps["first_week"] = np.minimum(ps["first_week"], start).astype(int)
+
+    # never played but had injury evidence while on the team (reserve list or injury report)
+    inj = load("injuries", SEASONS)
+    inj = inj[(inj["game_type"] == "REG") & inj["report_primary_injury"].map(body_region).notna()]
+    xw = build_crosswalk().set_index("gsis_id")["pfr_id"]
+    hurt = set(zip(inj["season"], inj["team"], inj["gsis_id"].map(xw)))
+    hurt |= set(map(tuple, ros.loc[ros["status_description_abbr"].isin(IR_CODES), ["season", "team", "pfr_id"]].to_numpy()))
+    have = set(keys)
+    info = ros.sort_values("week").drop_duplicates(["season", "team", "pfr_id"])
+    info = info[[k in hurt and k not in have for k in zip(info["season"], info["team"], info["pfr_id"])]]
+    info = info.assign(pos_group=info["position"].map(POS_GROUP)).dropna(subset=["pos_group"])
+    add = pd.DataFrame({"season": info["season"], "team": info["team"], "pfr_player_id": info["pfr_id"],
+                        "player": info["full_name"], "pos_group": info["pos_group"], "games": 0,
+                        "first_week": (info["week"] - 1).astype(int), "avg_unit_pct": np.nan})
+    add["side"] = np.where(add["pos_group"].isin(OFFENSE), "Offense", "Defense")
+    print(f"Absences now counted from roster arrival: {moved:,} player-seasons start earlier; "
+          f"{len(add):,} injured players who never took a snap added")
+    return pd.concat([ps, add], ignore_index=True)
 
 
 def tag_snap_key(ps: pd.DataFrame) -> pd.DataFrame:
@@ -358,7 +397,7 @@ def main() -> None:
     snaps = snaps[snaps["game_type"] == "REG"]
     xw = build_crosswalk()
 
-    ps = tag_snap_key(player_seasons(snaps))
+    ps = tag_snap_key(add_preplay_absences(player_seasons(snaps), snaps))
     ps = ps[ps["season"].isin(SEASONS)].copy()
     ps = tag_pedigree(ps, xw)
 
