@@ -6232,134 +6232,200 @@ season,team,pfr_player_id,player,pos_group,side,start_week,end_week,games_missed
 2025,WAS,WiseDe00,Deatrich Wise Jr.,DL,Defense,3,18,15,15,Knee,Knee,True,True,True,False
 2025,WAS,YankCo00,Colson Yankoff,TE,Offense,8,9,2,10,Hamstring,Hamstring,False,False,False,False
 2025,WAS,YankCo00,Colson Yankoff,TE,Offense,16,16,1,3,Ankle,Ankle,False,False,False,False
-2026,ARI,CrawKi00,Kitan Crawford,DB,Defense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,ARI,JohnWi02,Will Johnson,DB,Defense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,ARI,TaylDa02,Dadrion Taylor-Demerson,DB,Defense,3,3,1,1,Back,Back,False,True,False,True
+2026,ARI,CrawKi00,Kitan Crawford,DB,Defense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,ARI,JohnWi02,Will Johnson,DB,Defense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,ARI,TaylDa02,Dadrion Taylor-Demerson,DB,Defense,3,4,2,2,Back,Back,False,True,False,True
 2026,ATL,EbukSa00,Samson Ebukam,DL,Defense,3,3,1,1,Hamstring,Hamstring,False,True,False,True
 2026,ATL,HandDa00,Da'Shawn Hand,DL,Defense,2,3,2,2,Knee,Knee,True,True,False,True
 2026,ATL,TerrAJ00,AJ Terrell,DB,Defense,3,3,1,1,Hip / Groin,Groin,True,True,False,True
-2026,BAL,FlowZa00,Zay Flowers,WR,Offense,2,2,1,2,Hamstring,Hamstring,False,False,False,False
-2026,BAL,LaneJa01,Ja'Kobi Lane,WR,Offense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,BAL,StanRo00,Ronnie Stanley,OL,Offense,3,3,1,1,Foot / Toe,Toe,False,True,False,True
-2026,BAL,TampTJ00,T.J. Tampa,DB,Defense,2,3,2,2,Knee,Knee,True,True,False,True
-2026,BUF,HancJo00,Jordan Hancock,DB,Defense,3,3,1,1,Hamstring,Hamstring,True,True,False,True
-2026,CAR,BrooJo02,Jonathon Brooks,RB,Offense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,CAR,BrowBo04,Bobby Brown,DL,Defense,2,2,1,2,Back,Back,False,False,False,False
-2026,CAR,CherCl00,Claudin Cherelus,LB,Defense,3,3,1,1,Shoulder,Shoulder,True,True,False,True
-2026,CAR,LegeXa00,Xavier Legette,WR,Offense,3,3,1,1,Knee,Knee,False,True,False,True
-2026,CAR,LloyDe00,Devin Lloyd,LB,Defense,3,3,1,1,Lower Leg,Calf,False,True,False,True
-2026,CAR,ScotNi01,Nick Scott,DB,Defense,3,3,1,1,Chest / Ribs,Rib,False,True,False,True
-2026,CHI,BageTy00,Tyson Bagent,QB,Offense,3,3,1,1,Head / Concussion,Concussion,False,True,False,True
-2026,CHI,WillCa03,Caleb Williams,QB,Offense,3,3,1,1,Hamstring,Hamstring,False,True,False,True
-2026,CIN,HillB.00,B.J. Hill,DL,Defense,2,3,2,2,Achilles,Achilles,False,True,False,True
-2026,CIN,IosiAn00,Andrei Iosivas,WR,Offense,3,3,1,1,Hand / Wrist,Thumb,True,True,False,True
-2026,CLE,CampTy01,Tyson Campbell,DB,Defense,3,3,1,1,Ankle,Ankle,False,True,False,True
-2026,CLE,SampDy00,Dylan Sampson,RB,Offense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,DAL,DuraDe01,Cobie Durant,DB,Defense,3,3,1,1,Hamstring,Hamstring,False,True,False,True
-2026,DAL,HookMa00,Malik Hooker,DB,Defense,2,3,2,2,Arm / Elbow,Forearm,False,True,False,True
-2026,DAL,HousJa01,James Houston,LB,Defense,2,2,1,2,Shoulder,Shoulder,False,False,False,False
-2026,DAL,LockPJ00,P.J. Locke,DB,Defense,3,3,1,1,Foot / Toe,Foot,True,True,False,True
-2026,DAL,OverDe00,DeMarvion Overshown,LB,Defense,2,3,2,2,Hamstring,Hamstring,False,True,False,True
-2026,DEN,ColeJo00,Jonah Coleman,RB,Offense,3,3,1,1,Ankle,Ankle,True,True,False,True
-2026,DEN,HarvRJ00,RJ Harvey,RB,Offense,2,2,1,2,Hamstring,Hamstring,False,False,False,False
-2026,DEN,MimsMa00,Marvin Mims,WR,Offense,2,3,2,2,Foot / Toe,Foot,False,True,False,True
-2026,DET,BartBe00,Ben Bartch,OL,Offense,3,3,1,1,Foot / Toe,Foot,False,True,False,True
-2026,DET,HarpTh00,Thomas Harper,DB,Defense,3,3,1,1,Ankle,Ankle,True,True,False,True
-2026,DET,MaddAv00,Avonte Maddox,DB,Defense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,DET,MahoCh00,Christian Mahogany,OL,Offense,2,2,1,2,Hip / Groin,Hip,False,False,False,False
-2026,DET,MillBl01,Blake Miller,OL,Offense,2,2,1,2,Knee,Knee,False,False,False,False
-2026,GB,BankAa00,Aaron Banks,OL,Offense,3,3,1,1,Knee,Knee,False,True,False,True
-2026,GB,CampAn00,Anthony Campbell,DL,Defense,3,3,1,1,Ankle,Ankle,False,True,False,True
-2026,GB,HargJa00,Javon Hargrave,DL,Defense,2,2,1,2,Knee,Knee,False,False,False,False
-2026,GB,ReedJa03,Jayden Reed,WR,Offense,3,3,1,1,Neck,Neck,False,True,False,True
-2026,GB,StJuBe00,Benjamin St-Juste,DB,Defense,2,2,1,2,Hamstring,Hamstring,False,False,False,False
-2026,GB,TomxZa00,Zach Bako-Bewele,OL,Offense,3,3,1,1,Knee,Knee,False,True,False,True
-2026,HOU,ClowJa00,Jadeveon Clowney,DL,Defense,2,3,2,2,Knee,Knee,False,True,False,True
-2026,HOU,CollNi00,Nico Collins,WR,Offense,2,3,2,2,Hamstring,Hamstring,False,True,False,True
-2026,HOU,HummJa00,Jake Hummel,LB,Defense,2,3,2,2,Hip / Groin,Groin,True,True,False,True
-2026,HOU,IngrEd00,Ed Ingram,OL,Offense,2,3,2,2,Hip / Groin,Groin,False,True,False,True
-2026,HOU,TooTHe00,Henry To'oTo'o,LB,Defense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,IND,ClemMi03,Micheal Clemons,DL,Defense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,IND,DuliAs00,Ashton Dulin,WR,Offense,2,3,2,2,Ankle,Ankle,False,True,False,True
-2026,IND,PierAl00,Alec Pierce,WR,Offense,3,3,1,1,Foot / Toe,Heel,True,True,False,True
-2026,JAX,GreeBJ00,B.J. Green,DL,Defense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,JAX,RegiAl00,Albert Regis,DL,Defense,3,3,1,1,Arm / Elbow,Elbow,False,True,False,True
-2026,KC,DelaMa00,Mansoor Delane,DB,Defense,2,2,1,2,Shoulder,Shoulder,False,False,False,False
-2026,KC,McDoCo01,Cooper McDonald,LB,Defense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,LA,GarrMy00,Myles Garrett,LB,Defense,2,3,2,2,Knee,Knee,True,True,False,True
-2026,LA,KincKa00,Kamren Kinchens,DB,Defense,2,3,2,2,Hamstring,Hamstring,False,True,False,True
-2026,LA,NacuPu00,Puka Nacua,WR,Offense,2,3,2,2,Hip / Groin,Hip,False,True,False,True
-2026,LA,RiveRo01,Ronnie Rivers,RB,Offense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,LA,WhitJo04,Jordan Whittington,WR,Offense,2,2,1,2,Quad / Thigh,Quadricep,False,False,False,False
-2026,LAC,AwosKa00,Kayode Awosika,OL,Offense,3,3,1,1,Lower Leg,Fibula,False,True,False,True
-2026,LAC,KolaCh00,Charlie Kolar,TE,Offense,3,3,1,1,Arm / Elbow,Forearm,False,True,False,True
-2026,LAC,LambKe01,KeAndre Lambert-Smith,WR,Offense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,LAC,MoldEl00,Elijah Molden,DB,Defense,2,3,2,2,Hamstring,Hamstring,False,True,False,True
-2026,LAC,NjokDa00,David Njoku,TE,Offense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,LAC,PipkTr00,Trey Pipkins,OL,Offense,2,3,2,2,Knee,Knee,True,True,False,True
-2026,LAC,ThomBr07,Brenen Thompson,WR,Offense,3,3,1,1,Quad / Thigh,Quadricep,False,True,False,True
-2026,LAC,TomlDa00,Dalvin Tomlinson,DL,Defense,3,3,1,1,Hamstring,Hamstring,False,True,False,True
-2026,LV,PortDa00,Darien Porter,DB,Defense,2,2,1,2,Foot / Toe,Foot,False,False,False,False
-2026,LV,StukTr00,Treydan Stukes,DB,Defense,3,3,1,1,Head / Concussion,Concussion,False,True,False,True
-2026,MIA,BealRo00,Robert Beal,DL,Defense,3,3,1,1,Hamstring,Hamstring,False,True,False,True
-2026,MIA,DougCa00,Caleb Douglas,WR,Offense,3,3,1,1,Ankle,Ankle,False,True,False,True
-2026,MIA,HarrRo02,Ronnie Harrison,LB,Defense,2,3,2,2,Hamstring,Hamstring,True,True,False,True
-2026,MIA,LouiKy00,Kyle Louis,DB,Defense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,MIA,RobiCh00,Chop Robinson,DL,Defense,2,2,1,2,Head / Concussion,Concussion,False,False,False,False
-2026,MIA,WrigJa04,Jaylen Wright,RB,Offense,3,3,1,1,Neck,Stinger,False,True,False,True
-2026,MIN,MasoJo00,Jordan Mason,RB,Offense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,MIN,MurrKy00,Kyler Murray,QB,Offense,2,2,1,2,Head / Concussion,Concussion,False,False,False,False
-2026,NE,BrowAJ00,A.J. Brown,WR,Offense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,NE,CrowDa00,Dametrious Crownover,OL,Offense,2,3,2,2,Knee,Knee,False,True,False,True
-2026,NE,DaviCa02,Carlton Davis,DB,Defense,2,2,1,2,Neck,Neck,False,False,False,False
-2026,NE,HutcQu00,Quintayvious Hutchins,LB,Defense,3,3,1,1,Knee,Knee,True,True,False,True
-2026,NE,JoneDr00,Dre'Mont Jones,LB,Defense,3,3,1,1,Shoulder,Shoulder,False,True,False,True
-2026,NE,OnweMi00,Michael Onwenu,OL,Offense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,NE,PettDe00,Dell Pettus,DB,Defense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,NE,RariEl00,Eli Raridon,TE,Offense,3,3,1,1,Quad / Thigh,Thigh,False,True,False,True
-2026,NE,WoodCr00,Craig Woodson,DB,Defense,3,3,1,1,Shoulder,Shoulder,False,True,False,True
+2026,BAL,FlowZa00,Zay Flowers,WR,Offense,2,2,1,3,Hamstring,Hamstring,False,False,False,False
+2026,BAL,GwynJo00,Jovaughn Gwyn,OL,Offense,4,4,1,1,Ankle,Ankle,True,True,False,True
+2026,BAL,HendTr00,Trey Hendrickson,LB,Defense,4,4,1,1,Hand / Wrist,Finger,False,True,False,True
+2026,BAL,LaneJa01,Ja'Kobi Lane,WR,Offense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,BAL,MoorCh00,Chris Moore,WR,Offense,4,4,1,1,Ankle,Ankle,False,True,False,True
+2026,BAL,PociEt00,Ethan Pocic,OL,Offense,4,4,1,1,Knee,Knee,True,True,False,True
+2026,BAL,StanRo00,Ronnie Stanley,OL,Offense,3,3,1,2,Foot / Toe,Toe,False,False,False,False
+2026,BAL,TampTJ00,T.J. Tampa,DB,Defense,2,4,3,3,Knee,Knee,True,True,False,True
+2026,BUF,BenfCh00,Christian Benford,DB,Defense,4,4,1,1,Foot / Toe,Toe,False,True,False,True
+2026,BUF,HancJo00,Jordan Hancock,DB,Defense,3,4,2,2,Hamstring,Hamstring,True,True,False,True
+2026,CAR,BrooJo02,Jonathon Brooks,RB,Offense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,CAR,BrowBo04,Bobby Brown,DL,Defense,2,2,1,3,Back,Back,False,False,False,False
+2026,CAR,CherCl00,Claudin Cherelus,LB,Defense,3,4,2,2,Shoulder,Shoulder,True,True,False,True
+2026,CAR,CokeJa01,Jalen Coker,WR,Offense,4,4,1,1,Quad / Thigh,Quadricep,False,True,False,True
+2026,CAR,HornJa00,Jaycee Horn,DB,Defense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,CAR,JackCa01,Cam Jackson,DL,Defense,3,4,2,2,Knee,Knee,False,True,False,True
+2026,CAR,JackMi01,Michael Jackson,DB,Defense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,CAR,LegeXa00,Xavier Legette,WR,Offense,3,4,2,2,Knee,Knee,True,True,False,True
+2026,CAR,LewiDa05,Damien Lewis,OL,Offense,4,4,1,1,Arm / Elbow,Elbow,False,True,False,True
+2026,CAR,LloyDe00,Devin Lloyd,LB,Defense,3,3,1,2,Lower Leg,Calf,False,False,False,False
+2026,CAR,ScotNi01,Nick Scott,DB,Defense,3,3,1,2,Chest / Ribs,Rib,False,False,False,False
+2026,CHI,BageTy00,Tyson Bagent,QB,Offense,3,3,1,2,Head / Concussion,Concussion,False,False,False,False
+2026,CHI,JoneBr08,Braxton Jones,OL,Offense,4,4,1,1,Knee,Knee,True,True,False,True
+2026,CHI,LewiCa00,Cameron Lewis,DB,Defense,4,4,1,1,Hip / Groin,Hip,False,True,False,True
+2026,CHI,WillCa03,Caleb Williams,QB,Offense,3,4,2,2,Hamstring,Hamstring,False,True,False,True
+2026,CIN,BozeSw00,Swayze Bozeman,LB,Defense,4,4,1,1,Hip / Groin,Groin,False,True,False,True
+2026,CIN,CookBr02,Bryan Cook,DB,Defense,4,4,1,1,Ankle,Ankle,False,True,False,True
+2026,CIN,DaviJa06,Jalen Davis,DB,Defense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,CIN,DuggKy00,Kyle Dugger,DB,Defense,4,4,1,1,Quad / Thigh,Quadricep,False,True,False,True
+2026,CIN,HillB.00,B.J. Hill,DL,Defense,2,4,3,3,Achilles,Achilles,False,True,False,True
+2026,CIN,IosiAn00,Andrei Iosivas,WR,Offense,3,4,2,2,Hand / Wrist,Thumb,True,True,False,True
+2026,CIN,YounCo01,Colbie Young,WR,Offense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,CLE,CampTy01,Tyson Campbell,DB,Defense,3,3,1,2,Ankle,Ankle,False,False,False,False
+2026,CLE,JenkEl00,Elgton Jenkins,OL,Offense,4,4,1,1,Head / Concussion,Concussion,False,True,False,True
+2026,CLE,SampDy00,Dylan Sampson,RB,Offense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,CLE,WallTy00,Tylan Wallace,WR,Offense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,DAL,BullJo00,Jonathan Bullard,DL,Defense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,DAL,DuraDe01,Cobie Durant,DB,Defense,3,4,2,2,Hamstring,Hamstring,False,True,False,True
+2026,DAL,HookMa00,Malik Hooker,DB,Defense,2,3,2,3,Arm / Elbow,Forearm,False,False,False,False
+2026,DAL,HousJa01,James Houston,LB,Defense,2,2,1,3,Shoulder,Shoulder,False,False,False,False
+2026,DAL,HousJa01,James Houston,LB,Defense,4,4,1,1,Shoulder,Shoulder,False,True,False,True
+2026,DAL,LockPJ00,P.J. Locke,DB,Defense,3,4,2,2,Foot / Toe,Foot,True,True,False,True
+2026,DAL,OverDe00,DeMarvion Overshown,LB,Defense,2,4,3,3,Hamstring,Hamstring,False,True,False,True
+2026,DAL,ThomJa04,Jalen Thompson,DB,Defense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,DEN,ColeJo00,Jonah Coleman,RB,Offense,3,4,2,2,Ankle,Ankle,True,True,False,True
+2026,DEN,HarvRJ00,RJ Harvey,RB,Offense,2,2,1,3,Hamstring,Hamstring,False,False,False,False
+2026,DEN,MimsMa00,Marvin Mims,WR,Offense,2,3,2,3,Foot / Toe,Foot,False,False,False,False
+2026,DEN,TillDo00,Dondrea Tillman,LB,Defense,4,4,1,1,Hamstring,Hamstring,False,True,False,True
+2026,DET,BartBe00,Ben Bartch,OL,Offense,3,4,2,2,Foot / Toe,Foot,False,True,False,True
+2026,DET,HarpTh00,Thomas Harper,DB,Defense,3,4,2,2,Ankle,Ankle,True,True,False,True
+2026,DET,MaddAv00,Avonte Maddox,DB,Defense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,DET,MahoCh00,Christian Mahogany,OL,Offense,2,2,1,3,Hip / Groin,Hip,False,False,False,False
+2026,DET,MillBl01,Blake Miller,OL,Offense,2,2,1,3,Knee,Knee,False,False,False,False
+2026,GB,BankAa00,Aaron Banks,OL,Offense,3,4,2,2,Knee,Knee,False,True,False,True
+2026,GB,BurtJa02,Jager Burton,OL,Offense,4,4,1,1,Hip / Groin,Groin,False,True,False,True
+2026,GB,CampAn00,Anthony Campbell,DL,Defense,3,4,2,2,Ankle,Ankle,False,True,False,True
+2026,GB,HargJa00,Javon Hargrave,DL,Defense,2,2,1,3,Knee,Knee,False,False,False,False
+2026,GB,MonkJa00,Jacob Monk,OL,Offense,4,4,1,1,Quad / Thigh,Quadricep,False,True,False,True
+2026,GB,ReedJa03,Jayden Reed,WR,Offense,3,4,2,2,Neck,Neck,True,True,False,True
+2026,GB,StJuBe00,Benjamin St-Juste,DB,Defense,2,2,1,3,Hamstring,Hamstring,False,False,False,False
+2026,GB,TomxZa00,Zach Bako-Bewele,OL,Offense,3,4,2,2,Knee,Knee,True,True,False,True
+2026,HOU,AlShAz00,Azeez Al-Shaair,LB,Defense,4,4,1,1,Hip / Groin,Groin,False,True,False,True
+2026,HOU,BrooBr01,British Brooks,RB,Offense,4,4,1,1,Hamstring,Hamstring,True,True,False,True
+2026,HOU,ClowJa00,Jadeveon Clowney,DL,Defense,2,3,2,3,Knee,Knee,False,False,False,False
+2026,HOU,CollNi00,Nico Collins,WR,Offense,2,3,2,3,Hamstring,Hamstring,False,False,False,False
+2026,HOU,EdwaMa01,Mario Edwards,DL,Defense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,HOU,HummJa00,Jake Hummel,LB,Defense,2,4,3,3,Hip / Groin,Groin,True,True,False,True
+2026,HOU,IngrEd00,Ed Ingram,OL,Offense,2,3,2,3,Hip / Groin,Groin,False,False,False,False
+2026,HOU,TooTHe00,Henry To'oTo'o,LB,Defense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,IND,ClemMi03,Micheal Clemons,DL,Defense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,IND,DuliAs00,Ashton Dulin,WR,Offense,2,3,2,3,Ankle,Ankle,False,False,False,False
+2026,IND,PierAl00,Alec Pierce,WR,Offense,3,4,2,2,Foot / Toe,Heel,True,True,False,True
+2026,JAX,BrasCh00,Christian Braswell,DB,Defense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,JAX,BrowMo00,Montaric Brown,DB,Defense,4,4,1,1,Hamstring,Hamstring,False,True,False,True
+2026,JAX,GreeBJ00,B.J. Green,DL,Defense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,JAX,RegiAl00,Albert Regis,DL,Defense,3,3,1,2,Arm / Elbow,Elbow,False,False,False,False
+2026,KC,CanaJa00,Jadon Canady,DB,Defense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,KC,DelaMa00,Mansoor Delane,DB,Defense,2,2,1,3,Shoulder,Shoulder,False,False,False,False
+2026,KC,McDoCo01,Cooper McDonald,LB,Defense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,LA,DonaAa00,Aaron Donald,DL,Defense,4,4,1,1,Back,Back,False,True,False,True
+2026,LA,FergTe00,Terrance Ferguson,TE,Offense,4,4,1,1,Ankle,Ankle,True,True,False,True
+2026,LA,GarrMy00,Myles Garrett,LB,Defense,2,4,3,3,Knee,Knee,True,True,False,True
+2026,LA,KincKa00,Kamren Kinchens,DB,Defense,2,3,2,3,Hamstring,Hamstring,False,False,False,False
+2026,LA,NacuPu00,Puka Nacua,WR,Offense,2,3,2,3,Hip / Groin,Hip,False,False,False,False
+2026,LA,ParkCo02,Colby Parkinson,TE,Offense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,LA,RiveRo01,Ronnie Rivers,RB,Offense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,LA,WatsJa02,Jaylen Watson,DB,Defense,4,4,1,1,Shoulder,Shoulder,False,True,False,True
+2026,LA,WhitJo04,Jordan Whittington,WR,Offense,2,2,1,3,Quad / Thigh,Quadricep,False,False,False,False
+2026,LAC,AwosKa00,Kayode Awosika,OL,Offense,3,4,2,2,Lower Leg,Fibula,False,True,False,True
+2026,LAC,JameDe00,Derwin James,DB,Defense,4,4,1,1,Hamstring,Hamstring,False,True,False,True
+2026,LAC,KolaCh00,Charlie Kolar,TE,Offense,3,4,2,2,Arm / Elbow,Forearm,False,True,False,True
+2026,LAC,LambKe01,KeAndre Lambert-Smith,WR,Offense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,LAC,MoldEl00,Elijah Molden,DB,Defense,2,3,2,3,Hamstring,Hamstring,False,False,False,False
+2026,LAC,NjokDa00,David Njoku,TE,Offense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,LAC,PipkTr00,Trey Pipkins,OL,Offense,2,4,3,3,Knee,Knee,True,True,False,True
+2026,LAC,ThomBr07,Brenen Thompson,WR,Offense,3,4,2,2,Quad / Thigh,Quadricep,False,True,False,True
+2026,LAC,TomlDa00,Dalvin Tomlinson,DL,Defense,3,4,2,2,Hamstring,Hamstring,False,True,False,True
+2026,LV,BechJa00,Jack Bech,WR,Offense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,LV,McCoTr00,Tristin McCollum,DB,Defense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,LV,PortDa00,Darien Porter,DB,Defense,2,2,1,3,Foot / Toe,Foot,False,False,False,False
+2026,LV,PoweJa00,Jackson Powers-Johnson,OL,Offense,4,4,1,1,Hip / Groin,Groin,False,True,False,True
+2026,LV,StukTr00,Treydan Stukes,DB,Defense,3,3,1,2,Head / Concussion,Concussion,False,False,False,False
+2026,MIA,AchaDe00,De'Von Achane,RB,Offense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,MIA,BealRo00,Robert Beal,DL,Defense,3,4,2,2,Hamstring,Hamstring,False,True,False,True
+2026,MIA,DougCa00,Caleb Douglas,WR,Offense,3,4,2,2,Ankle,Ankle,False,True,False,True
+2026,MIA,HarrRo02,Ronnie Harrison,LB,Defense,2,4,3,3,Hamstring,Hamstring,True,True,False,True
+2026,MIA,LouiKy00,Kyle Louis,DB,Defense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,MIA,RobiCh00,Chop Robinson,DL,Defense,2,2,1,3,Head / Concussion,Concussion,False,False,False,False
+2026,MIA,WrigJa04,Jaylen Wright,RB,Offense,3,3,1,2,Neck,Stinger,False,False,False,False
+2026,MIN,DemmCh00,Charles Demmings,DB,Defense,4,4,1,1,Hamstring,Hamstring,False,True,False,True
+2026,MIN,JeffJu00,Justin Jefferson,WR,Offense,4,4,1,1,Ankle,Ankle,False,True,False,True
+2026,MIN,MasoJo00,Jordan Mason,RB,Offense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,MIN,MurrKy00,Kyler Murray,QB,Offense,2,2,1,3,Head / Concussion,Concussion,False,False,False,False
+2026,MIN,OlivJo00,Josh Oliver,TE,Offense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,NE,BarmCh00,Christian Barmore,DL,Defense,4,4,1,1,Shoulder,Shoulder,False,True,False,True
+2026,NE,BrowAJ00,A.J. Brown,WR,Offense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,NE,CanaCh00,Channing Canada,DB,Defense,4,4,1,1,Hamstring,Hamstring,False,True,False,True
+2026,NE,CrowDa00,Dametrious Crownover,OL,Offense,2,4,3,3,Knee,Knee,False,True,False,True
+2026,NE,DaviCa02,Carlton Davis,DB,Defense,2,2,1,3,Neck,Neck,False,False,False,False
+2026,NE,GonzCh00,Christian Gonzalez,DB,Defense,4,4,1,1,Shoulder,Shoulder,False,True,False,True
+2026,NE,HutcQu00,Quintayvious Hutchins,LB,Defense,3,4,2,2,Knee,Knee,True,True,False,True
+2026,NE,JoneDr00,Dre'Mont Jones,LB,Defense,3,3,1,2,Shoulder,Shoulder,False,False,False,False
+2026,NE,OnweMi00,Michael Onwenu,OL,Offense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,NE,PettDe00,Dell Pettus,DB,Defense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,NE,RariEl00,Eli Raridon,TE,Offense,3,3,1,2,Quad / Thigh,Thigh,False,False,False,False
+2026,NE,VanRGr00,Greg Van Roten,OL,Offense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,NE,WoodCr00,Craig Woodson,DB,Defense,3,3,1,2,Shoulder,Shoulder,False,False,False,False
 2026,NO,BankKe01,Kelvin Banks,OL,Offense,3,3,1,1,Unspecified (IR),,True,True,False,True
 2026,NO,BrowBa02,Barion Brown,WR,Offense,3,3,1,1,Hamstring,Hamstring,False,True,False,True
 2026,NO,EmerMa00,Martin Emerson,DB,Defense,3,3,1,1,Shoulder,Shoulder,False,True,False,True
 2026,NO,MillCh01,Christen Miller,DL,Defense,2,3,2,2,Foot / Toe,Toe,False,True,False,True
 2026,NO,StalIs00,Isaiah Stalbird,LB,Defense,2,2,1,2,Shoulder,Shoulder,False,False,False,False
-2026,NYG,AdebPa00,Paulson Adebo,DB,Defense,2,3,2,2,Knee,Knee,True,True,False,True
-2026,NYG,BankDe00,Deonte Banks,DB,Defense,2,3,2,2,Lower Leg,Calf,False,True,False,True
-2026,NYG,DartJa00,Jaxson Dart,QB,Offense,3,3,1,1,Knee,Knee,True,True,False,True
-2026,NYG,McFaMi01,Micah McFadden,LB,Defense,2,2,1,2,Neck,Neck,False,False,False,False
-2026,NYG,NubiTy00,Tyler Nubin,DB,Defense,3,3,1,1,Lower Leg,Calf,False,True,False,True
-2026,NYJ,CoopOm00,Omar Cooper,WR,Offense,2,3,2,2,Ankle,Ankle,True,True,False,True
-2026,NYJ,FitzMi00,Minkah Fitzpatrick,DB,Defense,2,3,2,2,Hip / Groin,Groin,False,True,False,True
-2026,NYJ,MauiFr00,Francisco Mauigoa,LB,Defense,3,3,1,1,Quad / Thigh,Quadricep,False,True,False,True
-2026,NYJ,McCrMa01,Marcelino McCrary-Ball,LB,Defense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,NYJ,MitcAd00,Adonai Mitchell,WR,Offense,3,3,1,1,Hand / Wrist,Finger,False,True,False,True
-2026,NYJ,OnyeDa00,David Onyemata,DL,Defense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,NYJ,SmitAr01,Arian Smith,WR,Offense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,NYJ,TaylMa02,Mason Taylor,TE,Offense,3,3,1,1,Hand / Wrist,Thumb,False,True,False,True
-2026,PHI,BrowMa04,Marquise Brown,WR,Offense,3,3,1,1,Ankle,Ankle,False,True,False,True
-2026,PHI,DickLa00,Landon Dickerson,OL,Offense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,PHI,GoedDa00,Dallas Goedert,TE,Offense,3,3,1,1,Knee,Knee,False,True,False,True
-2026,PHI,JohnFr01,Fred Johnson,OL,Offense,3,3,1,1,Knee,Knee,False,True,False,True
-2026,PIT,DowdRi01,Rico Dowdle,RB,Offense,3,3,1,1,Foot / Toe,Toe,False,True,False,True
-2026,PIT,PittMi01,Michael Pittman Jr.,WR,Offense,2,2,1,2,Foot / Toe,Foot,False,False,False,False
-2026,SEA,BradAn00,Anthony Bradford,OL,Offense,2,3,2,2,Knee,Knee,True,True,False,True
-2026,SEA,DarnSa00,Sam Darnold,QB,Offense,2,2,1,2,Hip / Groin,Glute,False,False,False,False
-2026,SEA,LoveJu00,Julian Love,DB,Defense,3,3,1,1,Lower Leg,Calf,False,True,False,True
-2026,SEA,PiliBr00,Brandon Pili,DL,Defense,3,3,1,1,Head / Concussion,Concussion,False,True,False,True
-2026,SF,BosaNi00,Nick Bosa,DL,Defense,3,3,1,1,Knee,Knee,False,True,False,True
-2026,SF,HeigRo00,Romello Height,DL,Defense,3,3,1,1,Hand / Wrist,Hand,False,True,False,True
-2026,SF,RobiDe01,Demarcus Robinson,WR,Offense,3,3,1,1,Ankle,Ankle,True,True,False,True
-2026,SF,StriDe01,De'Zhaun Stribling,WR,Offense,2,3,2,2,Ankle,Ankle,True,True,False,True
-2026,SF,ThomJa06,James Thompson,DL,Defense,3,3,1,1,Ankle,Ankle,False,True,False,True
-2026,SF,TongJa00,Jake Tonges,TE,Offense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,SF,WestCJ00,CJ West,DL,Defense,3,3,1,1,Unspecified (IR),,True,True,False,True
-2026,TB,BainRu00,Rueben Bain,LB,Defense,3,3,1,1,Hip / Groin,Groin,False,True,False,True
-2026,TB,ParrJa01,Jacob Parrish,DB,Defense,2,2,1,2,Back,Back,False,False,False,False
-2026,TB,TrotJo00,Josiah Trotter,LB,Defense,3,3,1,1,Shoulder,Shoulder,False,True,False,True
-2026,TEN,FlotCo00,Cordale Flott,DB,Defense,2,2,1,2,Quad / Thigh,Quadricep,False,False,False,False
-2026,TEN,WillJa15,James Williams,LB,Defense,2,2,1,2,Arm / Elbow,Elbow,False,False,False,False
-2026,WAS,CosmSa00,Samuel Cosmi,OL,Offense,3,3,1,1,Head / Concussion,Concussion,False,True,False,True
-2026,WAS,DaniJa02,Jayden Daniels,QB,Offense,3,3,1,1,Arm / Elbow,Elbow,False,True,False,True
-2026,WAS,LuvuFr00,Frankie Luvu,LB,Defense,2,3,2,2,Hip / Groin,Groin,False,True,False,True
-2026,WAS,MageJo00,Jordan Magee,LB,Defense,2,3,2,2,Chest / Ribs,Chest,True,True,False,True
-2026,WAS,OkonCh00,Chig Okonkwo,TE,Offense,2,3,2,2,Hamstring,Hamstring,False,True,False,True
+2026,NYG,AdebPa00,Paulson Adebo,DB,Defense,2,4,3,3,Knee,Knee,True,True,False,True
+2026,NYG,BankDe00,Deonte Banks,DB,Defense,2,3,2,3,Lower Leg,Calf,False,False,False,False
+2026,NYG,BurnBr00,Brian Burns,LB,Defense,4,4,1,1,Ankle,Ankle,True,True,False,True
+2026,NYG,DartJa00,Jaxson Dart,QB,Offense,3,4,2,2,Knee,Knee,True,True,False,True
+2026,NYG,McFaMi01,Micah McFadden,LB,Defense,2,2,1,3,Neck,Neck,False,False,False,False
+2026,NYG,NubiTy00,Tyler Nubin,DB,Defense,3,3,1,2,Lower Leg,Calf,False,False,False,False
+2026,NYJ,CoopOm00,Omar Cooper,WR,Offense,2,4,3,3,Ankle,Ankle,True,True,False,True
+2026,NYJ,EnagKi00,Kingsley Enagbare,DL,Defense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,NYJ,FitzMi00,Minkah Fitzpatrick,DB,Defense,2,3,2,3,Hip / Groin,Groin,False,False,False,False
+2026,NYJ,HallBr03,Breece Hall,RB,Offense,4,4,1,1,Quad / Thigh,Quadricep,False,True,False,True
+2026,NYJ,MauiFr00,Francisco Mauigoa,LB,Defense,3,4,2,2,Quad / Thigh,Quadricep,False,True,False,True
+2026,NYJ,McCrMa01,Marcelino McCrary-Ball,LB,Defense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,NYJ,MitcAd00,Adonai Mitchell,WR,Offense,3,4,2,2,Hand / Wrist,Finger,False,True,False,True
+2026,NYJ,OnyeDa00,David Onyemata,DL,Defense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,NYJ,ParhDy00,Dylan Parham,OL,Offense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,NYJ,SmitAr01,Arian Smith,WR,Offense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,NYJ,TaylMa02,Mason Taylor,TE,Offense,3,4,2,2,Hand / Wrist,Thumb,False,True,False,True
+2026,PHI,BaunZa00,Zack Baun,LB,Defense,4,4,1,1,Head / Concussion,Concussion,False,True,False,True
+2026,PHI,BrowMa04,Marquise Brown,WR,Offense,3,4,2,2,Ankle,Ankle,False,True,False,True
+2026,PHI,DickLa00,Landon Dickerson,OL,Offense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,PHI,EppsMa00,Marcus Epps,DB,Defense,4,4,1,1,Hip / Groin,Groin,False,True,False,True
+2026,PHI,GoedDa00,Dallas Goedert,TE,Offense,3,4,2,2,Knee,Knee,False,True,False,True
+2026,PHI,JohnFr01,Fred Johnson,OL,Offense,3,4,2,2,Knee,Knee,False,True,False,True
+2026,PHI,SmitDe07,DeVonta Smith,WR,Offense,4,4,1,1,Hamstring,Hamstring,False,True,False,True
+2026,PIT,DowdRi01,Rico Dowdle,RB,Offense,3,4,2,2,Foot / Toe,Toe,False,True,False,True
+2026,PIT,PittMi01,Michael Pittman Jr.,WR,Offense,2,2,1,3,Foot / Toe,Foot,False,False,False,False
+2026,SEA,BradAn00,Anthony Bradford,OL,Offense,2,4,3,3,Knee,Knee,True,True,False,True
+2026,SEA,DarnSa00,Sam Darnold,QB,Offense,2,2,1,3,Hip / Groin,Glute,False,False,False,False
+2026,SEA,LoveJu00,Julian Love,DB,Defense,3,3,1,2,Lower Leg,Calf,False,False,False,False
+2026,SEA,PiliBr00,Brandon Pili,DL,Defense,3,4,2,2,Head / Concussion,Concussion,False,True,False,True
+2026,SEA,PricJa02,Jadarian Price,RB,Offense,4,4,1,1,Chest / Ribs,Chest,True,True,False,True
+2026,SEA,SurrCh00,Chazz Surratt,LB,Defense,4,4,1,1,Lower Leg,Calf,False,True,False,True
+2026,SF,BosaNi00,Nick Bosa,DL,Defense,3,4,2,2,Knee,Knee,False,True,False,True
+2026,SF,HeigRo00,Romello Height,DL,Defense,3,3,1,2,Hand / Wrist,Hand,False,False,False,False
+2026,SF,HodgKh00,KhaDarel Hodge,WR,Offense,4,4,1,1,Knee,Knee,False,True,False,True
+2026,SF,RobiDe01,Demarcus Robinson,WR,Offense,3,4,2,2,Ankle,Ankle,True,True,False,True
+2026,SF,StriDe01,De'Zhaun Stribling,WR,Offense,2,4,3,3,Ankle,Ankle,True,True,False,True
+2026,SF,ThomJa06,James Thompson,DL,Defense,3,4,2,2,Ankle,Ankle,False,True,False,True
+2026,SF,TongJa00,Jake Tonges,TE,Offense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,SF,WestCJ00,CJ West,DL,Defense,3,4,2,2,Unspecified (IR),,True,True,False,True
+2026,TB,BainRu00,Rueben Bain,LB,Defense,3,4,2,2,Hip / Groin,Groin,False,True,False,True
+2026,TB,KiefKo00,Ko Kieft,TE,Offense,4,4,1,1,Arm / Elbow,Elbow,False,True,False,True
+2026,TB,MayfBa00,Baker Mayfield,QB,Offense,4,4,1,1,Hand / Wrist,Thumb,False,True,False,True
+2026,TB,McMiJa01,Jalen McMillan,WR,Offense,4,4,1,1,Knee,Knee,True,True,False,True
+2026,TB,MorrBe00,Benjamin Morrison,DB,Defense,4,4,1,1,Quad / Thigh,Quadricep,False,True,False,True
+2026,TB,ParrJa01,Jacob Parrish,DB,Defense,2,2,1,3,Back,Back,False,False,False,False
+2026,TB,TrotJo00,Josiah Trotter,LB,Defense,3,3,1,2,Shoulder,Shoulder,False,False,False,False
+2026,TEN,CarmFe00,Fernando Carmona,OL,Offense,4,4,1,1,Shoulder,Shoulder,True,True,False,True
+2026,TEN,FlotCo00,Cordale Flott,DB,Defense,2,2,1,3,Quad / Thigh,Quadricep,False,False,False,False
+2026,TEN,SlatJa01,Jackson Slater,OL,Offense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,TEN,WillJa15,James Williams,LB,Defense,2,2,1,3,Arm / Elbow,Elbow,False,False,False,False
+2026,WAS,ChenLe00,Leo Chenal,LB,Defense,4,4,1,1,Chest / Ribs,Chest,True,True,False,True
+2026,WAS,CosmSa00,Samuel Cosmi,OL,Offense,3,4,2,2,Head / Concussion,Concussion,False,True,False,True
+2026,WAS,DaniJa02,Jayden Daniels,QB,Offense,3,4,2,2,Arm / Elbow,Elbow,False,True,False,True
+2026,WAS,LuvuFr00,Frankie Luvu,LB,Defense,2,3,2,3,Hip / Groin,Groin,False,False,False,False
+2026,WAS,MageJo00,Jordan Magee,LB,Defense,2,4,3,3,Chest / Ribs,Chest,True,True,False,True
+2026,WAS,McLaTe00,Terry McLaurin,WR,Offense,4,4,1,1,Hamstring,Hamstring,False,True,False,True
+2026,WAS,OkonCh00,Chig Okonkwo,TE,Offense,2,3,2,3,Hamstring,Hamstring,False,False,False,False
+2026,WAS,WhitRa01,Rachaad White,RB,Offense,4,4,1,1,Shoulder,Shoulder,False,True,False,True

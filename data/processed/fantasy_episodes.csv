@@ -211,8 +211,12 @@ season,team,pfr_player_id,player,pos_group,side,start_week,end_week,games_missed
 2025,ARI,ConnJa00,James Conner,RB,Offense,4,17,13,13,Foot / Toe,Foot,True,True,True,False
 2025,SF,KittGe00,George Kittle,TE,Offense,2,6,5,15,Hamstring,Hamstring,True,False,False,False
 2025,SF,KittGe00,George Kittle,TE,Offense,17,17,1,1,Ankle,Ankle,False,True,False,False
-2026,LA,NacuPu00,Puka Nacua,WR,Offense,2,3,2,2,Hip / Groin,Hip,False,True,False,True
-2026,NE,BrowAJ00,A.J. Brown,WR,Offense,2,3,2,2,Unspecified (IR),,True,True,False,True
-2026,LV,BoweBr01,Brock Bowers,TE,Offense,1,2,2,3,Knee,Knee,False,False,False,False
-2026,HOU,CollNi00,Nico Collins,WR,Offense,2,3,2,2,Hamstring,Hamstring,False,True,False,True
-2026,BAL,FlowZa00,Zay Flowers,WR,Offense,2,2,1,2,Hamstring,Hamstring,False,False,False,False
+2026,LA,NacuPu00,Puka Nacua,WR,Offense,2,3,2,3,Hip / Groin,Hip,False,False,False,False
+2026,MIN,JeffJu00,Justin Jefferson,WR,Offense,4,4,1,1,Ankle,Ankle,False,True,False,True
+2026,MIA,AchaDe00,De'Von Achane,RB,Offense,4,4,1,1,Unspecified (IR),,True,True,False,True
+2026,NE,BrowAJ00,A.J. Brown,WR,Offense,2,4,3,3,Unspecified (IR),,True,True,False,True
+2026,LV,BoweBr01,Brock Bowers,TE,Offense,1,2,2,4,Knee,Knee,False,False,False,False
+2026,HOU,CollNi00,Nico Collins,WR,Offense,2,3,2,3,Hamstring,Hamstring,False,False,False,False
+2026,PHI,SmitDe07,DeVonta Smith,WR,Offense,4,4,1,1,Hamstring,Hamstring,False,True,False,True
+2026,NYJ,HallBr03,Breece Hall,RB,Offense,4,4,1,1,Quad / Thigh,Quadricep,False,True,False,True
+2026,BAL,FlowZa00,Zay Flowers,WR,Offense,2,2,1,3,Hamstring,Hamstring,False,False,False,False
