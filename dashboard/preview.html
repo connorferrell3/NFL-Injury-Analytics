@@ -24,8 +24,12 @@ p { margin:0; } .muted { color:var(--ink-3); font-size:14px; } .num { font-varia
 .frame { border:1px solid var(--rule); border-radius:14px; background:var(--bg); padding:22px clamp(16px,3vw,32px) 28px; display:grid; gap:26px; }
 .frame-label { font:600 12px/1 var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); }
 .tabs { display:flex; gap:2px; border-bottom:2px solid var(--rule); overflow-x:auto; scrollbar-width:none; }
-.tab { white-space:nowrap; font:700 18px/1 var(--display); text-transform:uppercase; padding:10px 12px 9px; color:var(--ink-3); border-bottom:3px solid transparent; margin-bottom:-2px; }
-.tab.on { color:var(--ink); border-bottom-color:var(--accent); }
+.tab { white-space:nowrap; font:700 18px/1 var(--display); text-transform:uppercase; padding:10px 12px 9px; color:var(--ink-3); border:0; border-bottom:3px solid transparent; margin-bottom:-2px; background:none; cursor:pointer; }
+.tab:hover { color:var(--ink); } .tab[aria-selected="true"] { color:var(--ink); border-bottom-color:var(--accent); }
+.tab:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.tabpanel { display:grid; gap:26px; }
+.plan { background:var(--surface); border:1px solid var(--rule); border-radius:10px; padding:18px 20px; display:grid; gap:10px; max-width:70ch; }
+.plan b { font:700 22px/1.1 var(--display); text-transform:uppercase; } .plan p { color:var(--ink-2); }
 .eyebrow { font:600 14px/1 var(--display); letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
 .thesis { display:grid; gap:12px; max-width:30ch; }
 .thesis h1 { font-size:clamp(34px,6vw,58px); text-transform:none; letter-spacing:-.005em; max-width:20ch; }
@@ -57,11 +61,12 @@ td.new { font-weight:600; white-space:nowrap; } .scroll { overflow-x:auto; }
 </head>
 <body>
 <div class="wrap">
-  <div class="banner"><b>Preview</b><span>Proposed redesign, not live yet. All numbers are real (2020–2025 seasons, plus 2026 through Week 4). Tell me what to change before it replaces the dashboard.</span></div>
+  <div class="banner"><b>Preview</b><span>Proposed redesign, not live yet. All numbers are real (2020–2025 seasons, plus 2026 through Week 4). The live dashboard is unchanged until you approve.</span></div>
 
   <div class="frame">
-    <span class="frame-label">1 · New Overview (what a first-time visitor sees)</span>
-    <nav class="tabs" aria-label="Proposed tabs"><span class="tab on">Overview</span><span class="tab">Teams</span><span class="tab">Injuries</span><span class="tab">Players</span><span class="tab">This Week</span><span class="tab">Fantasy</span><span class="tab">How It Works</span></nav>
+    <span class="frame-label">Tap the tabs: Overview and Teams show the redesign with real numbers; the others describe what moves there</span>
+    <nav class="tabs" role="tablist" aria-label="Proposed tabs" id="ptabs"></nav>
+    <div class="tabpanel" role="tabpanel" id="p-overview">
     <div class="thesis">
       <span class="eyebrow">NFL injuries · 2020–2025</span>
       <h1 id="headline"></h1>
@@ -82,10 +87,9 @@ td.new { font-weight:600; white-space:nowrap; } .scroll { overflow-x:auto; }
       </div>
     </div>
     <div class="live" id="live"></div>
-  </div>
+    </div>
 
-  <div class="frame">
-    <span class="frame-label">2 · New Teams tab: one fair comparison</span>
+    <div class="tabpanel" role="tabpanel" id="p-teams" hidden>
     <div style="display:grid;gap:8px"><h2>Which teams get hit hardest</h2>
       <p class="muted" style="font-size:16px;max-width:70ch">Every team is measured on its own top earners: its highest-paid 30% of players, about 22 per team. That keeps the groups the same size, so a team with more stars isn't counted more.</p></div>
     <div class="toggle" role="group" aria-label="Measure">
@@ -93,18 +97,22 @@ td.new { font-weight:600; white-space:nowrap; } .scroll { overflow-x:auto; }
       <button class="chip" id="m-rate" aria-pressed="false">Share of top earners who got hurt</button>
     </div>
     <div class="panel"><svg id="teams" role="img" aria-label="Team ranking"></svg></div>
-  </div>
+    </div>
 
-  <div class="frame">
-    <span class="frame-label">3 · Plain-language terms (used everywhere on the page)</span>
+    <div class="tabpanel" role="tabpanel" id="p-other" hidden><div class="plan" id="plan"></div></div>
+
+    <div class="tabpanel" role="tabpanel" id="p-how" hidden>
+    <div class="plan" id="plan-how"></div>
+    <h3>Plain-language terms, used everywhere on the page</h3>
     <div class="scroll"><table>
       <thead><tr><th>Today</th><th>Proposed</th><th>What it means, in one line</th></tr></thead>
       <tbody id="terms"></tbody>
     </table></div>
+    </div>
   </div>
 
   <div class="frame">
-    <span class="frame-label">4 · What moves where</span>
+    <span class="frame-label">All tabs at a glance</span>
     <div class="moves" id="moves"></div>
   </div>
 </div>
@@ -194,6 +202,24 @@ $("moves").innerHTML = [
   ["Fantasy", "Top-48 PPR picks plus My Lineup, merged into one tab."],
   ["How It Works", "Definitions, the definition comparison, model accuracy, the data audit, and the advanced filters' explanation."],
 ].map(([t, d]) => `<div class="move"><b>${t}</b>${esc(d)}</div>`).join("");
+
+const MOVES = Object.fromEntries([...document.querySelectorAll("#moves .move")].map(m => [m.querySelector("b").textContent.toLowerCase(), m.innerHTML]));
+const TABS = ["Overview", "Teams", "Injuries", "Players", "This Week", "Fantasy", "How It Works"];
+$("ptabs").innerHTML = TABS.map((t, i) => `<button class="tab" role="tab" id="pt-${i}" aria-selected="${i === 0}">${t}</button>`).join("");
+function pick(i) {
+  const t = TABS[i];
+  TABS.forEach((_, j) => $("pt-" + j).setAttribute("aria-selected", String(j === i)));
+  $("p-overview").hidden = t !== "Overview"; $("p-teams").hidden = t !== "Teams";
+  $("p-how").hidden = t !== "How It Works"; $("p-other").hidden = ["Overview", "Teams", "How It Works"].includes(t);
+  if (!$("p-other").hidden) $("plan").innerHTML = MOVES[t.toLowerCase()] + `<p class="muted">Keeps today's charts for this tab, reworded with the plain-language terms and set to top earners by default.</p>`;
+  if (t === "How It Works") $("plan-how").innerHTML = MOVES["how it works"];
+}
+TABS.forEach((_, i) => $("pt-" + i).addEventListener("click", () => pick(i)));
+$("ptabs").addEventListener("keydown", e => {
+  if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+  const cur = TABS.findIndex((_, j) => $("pt-" + j).getAttribute("aria-selected") === "true");
+  const n = (cur + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length; pick(n); $("pt-" + n).focus();
+});
 
 const tip = $("tip"); let tipT = null;
 const show = (t, x, y, touch) => { tip.innerHTML = t.getAttribute("data-tip"); tip.hidden = false; tipT = t; const w = tip.offsetWidth, h = tip.offsetHeight;
