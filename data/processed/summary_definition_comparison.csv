@@ -1,9 +1,10 @@
 definition,players_per_season,pct_injured,games_lost_per_player,season_ending_rate,avg_snap_share,share_also_snap_starter
 Snap share,745,0.526,2.565,0.15,0.806,1.0
-Pedigree,710,0.559,2.872,0.165,0.696,0.697
+Pedigree,711,0.559,2.87,0.165,0.696,0.697
 1st-round rookie contract,151,0.537,2.655,0.149,0.733,0.735
 Salary top 30%,673,0.563,2.889,0.167,0.701,0.706
 Team top 30% by cap,709,0.561,2.953,0.169,0.708,0.706
-Pro Bowl (prior season),102,0.565,2.811,0.166,0.794,0.905
-All-Pro (prior season),56,0.515,2.665,0.165,0.785,0.871
+Pro Bowl (prior season),102,0.568,2.827,0.168,0.793,0.905
+All-Pro (prior season),56,0.516,2.672,0.164,0.786,0.875
+NFL Top 100 (preseason list),100,0.532,2.649,0.156,0.835,0.975
 Everyone who took a snap,2315,0.447,2.74,0.154,0.431,0.322

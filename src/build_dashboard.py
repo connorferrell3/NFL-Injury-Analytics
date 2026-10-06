@@ -20,7 +20,7 @@ UNSPEC = "Unspecified (IR)"
 
 # bit flags for key-player criteria, mirrored in template.html
 FLAGS = {"is_snap_key": 1, "is_pedigree_key": 2, "first_round_rookie": 4,
-         "salary_top30": 8, "pro_bowl_prev": 16, "all_pro_prev": 32, "team_cap_top30": 64}
+         "salary_top30": 8, "pro_bowl_prev": 16, "all_pro_prev": 32, "team_cap_top30": 64, "top100_prev": 128}
 DEFINITIONS = {
     "Snap share": "is_snap_key",
     "Pedigree": "is_pedigree_key",
@@ -29,6 +29,7 @@ DEFINITIONS = {
     "Team top 30% by cap": "team_cap_top30",
     "Pro Bowl (prior season)": "pro_bowl_prev",
     "All-Pro (prior season)": "all_pro_prev",
+    "NFL Top 100 (preseason list)": "top100_prev",
     "Everyone who took a snap": None,
 }
 
@@ -40,10 +41,6 @@ def p_two_prop(a: pd.Series, b: pd.Series) -> float:
     se = math.sqrt(p * (1 - p) * (1 / n1 + 1 / n2))
     z = (x1 / n1 - x2 / n2) / se
     return 2 * (1 - 0.5 * (1 + math.erf(abs(z) / math.sqrt(2))))
-
-
-def fmt_p(p: float) -> str:
-    return "p < 0.001" if p < 0.001 else f"p = {p:.2f}" if p >= 0.01 else f"p = {p:.3f}"
 
 
 def pct(v: float) -> str:
@@ -164,7 +161,7 @@ def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame, team_games: 
                    f"{pct(se_unspec)} of them never get a body part on the report because the player goes straight to IR.",
          "bars": [[str(y), round(v, 3)] for y, v in se_rate.items()]},
         {"group": "NFL", "id": "recurrence", "value": f"+{(hurt.mean() - fine.mean()) * 100:.0f} pts", "title": "more likely to get hurt next season if hurt this season",
-         "detail": f"{pct(hurt.mean())} vs. {pct(fine.mean())} for starters who stayed healthy ({fmt_p(p_two_prop(hurt, fine))}, {len(nxt):,} player pairs).",
+         "detail": f"{pct(hurt.mean())} vs. {pct(fine.mean())} for starters who stayed healthy, across {len(nxt):,} back-to-back player seasons.",
          "bars": [["Hurt last season", round(hurt.mean(), 3)], ["Healthy last season", round(fine.mean(), 3)]]},
         {"group": "NFL", "id": "same_region", "value": f"{same_all / chance:.1f}×", "title": "more likely than chance that a repeat injury hits the same body part",
          "detail": f"{pct(same_all)} of repeat absences are the same region, vs. {pct(chance)} by chance. Knees repeat {pct(reg.loc['Knee', 'same_region'])} of the time, hamstrings {pct(reg.loc['Hamstring', 'same_region'])}.",
@@ -172,36 +169,39 @@ def findings(ps: pd.DataFrame, ep: pd.DataFrame, fan: pd.DataFrame, team_games: 
         {"group": "NFL", "id": "pro_bowl", "value": pct(pb.mean()),
          "title": ("of prior-season Pro Bowlers miss time, more than other starters" if p_two_prop(pb, not_pb) < 0.05
                    else "of prior-season Pro Bowlers miss time, a little more than other starters"),
-         "detail": f"vs. {pct(not_pb.mean())} of other starters ({fmt_p(p_two_prop(pb, not_pb))}). " +
+         "detail": f"vs. {pct(not_pb.mean())} of other starters. " +
                    ("Stars play more snaps, so they're exposed more." if p_two_prop(pb, not_pb) < 0.05
                     else "The gap is small enough that it could be chance, so treat it as a lean, not a rule."),
          "bars": [["Pro Bowlers", round(pb.mean(), 3)], ["Other starters", round(not_pb.mean(), 3)]]},
         {"group": "NFL", "id": "rookies", "value": pct(rk.mean()), "title": "of first-round picks on rookie deals miss time, the same as everyone else",
-         "detail": f"vs. {pct(not_rk.mean())} of other starters ({fmt_p(p_two_prop(rk, not_rk))}). Youth doesn't protect them.",
+         "detail": f"vs. {pct(not_rk.mean())} of other starters. Youth doesn't protect them.",
          "bars": [["1st-rd rookies", round(rk.mean(), 3)], ["Other starters", round(not_rk.mean(), 3)]]},
         {"group": "NFL", "id": "knee", "value": pct(knee["share"]), "title": "of starter absences are knee injuries, the most common and costliest",
          "detail": f"Knees cost {int(knee['sum']):,} games over six seasons. Achilles injuries are rarer but {pct(ach)} of them end the season."},
         {"group": "NFL", "id": "team_cap", "value": f"{pct(share.iloc[0])} vs {pct(share.iloc[-1])}",
          "title": f"of top-paid players' cap lost to injury: {share.index[0]} (best) vs. {share.index[-1]} (worst)",
          "detail": f"Share of each team's top-30% cap dollars spent on games those players missed, 2020–2025. League average {pct(league_share)}. "
-                   f"Team gaps are real, not noise (permutation test, {'p < 0.001' if p_team == 0 else fmt_p(p_team)}).",
+                   + ("Team gaps are larger than random chance would produce." if p_team < 0.05
+                      else "Team gaps are within what random chance would produce."),
          "bars": [[t, round(v, 3)] for t, v in list(share.head(2).items()) + list(share.tail(2).items())]},
         {"group": "NFL", "id": "hamstring_early", "value": pct(ins[ham & early].shape[0] / ham.sum()),
          "title": "of hamstring injuries start in the first five weeks of the season",
-         "detail": f"Weeks 2–6 are only {pct(weeks_early)} of the in-season weeks. Other injuries: {pct(early[~ham].mean())} "
-                   f"({fmt_p(p_two_prop(early[ham], early[~ham]))}). Soft-tissue pulls cluster early; knees and necks lean late.",
+         "detail": f"Weeks 2–6 are only {pct(weeks_early)} of the in-season weeks. Other injuries: {pct(early[~ham].mean())}. "
+                   f"Soft-tissue pulls cluster early; knees and necks lean late.",
          "bars": [["Hamstrings", round(float(early[ham].mean()), 3)], ["Other injuries", round(float(early[~ham].mean()), 3)], ["Share of weeks", round(weeks_early, 3)]]},
         {"group": "Fantasy", "id": "fan_rate", "value": pct(f["injured"].mean()), "title": "of top-48 fantasy picks miss at least one week to injury",
          "detail": f"{pct(f['missed4'].mean())} miss four weeks or more. In a 12-team league, that's about {f['missed4'].mean() * 4:.0f} of each manager's first four picks.",
          "bars": [["Missed 1+ week", round(f["injured"].mean(), 3)], ["Missed 4+ weeks", round(f["missed4"].mean(), 3)]]},
         {"group": "Fantasy", "id": "fan_pos", "value": f"{pct(qb.mean())} vs {pct(rb.mean())}", "title": "QBs vs. RBs: quarterbacks are the safest early picks",
-         "detail": f"QB vs. RB {fmt_p(p_two_prop(qb, rb))}. RBs and WRs ({pct(wr.mean())}) are statistically the same ({fmt_p(p_two_prop(rb, wr))}).",
+         "detail": ("The QB–RB gap is statistically significant. " if p_two_prop(qb, rb) < 0.05 else "The QB–RB gap could be chance. ")
+                   + (f"RBs and WRs ({pct(wr.mean())}) are statistically the same." if p_two_prop(rb, wr) >= 0.05
+                      else f"WRs ({pct(wr.mean())}) differ from RBs too."),
          "bars": [["QB", round(qb.mean(), 3)], ["RB", round(rb.mean(), 3)], ["WR", round(wr.mean(), 3)]]},
         {"group": "Fantasy", "id": "fan_round", "value": "No edge", "title": "Round 1 picks get hurt as often as Rounds 2–4",
-         "detail": f"{pct(r1.mean())} vs. {pct(r24.mean())} ({fmt_p(p_two_prop(r1, r24))}). Paying up doesn't buy durability.",
+         "detail": f"{pct(r1.mean())} vs. {pct(r24.mean())}. Paying up doesn't buy durability.",
          "bars": [["Round 1", round(r1.mean(), 3)], ["Rounds 2–4", round(r24.mean(), 3)]]},
         {"group": "Fantasy", "id": "fan_recur", "value": "Weak signal", "title": "“He was hurt last year” barely predicts fantasy injuries",
-         "detail": f"{pct(fh.mean())} vs. {pct(ff.mean())} ({fmt_p(p_two_prop(fh, ff))}, only {len(fn)} repeat picks). The NFL-wide effect is real, but too small to see in a 48-player pool.",
+         "detail": f"{pct(fh.mean())} vs. {pct(ff.mean())}, from only {len(fn)} repeat picks. The NFL-wide effect is real, but too small to see in a 48-player pool.",
          "bars": [["Hurt last year", round(fh.mean(), 3)], ["Healthy last year", round(ff.mean(), 3)]]},
         {"group": f"{CURRENT_SEASON} so far", "id": "live", "value": str(int(cur["ongoing"].sum())), "title": f"snap-share starters are out as of Week {cur_week}",
          "detail": f"{pct(cur['injured'].mean())} of starters have already missed a game, and {int(cf['ongoing'].sum())} of the top 48 fantasy picks are currently out."},

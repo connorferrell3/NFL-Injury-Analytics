@@ -8,7 +8,7 @@ they're out: six completed seasons (2020–2025) plus the season in progress.
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python src/fetch_data.py      # nflverse + ADP -> data/raw/
-.venv/bin/python src/fetch_awards.py    # Pro Bowl / All-Pro rosters (Wikipedia) -> data/raw/awards.csv
+.venv/bin/python src/fetch_awards.py    # Pro Bowl / All-Pro rosters, NFL Top 100 (Wikipedia) -> data/raw/awards.csv
 .venv/bin/python src/build_dataset.py   # player-seasons, absences, fantasy picks -> data/processed/
 .venv/bin/python src/injury_model.py    # train/evaluate injury-risk models, score the live week
 .venv/bin/python src/build_dashboard.py # summaries + dashboard/index.html
@@ -19,7 +19,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 
 | File | What it is |
 |---|---|
-| `data/processed/player_seasons.csv` | Every player-team-season with a snap, tagged with each key-player criterion (snap share, 1st-round rookie, salary percentile, prior-season Pro Bowl / All-Pro) |
+| `data/processed/player_seasons.csv` | Every player-team-season with a snap, tagged with each key-player criterion (snap share, 1st-round rookie, salary percentile, prior-season Pro Bowl / All-Pro, preseason NFL Top 100) |
 | `data/processed/injury_episodes.csv` | One row per injury absence for any player: body region, start week, games missed, IR, season-ending |
 | `data/processed/fantasy_top48.csv` / `fantasy_episodes.csv` | Top-48 PPR ADP picks per season and their fantasy-week absences |
 | `data/processed/audit_team_injuries.csv` | Every injured player-week from raw rosters/reports, and whether the pipeline captured it |

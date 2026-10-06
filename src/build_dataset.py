@@ -21,6 +21,8 @@ Key player: pedigree definition (`is_pedigree_key`) -- any of:
     (an equal-share group per team, used for team comparisons).
     - Pro Bowl or All-Pro selection the PREVIOUS season (same-season honors would be
       biased toward players who stayed healthy)
+    - named to the NFL Top 100 released before the season (`top100_prev`; player-voted
+      on the previous season, so it has the same timing as the honors above)
 
 Fantasy top 48
     Top 48 by PPR ADP (12-team drafts just before the season). Absences are counted
@@ -62,6 +64,18 @@ FANTASY_TOP_N = 48
 NAME_ALIASES = {"camjordan": "cameronjordan",  # award / ADP name -> roster name
                 "hollywoodbrown": "marquisebrown", "robbiechosen": "robbyanderson", "robbieanderson": "robbyanderson",
                 "kennygainwell": "kennethgainwell"}  # applied to both sides, so either spelling matches
+
+# roster team -> words that identify it in award "team" text ("Buffalo", "LA Rams", "Buffalo Bills"),
+# used to tell apart players who share a name (Josh Allen BUF QB / JAX edge)
+TEAM_WORDS = {"ARI": "Arizona|Cardinals", "ATL": "Atlanta|Falcons", "BAL": "Baltimore|Ravens", "BUF": "Buffalo|Bills",
+              "CAR": "Carolina|Panthers", "CHI": "Chicago|Bears", "CIN": "Cincinnati|Bengals", "CLE": "Cleveland|Browns",
+              "DAL": "Dallas|Cowboys", "DEN": "Denver|Broncos", "DET": "Detroit|Lions", "GB": "Green Bay|Packers",
+              "HOU": "Houston|Texans", "IND": "Indianapolis|Colts", "JAX": "Jacksonville|Jaguars", "KC": "Kansas City|Chiefs",
+              "LA": "Rams", "LAC": "Chargers", "LV": "Las Vegas|Oakland|Raiders", "OAK": "Las Vegas|Oakland|Raiders",
+              "MIA": "Miami|Dolphins", "MIN": "Minnesota|Vikings", "NE": "New England|Patriots", "NO": "New Orleans|Saints",
+              "NYG": "Giants", "NYJ": "Jets", "PHI": "Philadelphia|Eagles", "PIT": "Pittsburgh|Steelers",
+              "SEA": "Seattle|Seahawks", "SF": "San Francisco|49ers", "TB": "Tampa Bay|Buccaneers", "TEN": "Tennessee|Titans",
+              "WAS": "Washington|Commanders|Football Team"}
 
 KEY_MIN_GAMES = 2
 KEY_PCT = {"RB": 0.50}  # default 0.65
@@ -241,24 +255,39 @@ def tag_pedigree(ps: pd.DataFrame, xw: pd.DataFrame) -> pd.DataFrame:
     team_rank = ps.groupby(["season", "team"])["cap_hit"].rank(pct=True, method="first")
     ps["team_cap_top30"] = team_rank > 1 - SALARY_TOP
 
-    # previous-season Pro Bowl / All-Pro, matched by name on that season's rosters
+    # previous-season Pro Bowl / All-Pro / Top 100, matched by name on that season's rosters
     awards = pd.read_csv(RAW / "awards.csv")
-    names = load("roster_weekly", SEASONS)[["season", "full_name", "pfr_id"]].dropna()
-    names["n"] = names["full_name"].map(norm_name)
-    lookup = names.drop_duplicates(["season", "n"]).set_index(["season", "n"])["pfr_id"]
-    # fall back to any-season name match (covers 2019 honors, since 2019 rosters aren't loaded)
-    any_season = names.drop_duplicates("n").set_index("n")["pfr_id"]
+    names = load("roster_weekly", SNAP_SEASONS)[["season", "full_name", "pfr_id", "team"]].dropna()
+    names["n"] = names["full_name"].map(norm_name).replace(NAME_ALIASES)
+    names = names.drop_duplicates(["season", "n", "pfr_id", "team"])
+    by_name = dict(tuple(names.groupby("n")))
+
+    def resolve(season: int, n: str, team_text) -> str | None:
+        """Player id for an honoree: that season's roster, then any season; team text breaks name ties."""
+        c = by_name.get(n)
+        if c is None:
+            return None
+        if (c["season"] == season).any():
+            c = c[c["season"] == season]
+        if c["pfr_id"].nunique() > 1 and isinstance(team_text, str):
+            on_team = c[[bool(re.search(TEAM_WORDS.get(t, "^$"), team_text)) for t in c["team"]]]
+            if on_team["pfr_id"].nunique() == 1:
+                return on_team["pfr_id"].iat[0]
+        return c["pfr_id"].iat[0]
+
     awards["n"] = awards["name"].map(norm_name).replace(NAME_ALIASES)
-    awards["pfr_player_id"] = [lookup.get((y, n), any_season.get(n)) for y, n in zip(awards["season"], awards["n"])]
+    awards["pfr_player_id"] = [resolve(y, n, t) for y, n, t in zip(awards["season"], awards["n"], awards["team_text"])]
     matched = awards.dropna(subset=["pfr_player_id"])
     print(f"Awards: matched {matched['n'].nunique()} names; "
           f"unmatched non-position strings: {awards.loc[awards['pfr_player_id'].isna(), 'name'].nunique()}")
-    for award in ("pro_bowl", "all_pro"):
+    for award in ("pro_bowl", "all_pro", "top100"):
         got = set(zip(matched.loc[matched["award"] == award, "season"] + 1,
                       matched.loc[matched["award"] == award, "pfr_player_id"]))
         ps[f"{award}_prev"] = [(y, p) in got for y, p in zip(ps["season"], ps["pfr_player_id"])]
 
-    ps["is_pedigree_key"] = ps[["first_round_rookie", "salary_top30", "pro_bowl_prev", "all_pro_prev"]].any(axis=1)
+    top = matched[matched["award"] == "top100"]
+    print(f"Top 100: matched {len(top)} of {(awards['award'] == 'top100').sum()} list entries")
+    ps["is_pedigree_key"] = ps[["first_round_rookie", "salary_top30", "pro_bowl_prev", "all_pro_prev", "top100_prev"]].any(axis=1)
     return ps
 
 
