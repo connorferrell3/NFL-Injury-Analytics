@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-PROC, DASH = ROOT / "data" / "processed", ROOT / "dashboard"
+PROC, DASH, RAW = ROOT / "data" / "processed", ROOT / "dashboard", ROOT / "data" / "raw"
 KEY = ["season", "team", "pfr_player_id"]
 CURRENT_SEASON = 2026
 UNSPEC = "Unspecified (IR)"
@@ -83,6 +83,15 @@ def team_cap_lost(d: pd.DataFrame, team_games: pd.Series) -> pd.Series:
     lost = d["cap_hit"] * d["games_missed"] / g
     t = d.assign(lost=lost).groupby("team")[["cap_hit", "lost"]].sum()
     return t["lost"] / t["cap_hit"]
+
+
+def season_games(team_games: pd.Series) -> pd.Series:
+    """Per team-season game count for cap math: played games, except the current season uses its schedule."""
+    g = pd.read_csv(RAW / "games.csv")
+    g = g[(g["season"] == CURRENT_SEASON) & (g["game_type"] == "REG")]
+    sched = pd.concat([g["home_team"], g["away_team"]]).value_counts()
+    cur = pd.Series(sched.to_numpy(), index=pd.MultiIndex.from_product([[CURRENT_SEASON], sched.index]))
+    return pd.concat([team_games[team_games.index.get_level_values(0) != CURRENT_SEASON], cur])
 
 
 def team_pvalues(ps: pd.DataFrame, team_games: pd.Series, draws: int = 1000) -> dict:
@@ -311,7 +320,9 @@ def main() -> None:
             p=ps["pfr_player_id"].map(pid), f=flags, u=(ps["avg_unit_pct"].fillna(0) * 100).round().astype(int),  # 0 = never took a snap (started on IR/PUP)
             c=ps["cap_hit"].fillna(0).round(2)
         ).values.tolist(),
-        "team_games": {f"{s}|{t}": int(n) for (s, t), n in team_games.items()},
+        # games a cap hit is spread over: games played in completed seasons, the full schedule for the
+        # current one (so cap dollars lost so far = cap hit / 17 per missed game, not / games played yet)
+        "season_games": {f"{s}|{t}": int(n) for (s, t), n in season_games(team_games).items()},
         # teams that played in each season-week (normalizes for byes)
         "week_games": {f"{s}|{w}": int(n) for (s, w), n in tw.groupby(["season", "week"]).size().items()},
         "ep": ep_rows(ep),

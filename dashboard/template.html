@@ -1346,7 +1346,7 @@ function renderTeamBars(K) {
   for (const k of K) {
     const r = by[k.team]; if (!r) continue;
     const eps = EP_BY_KEY.get(kstr(k.season, k.team, k.p)) || [], gm = eps.reduce((a, e) => a + e.games, 0);
-    r.n++; r.g += gm; r.cap += k.c; r.lost += k.c * gm / (DATA.team_games[`${k.season}|${k.team}`] || 17);
+    r.n++; r.g += gm; r.cap += k.c; r.lost += k.c * gm / (DATA.season_games[`${k.season}|${k.team}`] || 17);
     if (eps.length) { r.hurt++; r.list.push({name: eps[0].player, pos: k.pos, season: k.season, gm, out: eps.some(e => e.ongoing)}); }
     if (eps.some(e => e.ongoing)) r.out++;
   }
@@ -1362,7 +1362,7 @@ function renderTeamBars(K) {
   let lost = 0, capAll = 0;
   for (const k of K) {
     const gm = (EP_BY_KEY.get(kstr(k.season, k.team, k.p)) || []).reduce((a, e) => a + e.games, 0);
-    lost += k.c * gm / (DATA.team_games[`${k.season}|${k.team}`] || 17); capAll += k.c;
+    lost += k.c * gm / (DATA.season_games[`${k.season}|${k.team}`] || 17); capAll += k.c;
   }
   const lostAvg = lost / (32 * nSel());
   $("hit-league").innerHTML = `<div class="lead"><span class="v">${pct(N ? H / N : 0)}</span><span class="l">of selected players missed at least one game to injury, league-wide, ${esc(scope)}</span></div>
