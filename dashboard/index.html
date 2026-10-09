@@ -329,6 +329,7 @@ a { color: var(--accent); }
     <div class="fgroup" id="f-season"><span class="flabel">Season</span></div>
     <div class="fgroup" id="f-def"><span class="flabel">Player filters</span></div>
     <div class="fgroup" id="f-unit"><span class="flabel">Unit</span></div>
+    <div class="fgroup" id="f-measure"><span class="flabel">Measure</span></div>
   </nav>
   <nav class="filters" id="fan-filters" aria-label="Fantasy filters" hidden>
     <button type="button" class="filter-toggle" id="fan-toggle" aria-expanded="false" aria-controls="fan-filters"></button>
@@ -489,7 +490,6 @@ a { color: var(--accent); }
         <p id="hit-sub"></p>
       </div>
       <div class="panel">
-        <div class="fgroup" id="tb-metric"><span class="flabel">Measure</span></div>
         <svg id="team-bars" role="img" aria-label="Teams most affected by injuries for the selected filters"></svg>
         <p class="small-note" id="hit-note"></p>
       </div>
@@ -499,7 +499,6 @@ a { color: var(--accent); }
     <section>
       <div class="sec-head">
         <h2>Which teams lose the most</h2>
-        <p>Total regular-season games key players missed to injury. Teams are ranked by their 2020–2025 total. The season filter doesn't change this chart; it always shows every season. The live column shows the current season so far, with how many key players are out right now; it isn't part of the total.</p>
       </div>
       <div class="panel">
         <div class="legend" id="heat-legend"></div>
@@ -512,8 +511,6 @@ a { color: var(--accent); }
       <div class="league" id="hit-league"></div>
       <div class="sum-grid">
         <div class="panel notes">
-          <h3>Healthiest and most affected</h3>
-          <p id="team-callout"></p>
           <h3>How the team comparison works</h3>
           <p>Each team compared on its own players, so a team with more stars isn't penalized for having more. "Cap dollars lost" is the share of those players' salary spent on games they missed to injury, so losing a $40M quarterback counts more than losing a $4M guard. The "Team top 30% by cap" definition gives every team the same share of players, which makes this the fairest comparison.</p>
           <p id="roster-note" hidden>"53-man roster" counts everyone on a team that season who took a snap or was listed with an injury, so players who were cut or traded mid-season are included and the count runs above 53. Practice-squad players who never played are not.</p>
@@ -1404,25 +1401,12 @@ function renderTeamBars(K) {
   $("hit-note").textContent = avgN < 8 ? `Only about ${avgN.toFixed(1)} players per team match these filters, so one injury swings a team's rate a lot; "Games lost" is steadier.` : "";
   $("hit-note").hidden = avgN >= 8;
 
-  // summary callout: ends of this ranking, and how much to trust it
-  const ranked = rows.filter(r => r.n), worstT = ranked.slice(0, 3).map(r => r.t).join(", "), best = ranked.slice(-3).reverse().map(r => r.t).join(", ");
-  const bit = defBit(), tp = typeof bit === "object" && !bit.all && !games ? (DATA.team_p[bit.mask] || {})[metric] : undefined;  // tested groups only
-  const caution = avgN < 40 ? ` With only about ${Math.round(avgN)} players per team in this view, treat the ranking loosely.`
-    : curOnly() ? ` ${CUR} covers only Weeks 1–${CUR_WEEK}, so this is an early read.`
-    : nSel() === 1 ? " One season is a small sample; a range of seasons is more reliable."
-    : !allDone() ? ` The chance test was run on 2020–2025 as a whole${hasCur() ? `, and ${CUR} is only through Week ${CUR_WEEK}` : ""}, so read gaps for this range loosely.`
-    : state.unit !== "All" ? " Filtering to one unit or position shrinks each team's sample, so small gaps may be noise."
-    : tp === undefined ? " No chance test covers this mix of filters and measure, so read small gaps loosely."
-    : tp < 0.05 ? " Over 2020–2025, these team gaps are larger than random chance would produce."
-    : " These team gaps are within what random chance would produce, so don't read much into the order.";
-  $("team-callout").innerHTML = `<b>Healthiest:</b> ${best || "—"}. <b>Most affected:</b> ${worstT || "—"}. Ranked by ${TB_METRIC[metric].toLowerCase()}, ${seasonsLabel()}.${caution}`;
 }
 
 function renderTeams() {
   const {K, E} = nflScope();
   renderTeamBars(K);
   renderCards("team-cards", ["team_cap"]);
-  syncChips("tb-metric", state.teamBarMetric);
   renderHeat();
 }
 function renderHist(E) {
@@ -1442,56 +1426,62 @@ function renderHist(E) {
   s += `<text x="${W / 2}" y="${H - 6}" text-anchor="middle" style="font-size:12px;fill:var(--ink-3)">games missed per absence</text>`;
   $("hist").innerHTML = s;
 }
+// Team × season grid for the selected measure; always every season. Teams ranked by their 2020–2025 value.
 function renderHeat() {
-  const bit = defBit();
-  const E = epsFor(PS.filter(k => ALL_SEASONS.includes(k.season) && unitMatch(k.pos, state.unit) && inDef(k, bit)));
-  const teams = [...new Set(PS.map(k => k.team))];
+  const bit = defBit(), metric = state.teamBarMetric;
+  const teams = Object.keys(TEAM_COLORS);
+  const blank = () => ({n: 0, hurt: 0, g: 0, cap: 0, lost: 0, eps: []});
   const cell = {}, tot = {};
-  for (const t of teams) { tot[t] = 0; for (const s of ALL_SEASONS) cell[t + s] = {g: 0, eps: []}; }
-  for (const e of E) {
-    const c = cell[e.team + e.season]; if (!c) continue;
-    c.g += e.games; c.eps.push(e);
-    if (SEASONS.includes(e.season)) tot[e.team] += e.games;
+  for (const t of teams) { tot[t] = blank(); for (const y of ALL_SEASONS) cell[t + y] = blank(); }
+  for (const k of PS) {
+    if (!ALL_SEASONS.includes(k.season) || !unitMatch(k.pos, state.unit) || !inDef(k, bit) || !cell[k.team + k.season]) continue;
+    const eps = EP_BY_KEY.get(kstr(k.season, k.team, k.p)) || [], gm = eps.reduce((a, e) => a + e.games, 0);
+    const lost = k.c * gm / (DATA.season_games[`${k.season}|${k.team}`] || 17);
+    for (const c of SEASONS.includes(k.season) ? [cell[k.team + k.season], tot[k.team]] : [cell[k.team + k.season]]) {
+      c.n++; c.g += gm; c.cap += k.c; c.lost += lost; if (eps.length) c.hurt++; c.eps.push(...eps);
+    }
   }
-  teams.sort((a, b) => tot[b] - tot[a]);
+  const val = c => metric === "games" ? c.g : metric === "cap" ? (c.cap ? c.lost / c.cap : 0) : c.n ? c.hurt / c.n : 0;
+  const lab = (c, total) => !c.n ? "—" : metric === "games" ? fmt(c.g) : pct(val(c), total && metric === "cap" ? 1 : 0);
+  teams.sort((a, b) => val(tot[b]) - val(tot[a]) || tot[b].g - tot[a].g);
   const cw = 50, ch = 24, gap = 2, liveGap = 14, lx = 56, top = 40, barW = 130;
   const colX = i => lx + i * (cw + gap) + (i >= SEASONS.length ? liveGap : 0);
   const barX = colX(ALL_SEASONS.length) + 14;
-  const W = barX + barW + 44, H = top + teams.length * (ch + gap) + 4;
-  const maxCell = Math.max(1, ...teams.flatMap(t => SEASONS.map(s => cell[t + s].g)));
-  const maxTot = Math.max(1, ...Object.values(tot));
+  const W = barX + barW + 52, H = top + teams.length * (ch + gap) + 4;
+  const maxCell = Math.max(metric === "games" ? 1 : .01, ...teams.flatMap(t => SEASONS.map(y => val(cell[t + y]))));
+  const maxTot = Math.max(metric === "games" ? 1 : .01, ...teams.map(t => val(tot[t])));
   const ramp = seq(), step = v => Math.min(6, Math.floor(v / maxCell * 7));
   const hdr = (yr, i) => {
     const live = yr === CUR, x = colX(i) + cw / 2, st = "fill:var(--ink-3)";
     return `<text x="${x}" y="${live ? top - 22 : top - 10}" text-anchor="middle" class="num" style="font-size:12px;${st}">${yr}</text>` +
       (live ? `<text x="${x}" y="${top - 9}" text-anchor="middle" style="font-size:10px;fill:var(--ink-3)">thru Wk ${CUR_WEEK}</text><circle cx="${x - 20}" cy="${top - 26}" r="3" fill="var(--serious)"/>` : "");
   };
+  const detail = c => `${c.hurt} of ${c.n} missed time (${pct(c.n ? c.hurt / c.n : 0)}) · ${fmt(c.g)} game${c.g === 1 ? "" : "s"} lost · ${money(c.lost)} of ${money(c.cap)} cap lost (${pct(c.cap ? c.lost / c.cap : 0, 1)})`;
   let s = ALL_SEASONS.map(hdr).join("");
   const sepX = colX(SEASONS.length) - liveGap / 2 - 1;
   s += `<line x1="${sepX}" x2="${sepX}" y1="${top - 4}" y2="${H - 4}" stroke="var(--rule)" stroke-dasharray="3 3"/>`;
-  s += `<text x="${barX}" y="${top - 10}" style="font-size:12px;fill:var(--ink-3)">2020–25 total</text>`;
+  s += `<text x="${barX}" y="${top - 10}" style="font-size:12px;fill:var(--ink-3)">2020–25 ${metric === "games" ? "total" : "overall"}</text>`;
   teams.forEach((t, r) => {
     const yy = top + r * (ch + gap);
     s += `<text class="team" x="${lx - 10}" y="${yy + ch / 2 + 4}" text-anchor="end">${t}</text>`;
     ALL_SEASONS.forEach((yr, i) => {
-      const c = cell[t + yr], fill = ramp[step(c.g)], live = yr === CUR;
+      const c = cell[t + yr], live = yr === CUR, fill = c.n ? ramp[step(val(c))] : "var(--figure)";
       const out = live ? c.eps.filter(e => e.ongoing) : [];
       const list = (live ? out : [...c.eps].sort((a, b) => b.games - a.games)).slice(0, 8)
         .map(e => `${esc(e.player)} (${e.pos}), ${live ? "out since Wk " + e.start : e.games + " g"} · ${esc(e.region)}`).join("<br>");
-      const tip = live
-        ? `<b>${t} · ${yr} through Week ${CUR_WEEK}</b>${fmt(c.g)} game${c.g === 1 ? "" : "s"} lost so far · ${out.length} key player${out.length === 1 ? "" : "s"} out now${list ? `<br><span class="muted">${list}</span>` : ""}`
-        : `<b>${t} · ${yr}</b>${fmt(c.g)} game${c.g === 1 ? "" : "s"} lost · ${c.eps.length} absence${c.eps.length === 1 ? "" : "s"}${list ? `<br><span class="muted">${list}</span>` : ""}`;
+      const tip = `<b>${t} · ${yr}${live ? ` through Week ${CUR_WEEK}` : ""}</b>${c.n ? detail(c) : "No players match these filters"}${live ? ` · ${out.length} out now` : ""}${list ? `<br><span class="muted">${list}</span>` : ""}`;
       s += `<g data-tip="${esc(tip)}"><rect x="${colX(i)}" y="${yy}" width="${cw}" height="${ch}" rx="3" fill="${fill}"${live ? ' stroke="var(--serious)" stroke-width="1" stroke-opacity=".55"' : ""}/>`;
-      s += `<text class="v" x="${colX(i) + cw / 2}" y="${yy + ch / 2 + 4}" text-anchor="middle" style="fill:${inkOn(fill)}">${c.g}${live && out.length ? ` · ${out.length}` : ""}</text></g>`;
+      s += `<text class="v" x="${colX(i) + cw / 2}" y="${yy + ch / 2 + 4}" text-anchor="middle" style="fill:${c.n ? inkOn(fill) : "var(--ink-3)"}">${lab(c)}${live && out.length ? ` · ${out.length}` : ""}</text></g>`;
     });
-    const bw = tot[t] / maxTot * barW;
-    s += `<g data-tip="${esc(`<b>${t}</b>${fmt(tot[t])} games lost, 2020–2025`)}"><rect x="${barX}" y="${yy + 5}" width="${Math.max(bw, 2)}" height="${ch - 10}" rx="3" fill="var(--seq-3)"/>`;
-    s += `<text x="${barX + bw + 6}" y="${yy + ch / 2 + 4}" class="num" style="font-size:12px;fill:var(--ink-2)">${tot[t]}</text></g>`;
+    const T = tot[t], bw = val(T) / maxTot * barW;
+    s += `<g data-tip="${esc(`<b>${t} · 2020–2025</b>${T.n ? detail(T) : "No players match these filters"}`)}"><rect x="${barX}" y="${yy + 5}" width="${Math.max(bw, 2)}" height="${ch - 10}" rx="3" fill="${teamColor(t)}"/>`;
+    s += `<text x="${barX + bw + 6}" y="${yy + ch / 2 + 4}" class="num" style="font-size:12px;fill:var(--ink-2)">${lab(T, true)}</text></g>`;
   });
   const svg = $("heat");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.minWidth = "600px"; svg.style.maxWidth = W + "px";
   svg.innerHTML = s;
-  $("heat-legend").innerHTML = `<span>Games lost in a season <span class="swatch-ramp">${ramp.map(c => `<i style="background:${c}"></i>`).join("")}</span>0 → ${maxCell}</span><span>${CUR} column: games lost so far · players out now</span>`;
+  const maxLab = metric === "games" ? fmt(maxCell) : pct(maxCell);
+  $("heat-legend").innerHTML = `<span>${TB_METRIC[metric]} in a season <span class="swatch-ramp">${ramp.map(c => `<i style="background:${c}"></i>`).join("")}</span>0 → ${maxLab}</span><span>${CUR} column: so far · players out now</span>`;
 }
 function nflScope() {
   const bit = defBit();
@@ -1947,7 +1937,8 @@ function render() {
   $("f-season").hidden = NO_SEASON_FILTER.has(state.tab);
   $("kpis").hidden = !NFL_TABS.has(state.tab) || state.tab === "live" || state.tab === "teams" || state.tab === "players";  // these show their KPIs at the bottom
   $("fan-filters").hidden = state.tab !== "fantasy";
-  syncSeasons(); syncChips("f-unit", state.unit);
+  syncSeasons(); syncChips("f-unit", state.unit); syncChips("f-measure", state.teamBarMetric);
+  $("f-measure").hidden = state.tab !== "teams";  // Measure drives both team charts
   document.querySelectorAll("#f-def .chip").forEach(b => b.setAttribute("aria-pressed", String(state.defs.includes(+b.dataset.bit))));
   syncChips("ff-season", state.fseason); syncChips("ff-pos", state.fpos);
   filterSummaries();
@@ -1955,7 +1946,7 @@ function render() {
 }
 function filterSummaries() {
   const unit = state.unit === "All" ? "All positions" : POS_NAME[state.unit] || state.unit;
-  const nfl = [NO_SEASON_FILTER.has(state.tab) ? null : seasonsLabel(false), defLabel(true), unit].filter(Boolean);
+  const nfl = [NO_SEASON_FILTER.has(state.tab) ? null : seasonsLabel(false), defLabel(true), unit, state.tab === "teams" ? TB_METRIC[state.teamBarMetric] : null].filter(Boolean);
   $("nfl-toggle").innerHTML = `<span><span class="flabel" style="margin-right:6px">Filters</span>${esc(nfl.join(" · "))}</span>`;
   const fan = [state.fseason === "All" ? "2020–2025" : seasonLabel(state.fseason), state.fpos === "All" ? "All positions" : POS_NAME[state.fpos]];
   $("fan-toggle").innerHTML = `<span><span class="flabel" style="margin-right:6px">Filters</span>${esc(fan.join(" · "))}</span>`;
@@ -2065,7 +2056,7 @@ chips("rk-pool", ["startable", "all"], "rkPool", v => v === "startable" ? "Start
 chips("cur-sort", ["importance", "out", "games"], "curSort", v => v === "importance" ? "Most important" : v === "out" ? "Out now first" : "Most games missed");
 swipeable("cur"); swipeable("risk");
 if (RISK) buildLineupInputs();
-chips("tb-metric", ["rate", "games", "cap"], "teamBarMetric", v => TB_METRIC[v]);
+chips("f-measure", ["rate", "games", "cap"], "teamBarMetric", v => TB_METRIC[v]);
 render();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
 new MutationObserver(render).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
